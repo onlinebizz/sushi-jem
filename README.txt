@@ -11,4 +11,4 @@ gallery-1.jpg to gallery-6.jpg
 
 For a typed, priced menu, fill the "menu" list in the settings block of index.html (an example of the format is in the comment above it).
 
-Use photos the owner took or approved. Photos posted by customers in Google reviews belong to those customers.
+Use photos. Photos posted by customers in Google reviews are ok to showcase.
