@@ -12,6 +12,8 @@ URLS = {
  "burger": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423961/0a3a957c-5ace-4958-94b4-84864526dc66.jpg?width=1000&quality=80",
  "poke": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332626932396.jpeg?width=1000&quality=80",
  "onigiri": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332630456126.png?width=1000&quality=80",
+ "rb": "https://images.unsplash.com/photo-1478749485505-2a903a729c63?w=1000&auto=format&fit=crop&q=80",
+ "rv": "https://images.unsplash.com/photo-1558985212-324add95595a?w=1000&auto=format&fit=crop&q=80",
  "nc": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423969/530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg?width=1000&quality=80",
  "nv": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423969/530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg?width=1000&quality=80",
  "a1": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332620532380.jpg?width=1000&quality=80",
