@@ -978,8 +978,8 @@ function joltHref(){
 }
 function openJolt(){ if(!jp) return; joltHref(); jp.classList.add('on'); jp.setAttribute('aria-hidden','false'); document.documentElement.classList.add('jpop-open'); var b=$('#joltClose'); if(b) b.focus(); }
 function closeJolt(){ if(!jp||!jp.classList.contains('on')) return; jp.classList.remove('on'); jp.setAttribute('aria-hidden','true'); document.documentElement.classList.remove('jpop-open'); try{sessionStorage.setItem('sj-jolt','1')}catch(e){} }
-var start='ar';try{start=localStorage.getItem('sj-lang')||'ar'}catch(e){}
-applyLang(start==='en'?'en':'ar');
+var start='ar';try{localStorage.removeItem('sj-lang')}catch(e){}
+applyLang('ar');
 var jSeen=false;try{jSeen=!!sessionStorage.getItem('sj-jolt')}catch(e){}
 if(!jSeen) setTimeout(openJolt, 400);
 })();
