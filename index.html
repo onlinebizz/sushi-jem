@@ -390,15 +390,15 @@ main,header,footer{position:relative;z-index:1}
 .hero-logo{width:min(460px,80%)}.walk .btn{background:#fff;color:#8A1120}.final .btn{box-shadow:none}
 
 /* opening JOLT popup */
-.jpop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(14px,3vw,36px);overflow:auto;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s ease}
+.jpop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(14px,3vw,36px);overflow:auto;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s ease}
 .jpop.on{opacity:1;visibility:visible}
-.jpop .veil2{position:absolute;inset:0;background:radial-gradient(ellipse at 50% -5%,rgba(124,58,237,.5),rgba(76,29,149,.5) 45%,rgba(15,10,30,.78));backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15)}
+.jpop .veil2{position:absolute;inset:0;background:radial-gradient(ellipse at 50% -5%,rgba(196,22,42,.42),rgba(120,12,24,.44) 45%,rgba(28,5,9,.68));backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15)}
 .jpop .veil2::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(0,0,0,.32),transparent 60%)}
-.jpop .panel{position:relative;z-index:2;width:min(680px,100%);background:linear-gradient(145deg,#160F2E,#0D0A1F);border:1px solid rgba(139,92,246,.3);border-radius:var(--leaf);box-shadow:0 0 60px rgba(124,58,237,.25),0 30px 90px rgba(0,0,0,.5);padding:clamp(24px,4vw,46px);text-align:center;display:grid;gap:12px;justify-items:center;transform:translateY(22px) scale(.95);transition:transform .6s cubic-bezier(.2,.9,.25,1),box-shadow .6s ease}
-.jpop.on .panel{transform:none}
-.jpop .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:rgba(139,92,246,.15);color:#A78BFA;font-weight:600;font-size:.9rem;border:1px solid rgba(139,92,246,.3)}
-.jpop h2{font-size:clamp(1.9rem,5.5vw,3.1rem);color:#C4B5FD;line-height:1.1;text-shadow:0 0 20px rgba(167,139,250,.5)}
-.jpop p{color:#A1A1AA;max-width:32em;font-size:1.05rem}
+.jpop .panel{position:relative;z-index:2;width:min(680px,100%);background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);box-shadow:0 30px 90px rgba(0,0,0,.5);padding:clamp(24px,4vw,46px);text-align:center;display:grid;gap:12px;justify-items:center;transform:translateY(40px) scale(.88);opacity:0;filter:blur(8px);transition:transform .7s cubic-bezier(.2,.9,.25,1),opacity .5s ease,filter .5s ease}
+.jpop.on .panel{transform:none;opacity:1;filter:none}
+.jpop .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--soft);color:var(--acc);font-weight:600;font-size:.9rem;border:1px solid var(--line)}
+.jpop h2{font-size:clamp(1.9rem,5.5vw,3.1rem);color:var(--acc);line-height:1.1}
+.jpop p{color:var(--muted);max-width:32em;font-size:1.05rem}
 .jpop .lane{width:min(300px,64%);margin:4px auto}
 .jpop .pact{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
 .jpop .x{position:absolute;top:12px;inset-inline-end:12px;z-index:3}
@@ -638,7 +638,7 @@ html.jpop-open{overflow:hidden}
   <div class="veil2" aria-hidden="true"></div>
   <div class="panel">
     <button class="x" id="joltClose" type="button" aria-label="إغلاق"><svg class="i"><use href="#i-x"/></svg></button>
-    <span class="tag" data-i18n="jolt.tag">عرض خاص مع جولت بولينق</span>
+    <span class="tag" data-i18n="jolt.tag">حصريا · جولت بولينق</span>
     <h2 id="joltPopTitle" data-i18n="jolt.title">سوشي جيم × جولت بولينق</h2>
     <p data-i18n="jolt.p">سترايكات تحت إضاءة النيون البنفسجي، وسفرة سوشي تكمّل الليلة. اجمع شلّتك واحجز مكانك.</p>
     <svg class="lane" viewBox="0 0 400 320" aria-hidden="true">
@@ -654,8 +654,7 @@ html.jpop-open{overflow:hidden}
       <path d="M170 248 A30 30 0 0 1 192 218" stroke-width="4" fill="none" stroke-linecap="round" style="stroke:#A78BFA" />
     </svg>
     <div class="pact">
-      <a class="btn" data-jolt href="#" target="_blank" rel="noopener"><svg class="i"><use href="#i-wa"/></svg><span data-i18n="jolt.cta">احجز مكانك</span></a>
-      <button class="btn ghost" id="joltSkip" type="button" data-i18n="jolt.skip">تصفّح الموقع</button>
+      <button class="btn" id="joltSkip" type="button"><span data-i18n="jolt.skip">يلا ندخل</span></button>
     </div>
   </div>
 </div>
@@ -770,7 +769,7 @@ var EN = Object.assign({"skip": "Skip to content", "nav.dishes": "Dishes", "nav.
  'p.t':'Our branches','b1.t':'Main branch','b1.p':'Al-Namas, Main Street, opposite Dunkin\'.','b2.t':'Al-Dabab Walkway branch','b2.p':'The fog and the mountains of Al-Namas in the evening.',
  'a.women':'Women-owned','a.cosy':'Quiet and cosy','a.kids':'Kid friendly','a.park':'Free parking',
  'f.tag':'A sushi experience that combines art, quality and distinctive flavors.','f.map':'Find us on the map','f.rights':'Sushi Jem, Al-Namas. All rights reserved.'
-}, {"nav.svc": "Services", "nav.dishes": "Dishes", "hero.sub2": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.", "fact1": "Two branches in Al-Namas", "t1.t": "Sauce that shines on every roll", "t1.p": "Creamy sauce on every roll, plus crunchy flakes that give each bite two textures.", "t2.t": "A menu for every mood", "t2.p": "Rolls, sushi cake, poke bowl, ramen, noodles and onigiri in one place.", "t3.t": "A spread for the whole group", "t3.p": "The Jem Signature Box with twenty mixed pieces, and a sushi cake that serves up to seven.", "t4.t": "Easy ordering", "t4.p": "Add to the cart and send on WhatsApp, or order delivery on HungerStation.", "d1.t": "Jem crispy rolls", "d1.p": "Crispy rolls with a spicy creamy sauce, sesame and green onion on every piece.", "d2.t": "Jem golden rice", "d2.p": "Rich, flavorful rice topped with crunch, seaweed and sauce, on a shining gold plate.", "d3.t": "Sushi cake", "d3.p": "Layers of rice and filling crowned with crunch and candles, for your occasions and gatherings.", "dish.go": "Order from the menu", "s1.n": "1", "s2.n": "2", "s3.n": "3", "s1.t": "Pick your dishes", "s1.p": "Browse the menu and add what you like to the cart.", "s2.t": "Enter your details", "s2.p": "Your name and number, then choose the branch and order type.", "s3.t": "Send and enjoy", "s3.p": "WhatsApp opens with your order ready, just press send. For delivery, order on HungerStation.", "jolt.tag": "Special deal with JOLT Bowling", "jolt.skip": "Browse the site"});
+}, {"nav.svc": "Services", "nav.dishes": "Dishes", "hero.sub2": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.", "fact1": "Two branches in Al-Namas", "t1.t": "Sauce that shines on every roll", "t1.p": "Creamy sauce on every roll, plus crunchy flakes that give each bite two textures.", "t2.t": "A menu for every mood", "t2.p": "Rolls, sushi cake, poke bowl, ramen, noodles and onigiri in one place.", "t3.t": "A spread for the whole group", "t3.p": "The Jem Signature Box with twenty mixed pieces, and a sushi cake that serves up to seven.", "t4.t": "Easy ordering", "t4.p": "Add to the cart and send on WhatsApp, or order delivery on HungerStation.", "d1.t": "Jem crispy rolls", "d1.p": "Crispy rolls with a spicy creamy sauce, sesame and green onion on every piece.", "d2.t": "Jem golden rice", "d2.p": "Rich, flavorful rice topped with crunch, seaweed and sauce, on a shining gold plate.", "d3.t": "Sushi cake", "d3.p": "Layers of rice and filling crowned with crunch and candles, for your occasions and gatherings.", "dish.go": "Order from the menu", "s1.n": "1", "s2.n": "2", "s3.n": "3", "s1.t": "Pick your dishes", "s1.p": "Browse the menu and add what you like to the cart.", "s2.t": "Enter your details", "s2.p": "Your name and number, then choose the branch and order type.", "s3.t": "Send and enjoy", "s3.p": "WhatsApp opens with your order ready, just press send. For delivery, order on HungerStation.", "jolt.tag": "Exclusive · JOLT Bowling", "jolt.skip": "Let's go"});
 var DYN = {
  add:['أضف','Add'], view:['عرض السلة','View cart'], items:['منتجات','items'], cartT:['سلتك','Your cart'], detT:['بياناتك','Your details'],
  s1:['السلة','Cart'], s2:['البيانات والفرع','Details and branch'],
