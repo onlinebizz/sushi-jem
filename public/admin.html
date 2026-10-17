@@ -17,13 +17,20 @@
   --ok:#1B7A3D;--leaf:24px 6px 24px 6px;--f-display:'Lalezar','IBM Plex Sans Arabic',sans-serif;--f-body:'IBM Plex Sans Arabic',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--f-body);font-size:.95rem;line-height:1.7}
+body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--f-body);font-size:1rem;line-height:1.7}
 h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.25}
 img{max-width:100%}
 button{font:inherit;color:inherit;cursor:pointer}
-input,textarea,select{font:inherit;color:inherit}
+input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 .hidden{display:none!important}
+
+/* English fields hidden unless enabled */
+.enwrap{display:none}
+body.show-en .enwrap{display:contents}
+body.show-en .bi{grid-template-columns:auto 1fr auto 1fr}
+body.show-en .trow{grid-template-columns:230px 1fr 1fr}
+body.show-en .varrow{grid-template-columns:1fr 1fr 90px 32px}
 
 /* login */
 #login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#FDE3DE,transparent 66%)}
@@ -33,103 +40,114 @@ input,textarea,select{font:inherit;color:inherit}
 #login p{color:var(--muted);margin:2px 0 18px}
 #login input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:.75em 1em;background:var(--bg);margin-bottom:6px}
 #login input:focus{outline:none;border-color:var(--acc)}
-.err{color:var(--acc);font-size:.85rem;min-height:1.4em;margin-bottom:4px}
+.err{color:var(--acc);font-size:.9rem;min-height:1.4em;margin-bottom:4px}
 
 /* shell */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;height:64px;padding:0 clamp(14px,3vw,28px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;height:64px;padding:0 clamp(14px,3vw,28px)}
 .topbar img{height:40px}
 .topbar .t{font-family:var(--f-display);font-size:1.3rem;color:var(--acc)}
 .topbar .sp{flex:1}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:.6em 1.3em;font-weight:600;background:var(--acc);color:var(--on-acc);text-decoration:none;transition:transform .15s,box-shadow .2s}
 .btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px var(--shadow)}
-.btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--acc)}
-.btn.sm{padding:.4em 1em;font-size:.85rem}
+.btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost.en-on{box-shadow:inset 0 0 0 1.5px var(--acc);color:var(--acc)}
+.btn.sm{padding:.4em 1em;font-size:.88rem}
 .btn[disabled]{opacity:.45;pointer-events:none}
 .dirty-dot{width:9px;height:9px;border-radius:50%;background:#E4A11B;display:inline-block}
 .dirty-dot.saved{background:var(--ok)}
-.shell{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 64px)}
+.shell{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 64px)}
 .side{background:var(--panel);border-inline-end:1px solid var(--line);padding:14px 10px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto}
-.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:start;padding:.65em 1em;border-radius:12px;color:var(--text);font-weight:500;font-size:.97rem;margin-bottom:2px}
+.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:start;padding:.7em 1em;border-radius:12px;color:var(--text);font-weight:500;font-size:1rem;margin-bottom:2px}
 .side button.on{background:var(--acc);color:var(--on-acc)}
-.main{padding:clamp(18px,3vw,36px);max-width:1040px}
-.sec-title{font-size:1.9rem;color:var(--acc);margin-bottom:4px}
+.main{padding:clamp(18px,3vw,36px);max-width:1000px}
+.sec-title{font-size:2rem;color:var(--acc);margin-bottom:14px}
 .sec-sub{color:var(--muted);margin:0 0 22px;max-width:46em}
+
+/* dashboard tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:26px 18px;text-align:center;font-family:var(--f-display);font-size:1.35rem;color:var(--text);transition:transform .15s,border-color .15s}
+.tile .i{width:34px;height:34px;color:var(--acc);margin:0 auto 8px;display:block}
+.tile:hover{transform:translateY(-3px);border-color:var(--acc);color:var(--acc)}
 
 /* cards & fields */
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:18px 20px;margin-bottom:14px}
-.fld{display:grid;gap:5px;margin-bottom:12px}
-.fld>label{font-weight:600;font-size:.88rem}
-.fld .hint{color:var(--muted);font-size:.78rem}
-.fld input,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.55em .8em;background:var(--bg)}
+.fld{display:grid;gap:6px;margin-bottom:14px}
+.fld>label{font-weight:600;font-size:.92rem}
+.fld .hint{color:var(--muted);font-size:.82rem}
+.fld input,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.6em .85em;background:var(--bg);font-size:1rem}
 .fld textarea{resize:vertical;min-height:60px}
 .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--acc)}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.bi{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center}
-.bi b{font-size:.78rem;color:var(--muted);font-weight:600}
-.chk{display:inline-flex;gap:7px;align-items:center;font-weight:500;font-size:.9rem;white-space:nowrap;cursor:pointer}
-.chk input{accent-color:var(--acc);width:17px;height:17px}
-.i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.2em}
-.side .i{width:19px;height:19px;stroke-width:1.6}
-.iconbtn .i{width:16px;height:16px}
-.dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:#D8CCC2}
-.dot.on{background:var(--ok)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bi{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
+.bi b{font-size:.8rem;color:var(--muted);font-weight:600}
+.chk{display:inline-flex;gap:8px;align-items:center;font-weight:600;font-size:1rem;white-space:nowrap;cursor:pointer;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.45em 1.1em}
+.chk input{accent-color:var(--acc);width:18px;height:18px}
 
 /* menu tree */
 .block{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0;background:var(--bg)}
 .block .sub{border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--bg2)}
 .block-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
 .block-head .grow{flex:1;min-width:130px}
-.mini{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:.4em .6em;font-size:.88rem}
-.iconbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;width:32px;height:32px;display:grid;place-items:center;padding:0;font-size:.9rem}
+.mini{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:.45em .65em;font-size:.95rem}
+.iconbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;padding:0}
 .iconbtn:hover{border-color:var(--acc);color:var(--acc)}
 .iconbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
-.addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.45em 1em;font-weight:600;font-size:.88rem;margin:6px 0}
+.addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.5em 1.1em;font-weight:600;font-size:.95rem;margin:6px 0}
 .addbtn:hover{background:var(--soft)}
-.varrow{display:grid;grid-template-columns:1fr 1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px}
-.items-head{font-size:.8rem;color:var(--muted);font-weight:600;margin:10px 0 4px}
+.varrow{display:grid;grid-template-columns:1fr 90px 34px;gap:8px;align-items:center;margin-bottom:6px}
 
 /* image picker */
 .imgpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px dashed var(--line);border-radius:14px;padding:10px;background:var(--bg)}
-.imgpick .prev{width:74px;height:74px;border-radius:12px;background:var(--soft);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted);font-size:1.6rem}
+.imgpick .prev{width:74px;height:74px;border-radius:12px;background:var(--soft);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted)}
 .imgpick .prev img{width:100%;height:100%;object-fit:cover}
-.imgpick .ipt{flex:1;min-width:170px}
-.imgpick .ipt input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:.45em .7em;background:var(--panel);font-size:.85rem}
+.imgpick .ipt{flex:1;min-width:150px}
+.imgpick .ipt input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:.5em .7em;background:var(--panel);font-size:.9rem}
 .imgpick .up{flex:none}
 
-/* chips (marquee / gallery) */
+/* chips */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}
 .chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 6px 4px 12px}
-.chip input{border:0;background:none;min-width:90px;font-size:.9rem;outline:none}
+.chip input{border:0;background:none;min-width:90px;font-size:.95rem;outline:none}
 .chip button{border:0;background:var(--soft);color:var(--acc);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;padding:0}
 
 /* texts editor */
-.tgroup{margin-bottom:18px}
-.tgroup h3{font-size:1.25rem;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
-.trow{display:grid;grid-template-columns:230px 1fr 1fr;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
-.trow .k{font-size:.85rem;font-weight:600}
-.trow input{border:1.5px solid var(--line);border-radius:10px;padding:.45em .7em;background:var(--bg);width:100%}
+.tsearch{width:100%;border:1.5px solid var(--line);border-radius:999px;padding:.65em 1.2em;background:var(--bg);font-size:1rem;margin-bottom:16px}
+.tsearch:focus{outline:none;border-color:var(--acc)}
+details.tgroup{margin-bottom:12px;border:1px solid var(--line);border-radius:16px;background:var(--panel);overflow:hidden}
+details.tgroup summary{cursor:pointer;padding:13px 18px;font-family:var(--f-display);font-size:1.25rem;color:var(--acc);list-style:none;display:flex;align-items:center;gap:10px}
+details.tgroup summary::-webkit-details-marker{display:none}
+details.tgroup summary .i{width:18px;height:18px;transition:transform .2s}
+details[open].tgroup summary .i{transform:rotate(90deg)}
+details.tgroup .tbody{padding:0 18px 12px}
+.trow{display:grid;grid-template-columns:230px 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+.trow .k{font-size:.9rem;font-weight:600}
+.trow input{border:1.5px solid var(--line);border-radius:10px;padding:.5em .7em;background:var(--bg);width:100%}
 
 /* toast */
 #toast{position:fixed;inset-inline:0;bottom:26px;z-index:100;display:flex;justify-content:center;pointer-events:none;opacity:0;transform:translateY(10px);transition:.3s}
 #toast.on{opacity:1;transform:none}
-#toast span{background:var(--text);color:#fff;border-radius:999px;padding:.55em 1.4em;font-weight:600;box-shadow:0 12px 34px rgba(0,0,0,.25)}
+#toast span{background:var(--text);color:#fff;border-radius:999px;padding:.6em 1.5em;font-weight:600;box-shadow:0 12px 34px rgba(0,0,0,.25)}
 #toast.err span{background:var(--acc)}
 
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:center}
-.stat b{display:block;font-family:var(--f-display);font-size:2rem;color:var(--acc)}
-.stat span{color:var(--muted);font-size:.82rem}
-.note{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:.87rem;margin:10px 0}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:.9rem;margin:10px 0}
 .dangerzone{border-color:#E7B3B9}
+.i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.2em}
+.side .i{width:19px;height:19px;stroke-width:1.6}
+.iconbtn .i{width:16px;height:16px}
+.dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:#D8CCC2}
+.dot.on{background:var(--ok)}
 
 @media (max-width:860px){
   .shell{grid-template-columns:1fr}
   .side{position:static;height:auto;display:flex;overflow-x:auto;gap:6px;padding:10px}
   .side button{white-space:nowrap;width:auto}
-  .row2,.row3{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
   .trow{grid-template-columns:1fr;gap:4px}
-  .varrow{grid-template-columns:1fr 1fr 70px 32px}
+  body.show-en .trow{grid-template-columns:1fr}
+  .varrow{grid-template-columns:1fr 90px 34px}
+  body.show-en .varrow{grid-template-columns:1fr 90px 34px}
+  .bi,body.show-en .bi{grid-template-columns:auto 1fr}
+  body.show-en .enwrap{display:block}
 }
 </style>
 </head>
@@ -148,13 +166,14 @@ input,textarea,select{font:inherit;color:inherit}
 <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-6 6"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
 </svg>
 
 <div id="login" class="hidden">
   <div class="card">
     <img src="images/logo-pagoda-transparent.png" alt="سوشي جيم">
     <h1 data-t="loginTitle">لوحة تحكم سوشي جيم</h1>
-    <p data-t="loginSub">اكتب كلمة المرور للدخول والتحكم بالموقع</p>
+    <p data-t="loginSub">اكتب كلمة المرور للدخول</p>
     <form id="loginForm">
       <input type="password" id="loginPw" autocomplete="current-password" placeholder="كلمة المرور" aria-label="كلمة المرور">
       <div class="err" id="loginErr"></div>
@@ -166,11 +185,11 @@ input,textarea,select{font:inherit;color:inherit}
 <div id="app" class="hidden">
   <div class="topbar">
     <img src="images/logo-pagoda-transparent.png" alt="">
-    <span class="t">سوشي جيم <span data-t="adminBadge">لوحة التحكم</span></span>
+    <span class="t" data-t="appTitle">لوحة تحكم سوشي جيم</span>
     <span class="sp"></span>
-    <span class="dirty-dot" id="dirtyDot" title="تغييرات غير محفوظة"></span>
+    <span class="dirty-dot" id="dirtyDot"></span>
+    <button class="btn ghost sm" id="enBtn" type="button" title="إظهار / إخفاء الحقول الإنجليزية">EN</button>
     <a class="btn ghost sm" href="/" target="_blank" rel="noopener" data-t="viewSite">الموقع</a>
-    <button class="btn ghost sm" id="langBtn" type="button">EN</button>
     <button class="btn" id="saveBtn" type="button" disabled data-t="save">حفظ ونشر</button>
   </div>
   <div class="shell">
@@ -190,74 +209,78 @@ var C = null, DEFAULTS = null, dirty = false, updated_at = null, curSec = 'dash'
 /* ---------- admin chrome i18n ---------- */
 var T = {
   ar: {
-    loginTitle:'لوحة تحكم سوشي جيم', loginSub:'اكتب كلمة المرور للدخول والتحكم بالموقع', loginBtn:'دخول',
-    adminBadge:'لوحة التحكم', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
+    loginTitle:'لوحة تحكم سوشي جيم', loginSub:'اكتب كلمة المرور للدخول', loginBtn:'دخول',
+    appTitle:'لوحة التحكم', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
     unsaved:'لديك تغييرات غير محفوظة', loginFail:'كلمة المرور غير صحيحة', locked:'محاولات كثيرة. حاول بعد ',
-    sec:' ثانية', dash:'الرئيسية', ann:'شريط التنبيه', offers:'العروض', menu:'القائمة', texts:'نصوص الموقع',
-    settings:'الإعدادات', security:'الأمان',
-    addCat:'+ إضافة قسم جديد', addGrp:'+ إضافة مجموعة', addItem:'+ إضافة صنف جديد', addVar:'+ إضافة خيار وسعر',
-    offerT:'+ إضافة عرض', branchT:'+ إضافة فرع', nameAr:'عربي', nameEn:'English', price:'السعر',
-    oldPrice:'السعر قبل الخصم (اختياري)', badge:'شارة العرض (مثل: جديد)', desc:'الوصف', image:'الصورة',
-    link:'رابط عند الضغط (اختياري)', enabled:'مفعل', title:'العنوان', kcal:'سعرات القطعة (اختياري)',
-    num:'رقم زخرفي (اختياري)', feat:'صنف مميز ببطاقة عريضة', kanji:'رمز كانجي زخرفي (اختياري)', listStyle:'عرض بأسطر مضغوطة',
-    currentPw:'كلمة المرور الحالية', newPw:'كلمة المرور الجديدة (٨ أحرف فأكثر)', confirmPw:'تأكيد كلمة المرور الجديدة',
+    sec:' ثانية',
+    dash:'الرئيسية', promo:'العروض والتنبيه', menu:'القائمة', texts:'نصوص الموقع', settings:'الإعدادات',
+    addCat:'+ قسم جديد', addGrp:'+ مجموعة', addItem:'+ صنف جديد', addVar:'+ إضافة خيار وسعر',
+    offerT:'+ إضافة عرض جديد', branchT:'+ إضافة فرع', nameAr:'عربي', price:'السعر',
+    oldPrice:'السعر قبل الخصم (اختياري)', badge:'شارة العرض (مثل: جديد)', desc:'الوصف',
+    image:'الصورة', link:'رابط عند الضغط (اختياري)', enabled:'مفعل', title:'العنوان',
+    currentPw:'كلمة المرور الحالية', newPw:'كلمة المرور الجديدة', confirmPw:'تأكيد كلمة المرور الجديدة',
     changePw:'تغيير كلمة المرور', logout:'تسجيل الخروج', resetD:'استرجاع كل المحتوى الافتراضي',
     confirmReset:'إرجاع كل المحتوى لوضعه الافتراضي؟ سيتم فقدان تعديلاتك غير المنشورة.',
     confirmDel:'حذف هذا؟', lastPub:'آخر نشر', never:'لم يُنشر بعد', items:'صنف', offersActive:'عرض مفعل',
-    annOn:'التنبيه مفعّل', annOff:'التنبيه متوقف', annText:'نص التنبيه', annHint:'يظهر شريط أحمر أعلى الموقع. الزائر يستطيع إغلاقه، ويعود للظهور عند تغيّر النص.',
-    jolt:'نافذة جولت بولينق (تظهر عند دخول الموقع)', joltHint:'نصوص النافذة تعدّلها من قسم نصوص الموقع (مجموعة جولت).',
-    howBody:'كل ما تحفظه هنا ينشر فوراً على الموقع المباشر. اضغط حفظ ونشر بعد كل تعديل.',
-    imgHint:'اسم صورة موجودة في الموقع (مثل dish-1) أو رابط https كامل.',
+    annOn:'التنبيه مفعّل', annOff:'التنبيه متوقف', annText:'نص التنبيه',
+    annHint:'شريط أحمر يظهر أعلى الموقع كله. يمكن للزائر إغلاقه، ويعود للظهور عند تغيير النص.',
+    howBody:'عدّل ما تريد، ثم اضغط زر حفظ ونشر الأحمر بالأعلى. التغييرات تظهر على الموقع فوراً.',
+    imgHint:'أو اكتب رابط صورة',
     uploadBtn:'رفع صورة', uploading:'جارٍ رفع الصورة…', uploadDone:'تم رفع الصورة', uploadFail:'فشل رفع الصورة',
-    uploadBig:'الصورة كبيرة جداً (الحد ~3MB)', wherePics:'الصور المرفوعة تُخزن في قاعدة بيانات الموقع وتظهر فوراً على الموقع.',
+    uploadBig:'الصورة كبيرة جداً (الحد ٣ ميغا تقريباً)', wherePics:'الصورة تُرفع من جهازك وتظهر على الموقع فوراً.',
     marquee:'كلمات الشريط المتحرك', rail:'صور معرض الصفحة الرئيسية', addWord:'+ كلمة', addPic:'+ صورة',
-    branches:'الفروع', addr:'العنوان', phone:'رقم الجوال المعروض (مثل 0553694398)',
-    phoneIntl:'رقم الجوال الدولي لروابط الاتصال (مثل +966553694398)',
-    wa:'رقم واتساب بالصيغة الدولية (مثل 966553694398)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
-    coords:'إحداثيات الموقع على الخريطة', currency:'اسم العملة بالعربي', currencyEn:'اسم العملة بالإنجليزي',
-    del:'حذف', up:'أعلى', down:'أسفل',
+    branches:'الفروع', addr:'العنوان', phone:'رقم الجوال المعروض للزبائن',
+    wa:'رقم واتساب (بصيغة دولية مثل 966553694398)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
+    coords:'إحداثيات الموقع', coordsHint:'من خرائط قوقل: اضغط بزر الفأرة الأيمن على موقع المطعم واختر نسخ الإحداثيات',
+    currency:'اسم العملة', del:'حذف', up:'أعلى', down:'أسفل',
     pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة',
-    sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.', secTitle:'كلمة المرور والجلسة',
-    textHint:'كل نص له خانة عربية وخانة إنجليزية. عدّل ما تحتاجه فقط.',
-    menuHint:'رتّب الأصناف بأسهم الترتيب، واحذف بزر الحذف الأحمر. الأسعار في خيارات الصنف.',
-    offerHint:'العروض تظهر في قسم خاص على الموقع. قسم العروض يختفي إذا كان فارغاً.',
+    sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
+    textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
+    menuHint:'القسم يحتوي مجموعات، وكل مجموعة تحتوي أصنافاً. رتّب بالأسهم واحذف بزر الحذف.',
+    offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط على زر مفعل لإظهار أو إخفاء أي عرض.',
     resetDone:'تم تحميل المحتوى الافتراضي. اضغط حفظ ونشر لتطبيقه.',
-    catCount:'قسم', tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر'
+    tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر',
+    quick:'ماذا تريد أن تعدّل؟',
+    securityTitle:'كلمة المرور',
+    phAr:'مثال حقل الاسم', phEn:'Placeholder',
+    searchPh:'ابحث عن نص… (مثل: القائمة، توصيل، سوشي)'
   },
   en: {
-    loginTitle:'Sushi Jem Admin', loginSub:'Enter the password to manage the site', loginBtn:'Sign in',
-    adminBadge:'Admin', viewSite:'Site', save:'Save & publish', saved:'Published', saving:'Publishing…',
+    loginTitle:'Sushi Jem Admin', loginSub:'Enter the password to sign in', loginBtn:'Sign in',
+    appTitle:'Admin panel', viewSite:'Site', save:'Save & publish', saved:'Published', saving:'Publishing…',
     unsaved:'You have unsaved changes', loginFail:'Wrong password', locked:'Too many attempts. Try again in ',
-    sec:'s', dash:'Dashboard', ann:'Announcement bar', offers:'Offers', menu:'Menu', texts:'Site texts',
-    settings:'Settings', security:'Security',
-    addCat:'+ Add section', addGrp:'+ Add group', addItem:'+ Add item', addVar:'+ Add variant & price',
-    offerT:'+ Add offer', branchT:'+ Add branch', nameAr:'Arabic', nameEn:'English', price:'Price',
-    oldPrice:'Old price (optional)', badge:'Offer badge (e.g. New)', desc:'Description', image:'Image',
-    link:'Link on click (optional)', enabled:'Enabled', title:'Title', kcal:'Calories (optional)',
-    num:'Decorative number (optional)', feat:'Featured wide card', kanji:'Decorative kanji mark (optional)', listStyle:'Compact list style',
-    currentPw:'Current password', newPw:'New password (min 8)', confirmPw:'Confirm new password',
+    sec:'s',
+    dash:'Home', promo:'Offers & announcement', menu:'Menu', texts:'Site texts', settings:'Settings',
+    addCat:'+ New section', addGrp:'+ Add group', addItem:'+ New item', addVar:'+ Add option & price',
+    offerT:'+ Add new offer', branchT:'+ Add branch', nameAr:'Arabic', price:'Price',
+    oldPrice:'Old price (optional)', badge:'Offer badge (e.g. New)', desc:'Description',
+    image:'Image', link:'Link on click (optional)', enabled:'Enabled', title:'Title',
+    currentPw:'Current password', newPw:'New password', confirmPw:'Confirm new password',
     changePw:'Change password', logout:'Log out', resetD:'Reset all content to defaults',
     confirmReset:'Reset ALL content to defaults? Unpublished changes are lost.',
     confirmDel:'Delete this?', lastPub:'Last published', never:'never', items:'items', offersActive:'active offers',
-    annOn:'Announcement ON', annOff:'Announcement OFF', annText:'Announcement text', annHint:'A red bar at the top of the site. Visitors can close it; it returns when the text changes.',
-    jolt:'JOLT Bowling popup (shows on site entry)', joltHint:'Popup texts are under Site texts (JOLT group).',
-    howBody:'Everything you save here goes live instantly. Press Save & publish after each change.',
-    imgHint:'A file name already in the site (e.g. dish-1) or a full https link.',
+    annOn:'Announcement ON', annOff:'Announcement OFF', annText:'Announcement text',
+    annHint:'A red bar on top of the whole site. Visitors can close it; it returns when the text changes.',
+    howBody:'Edit what you want, then press the red Save & publish button above. Changes go live instantly.',
+    imgHint:'or paste an image link',
     uploadBtn:'Upload', uploading:'Uploading…', uploadDone:'Image uploaded', uploadFail:'Upload failed',
-    uploadBig:'Image too large (max ~3MB)', wherePics:'Uploaded images are stored in the site database and appear on the site instantly.',
+    uploadBig:'Image too large (max ~3MB)', wherePics:'Upload from your device; it appears on the site instantly.',
     marquee:'Moving strip words', rail:'Homepage gallery photos', addWord:'+ word', addPic:'+ photo',
-    branches:'Branches', addr:'Address', phone:'Phone shown (e.g. 0553694398)',
-    phoneIntl:'International phone for call links (e.g. +966553694398)',
-    wa:'WhatsApp number, international (e.g. 966553694398)', hsLink:'HungerStation link', ig:'Instagram link', snap:'Snapchat link',
-    coords:'Map coordinates', currency:'Currency label (Arabic)', currencyEn:'Currency label (English)',
-    del:'Delete', up:'Up', down:'Down',
+    branches:'Branches', addr:'Address', phone:'Phone number shown to customers',
+    wa:'WhatsApp number (international, e.g. 966553694398)', hsLink:'HungerStation link', ig:'Instagram link', snap:'Snapchat link',
+    coords:'Map coordinates', coordsHint:'From Google Maps: right-click the restaurant location and choose the coordinates',
+    currency:'Currency label', del:'Delete', up:'Up', down:'Down',
     pwChanged:'Password changed. Sign in again.', pwWrong:'Current password is wrong',
-    sessionEnded:'Session expired. Sign in again.', secTitle:'Password & session',
-    textHint:'Each text has an Arabic and an English field. Edit only what you need.',
-    menuHint:'Reorder with the arrows, delete with the red button. Prices live in the item variants.',
-    offerHint:'Offers appear in their own site section. Empty offers section hides itself.',
+    sessionEnded:'Session expired. Sign in again.',
+    textHint:'Search for the text you want to change, then open its group.',
+    menuHint:'A section has groups, and each group has items. Reorder with arrows, delete with the red button.',
+    offerHint:'Offers appear in their own section on the site. Use the Enabled button to show or hide any offer.',
     resetDone:'Defaults loaded. Press Save & publish to apply.',
-    catCount:'sections', tipSave:'Reminder: changes only go live after Save & publish'
+    tipSave:'Reminder: changes only go live after Save & publish',
+    quick:'What do you want to edit?',
+    securityTitle:'Password',
+    phAr:'Name placeholder', phEn:'Placeholder',
+    searchPh:'Search texts… (e.g. menu, delivery, sushi)'
   }
 };
 function t(k){ return T[AUL][k] || T.ar[k] || k }
@@ -397,7 +420,7 @@ var LBL = {
   'ph.phone':['مثال حقل الجوال','Phone placeholder'],
   'ph.notes':['مثال حقل الملاحظات','Notes placeholder']
 };
-function lbl(k){ return LBL[k] ? LBL[k][AUL === 'ar' ? 0 : 1] : k.replace(/^.*[.]/, '').replace(/[._]/g, ' ') }
+function lbl(k){ return LBL[k] ? LBL[k][0] : k.replace(/^.*[.]/, '').replace(/[._]/g, ' ') }
 
 /* ---------- helpers ---------- */
 function getPath(o, path){ return path.split('.').reduce(function(x,k){return x==null?x:x[k]}, o) }
@@ -437,7 +460,7 @@ function clearDirty(){
 }
 function fmtDate(ms){
   if (!ms) return t('never');
-  try { return new Date(ms).toLocaleString(AUL === 'ar' ? 'ar-SA' : 'en-GB') } catch(e){ return String(ms) }
+  try { return new Date(ms).toLocaleString('ar-SA') } catch(e){ return String(ms) }
 }
 function imgPreviewSrc(v){
   if (!v) return '';
@@ -448,8 +471,7 @@ function imgPreviewSrc(v){
 /* ---------- field builders ---------- */
 function fld(label, path, val, hint, type){
   var h = '<div class="fld"><label>' + esc(label) + '</label>';
-  if (type === 'textarea') h += '<textarea data-path="' + path + '">' + esc(val) + '</textarea>';
-  else if (type === 'num') h += '<input data-path="' + path + '" type="number" step="any" value="' + esc(val) + '">';
+  if (type === 'num') h += '<input data-path="' + path + '" type="number" step="any" inputmode="decimal" value="' + esc(val) + '">';
   else if (type === 'password') h += '<input data-path="' + path + '" type="password" autocomplete="new-password" value="">';
   else h += '<input data-path="' + path + '" value="' + esc(val) + '">';
   if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
@@ -457,14 +479,15 @@ function fld(label, path, val, hint, type){
 }
 function bi(label, basePath, pair, hint){
   pair = pair || ['', ''];
-  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><b>ع</b><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '"><b>EN</b><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '"></div>';
+  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><b>ع</b><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '">' +
+  '<span class="enwrap"><b>EN</b><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '"></span></div>';
   if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
   return h + '</div>';
 }
 function chk(label, path, val){
   return '<label class="chk"><input type="checkbox" data-cast="bool" data-path="' + path + '"' + (val ? ' checked' : '') + '>' + esc(label) + '</label>';
 }
-function imgPick(label, path, val, hint){
+function imgPick(label, path, val){
   var pv = imgPreviewSrc(val);
   return '<div class="fld"><label>' + esc(label) + '</label>' +
   '<div class="imgpick">' +
@@ -472,36 +495,32 @@ function imgPick(label, path, val, hint){
   '<div class="ipt"><input data-path="' + path + '" value="' + esc(val || '') + '" placeholder="' + esc(t('imgHint')) + '"></div>' +
   '<label class="btn sm up">' + esc(t('uploadBtn')) + '<input type="file" accept="image/*" class="hidden" data-upload></label>' +
   '</div>' +
-  (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') +
+  '<span class="hint">' + esc(t('wherePics')) + '</span>' +
   '</div>';
 }
 
 /* ---------- sections ---------- */
 var SECTIONS = [
-  {id:'dash',     ar:'الرئيسية',      en:'Dashboard'},
-  {id:'ann',      ar:'شريط التنبيه',   en:'Announcement'},
-  {id:'offers',   ar:'العروض',        en:'Offers'},
-  {id:'menu',     ar:'القائمة',       en:'Menu'},
-  {id:'texts',    ar:'نصوص الموقع',   en:'Site texts'},
-  {id:'settings', ar:'الإعدادات',     en:'Settings'},
-  {id:'security', ar:'الأمان',        en:'Security'}
+  {id:'dash',     ar:'الرئيسية',        en:'Home', icon:'i-dash'},
+  {id:'promo',    ar:'العروض والتنبيه', en:'Offers & announcement', icon:'i-offer'},
+  {id:'menu',     ar:'القائمة',        en:'Menu', icon:'i-menu'},
+  {id:'texts',    ar:'نصوص الموقع',    en:'Site texts', icon:'i-text'},
+  {id:'settings', ar:'الإعدادات',      en:'Settings', icon:'i-settings'}
 ];
 
 function renderSide(){
   $('#side').innerHTML = SECTIONS.map(function(s){
-    return '<button data-sec="' + s.id + '" class="' + (curSec === s.id ? 'on' : '') + '"><svg class="i"><use href="#i-' + s.id + '"/></svg><span>' + (AUL === 'ar' ? s.ar : s.en) + '</span></button>';
+    return '<button data-sec="' + s.id + '" class="' + (curSec === s.id ? 'on' : '') + '"><svg class="i"><use href="#' + s.icon + '"/></svg><span>' + (AUL === 'ar' ? s.ar : s.en) + '</span></button>';
   }).join('');
 }
 
 function renderMain(){
   var el = $('#main');
   if (curSec === 'dash') el.innerHTML = secDash();
-  else if (curSec === 'ann') el.innerHTML = secAnn();
-  else if (curSec === 'offers') el.innerHTML = secOffers();
+  else if (curSec === 'promo') el.innerHTML = secPromo();
   else if (curSec === 'menu') el.innerHTML = secMenu();
   else if (curSec === 'texts') el.innerHTML = secTexts();
   else if (curSec === 'settings') el.innerHTML = secSettings();
-  else if (curSec === 'security') el.innerHTML = secSecurity();
 }
 
 function secDash(){
@@ -511,51 +530,48 @@ function secDash(){
   var annOn = C.announcement && C.announcement.enabled;
   return '<h2 class="sec-title">' + t('dash') + '</h2>' +
   '<p class="sec-sub">' + t('howBody') + '</p>' +
-  '<div class="stats">' +
-  '<div class="stat"><b>' + C.menu.length + '</b><span>' + t('catCount') + '</span></div>' +
-  '<div class="stat"><b>' + items + '</b><span>' + t('items') + '</span></div>' +
-  '<div class="stat"><b>' + offersOn + '</b><span>' + t('offersActive') + '</span></div>' +
-  '<div class="stat"><b>' + (annOn ? '<span class="dot on"></span>' : '<span class="dot"></span>') + '</b><span>' + (annOn ? t('annOn') : t('annOff')) + '</span></div>' +
+  '<div class="tiles">' +
+  '<button class="tile" data-sec="promo"><svg class="i"><use href="#i-offer"/></svg>' + t('promo') + '</button>' +
+  '<button class="tile" data-sec="menu"><svg class="i"><use href="#i-menu"/></svg>' + t('menu') + '</button>' +
+  '<button class="tile" data-sec="texts"><svg class="i"><use href="#i-text"/></svg>' + t('texts') + '</button>' +
+  '<button class="tile" data-sec="settings"><svg class="i"><use href="#i-settings"/></svg>' + t('settings') + '</button>' +
   '</div>' +
-  '<div class="note">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</div>' +
+  '<div class="note">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + ' &nbsp;·&nbsp; ' + offersOn + ' ' + t('offersActive') + ' &nbsp;·&nbsp; ' + (annOn ? t('annOn') : t('annOff')) + '</div>' +
   '<div class="note">' + t('tipSave') + '</div>';
 }
 
-function secAnn(){
+function secPromo(){
   var a = C.announcement || (C.announcement = {enabled:false, text:['',''], link:''});
-  return '<h2 class="sec-title">' + t('ann') + '</h2>' +
-  '<p class="sec-sub">' + t('annHint') + '</p>' +
-  '<div class="card">' +
+  var list = C.offers || (C.offers = []);
+  var h = '<h2 class="sec-title">' + t('promo') + '</h2>';
+
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'شريط التنبيه':'Announcement bar') + '</h3>' +
+  '<p class="sec-sub" style="margin-bottom:14px">' + t('annHint') + '</p>' +
   chk(t('enabled'), 'announcement.enabled', a.enabled) +
   bi(t('annText'), 'announcement.text', a.text) +
   fld(t('link'), 'announcement.link', a.link, 'https://…') +
   '</div>';
-}
 
-function secOffers(){
-  var list = C.offers || (C.offers = []);
-  var h = '<h2 class="sec-title">' + t('offers') + '</h2><p class="sec-sub">' + t('offerHint') + '</p>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'العروض':'Offers') + '</h3>' +
+  '<p class="sec-sub" style="margin-bottom:14px">' + t('offerHint') + '</p>';
   list.forEach(function(o, i){
-    h += '<div class="card">' +
+    h += '<div class="block">' +
     '<div class="block-head">' + chk(t('enabled'), 'offers.' + i + '.enabled', o.enabled !== false) +
     '<span class="grow"></span>' +
     '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
     '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
     '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
-    '<div class="row2">' +
     bi(t('title'), 'offers.' + i + '.t', o.t) +
-    bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
-    '</div>' +
     bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
     '<div class="row2">' +
     fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
     fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
     '</div>' +
-    imgPick(t('image'), 'offers.' + i + '.img', o.img, t('wherePics')) +
+    imgPick(t('image'), 'offers.' + i + '.img', o.img) +
     fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…') +
     '</div>';
   });
-  h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button>';
+  h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button></div>';
   return h;
 }
 
@@ -573,12 +589,10 @@ function secMenu(){
       h += '<div class="block sub">' +
       '<div class="block-head">' +
       '<span class="grow">' + bi(t('title'), 'menu.' + ci + '.groups.' + gi + '.t', g.t || ['','']) + '</span>' +
-      chk(t('listStyle'), 'menu.' + ci + '.groups.' + gi + '.list', g.list) +
       '<button class="iconbtn" data-act="grp-up" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-up"/></svg></button>' +
       '<button class="iconbtn" data-act="grp-down" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-down"/></svg></button>' +
       '<button class="iconbtn danger" data-act="grp-del" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
-      '</div>' +
-      '<div class="items-head">' + t('menu') + ':</div>';
+      '</div>';
       (g.items || []).forEach(function(it, ii){
         var p = 'menu.' + ci + '.groups.' + gi + '.items.' + ii;
         h += '<div class="block sub">' +
@@ -588,27 +602,20 @@ function secMenu(){
         '<button class="iconbtn" data-act="item-down" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-down"/></svg></button>' +
         '<button class="iconbtn danger" data-act="item-del" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
         bi(t('desc'), p + '.d', it.d || ['','']) +
-        '<div class="row3">' +
-        fld(t('price'), p + '.v.0.2', (it.v && it.v[0]) ? it.v[0][2] : '', '', 'num') +
-        fld(t('kcal'), p + '.kcal', it.kcal || '', '', 'num') +
-        fld(t('kanji'), p + '.k', it.k || '') +
-        '</div>' +
-        '<div class="block-head">' +
-        chk(t('feat'), p + '.feat', it.feat) +
-        '</div>' +
-        imgPick(t('image'), p + '.img', it.img, t('wherePics'));
+        fld(t('price'), p + '.v.0.2', (it.v && it.v[0]) ? it.v[0][2] : '', '', 'num');
         if ((it.v || []).length > 1){
-          h += '<div class="items-head">' + t('addVar').replace('+ ','') + ':</div>';
+          h += '<div class="items-head" style="font-size:.85rem;color:var(--muted);font-weight:600;margin:8px 0 4px">' + (AUL==='ar'?'الخيارات':'Options') + ':</div>';
           (it.v || []).forEach(function(v, vi){
             h += '<div class="varrow">' +
-            '<input class="mini" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '">' +
-            '<input class="mini" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="' + t('nameEn') + '">' +
+            '<span class="arw"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '"></span>' +
+            '<span class="enwrap"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="EN"></span>' +
             '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '">' +
             '<button class="iconbtn danger" data-act="var-del" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
             '</div>';
           });
         }
-        h += '<button class="addbtn" data-act="var-add" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
+        h += imgPick(t('image'), p + '.img', it.img) +
+        '<button class="addbtn" data-act="var-add" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
         '</div>';
       });
       h += '<button class="addbtn" data-act="item-add" data-ci="' + ci + '" data-i="' + gi + '">' + t('addItem') + '</button></div>';
@@ -622,7 +629,7 @@ function secMenu(){
 var TEXT_GROUPS = [
   {ar:'شريط التنقل والأزرار', en:'Navigation & buttons', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title' || k==='skip'}},
   {ar:'الواجهة الرئيسية', en:'Hero', test:function(k){return k.indexOf('hero.')===0 || k.indexOf('fact')===0 || k.indexOf('c.')===0 || k==='band'}},
-  {ar:'قسم القائمة', en:'Menu section', test:function(k){return k.indexOf('m.')===0 || k.indexOf('offers.')===0 || k==='ann.more'}},
+  {ar:'قسم القائمة والعروض', en:'Menu & offers', test:function(k){return k.indexOf('m.')===0 || k.indexOf('offers.')===0 || k==='ann.more'}},
   {ar:'الأطباق المميزة', en:'Featured dishes', test:function(k){return k.indexOf('dishes.')===0 || k.indexOf('d1.')===0 || k.indexOf('d2.')===0 || k.indexOf('d3.')===0 || k==='dish.go'}},
   {ar:'الخدمات والتفاصيل', en:'Services & amenities', test:function(k){return k.indexOf('svc.')===0 || k.indexOf('amen.')===0 || k.indexOf('a.')===0}},
   {ar:'الفروع وممشى الضباب', en:'Branches & fog walk', test:function(k){return k.indexOf('p.')===0 || k.indexOf('b1.')===0 || k.indexOf('b2.')===0 || k.indexOf('walk.')===0}},
@@ -635,32 +642,35 @@ var TEXT_GROUPS = [
 ];
 
 function secTexts(){
-  var h = '<h2 class="sec-title">' + t('texts') + '</h2><p class="sec-sub">' + t('textHint') + '</p>';
+  var h = '<h2 class="sec-title">' + t('texts') + '</h2><p class="sec-sub">' + t('textHint') + '</p>' +
+  '<input class="tsearch" id="tsearch" type="search" placeholder="' + esc(t('searchPh')) + '">';
   var keys = [];
   Object.keys(DEFAULTS.strings.ar).concat(Object.keys(DEFAULTS.strings.en)).forEach(function(k){ if (keys.indexOf(k) < 0) keys.push(k) });
   TEXT_GROUPS.forEach(function(g){
     if (g.dyn){
-      h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
-      Object.keys(C.dyn || {}).forEach(function(k){ h += trow('dyn.' + k, C.dyn[k][0], C.dyn[k][1]) });
-      h += '</div><div class="tgroup"><h3>' + (AUL === 'ar' ? 'أمثلة الحقول' : 'Field examples') + '</h3>';
-      Object.keys(C.ph || {}).forEach(function(k){ h += trow('ph.' + k, C.ph[k][0], C.ph[k][1]) });
-      h += '</div>';
+      h += '<details class="tgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL === 'ar' ? g.ar : g.en) + '</summary><div class="tbody">';
+      Object.keys(C.dyn || {}).forEach(function(k){ h += trow('dyn.' + k + '.0|dyn.' + k + '.1', C.dyn[k][0], C.dyn[k][1], k) });
+      h += '</div></details>';
+      h += '<details class="tgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL === 'ar' ? 'أمثلة الحقول' : 'Field examples') + '</summary><div class="tbody">';
+      Object.keys(C.ph || {}).forEach(function(k){ h += trow('ph.' + k + '.0|ph.' + k + '.1', C.ph[k][0], C.ph[k][1], k) });
+      h += '</div></details>';
       return;
     }
     var gk = keys.filter(function(k){return g.test(k)});
     if (!gk.length) return;
-    h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
+    h += '<details class="tgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL === 'ar' ? g.ar : g.en) + '</summary><div class="tbody">';
     gk.forEach(function(k){
       var ar = getPath(C, 'strings.ar.' + k), en = getPath(C, 'strings.en.' + k);
-      h += trow('strings.ar.' + k + '|strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en, k);
+      h += trow('strings.ar.' + k + '|' + 'strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en, k);
     });
-    h += '</div>';
+    h += '</div></details>';
   });
   return h;
 }
 function trow(paths, vAr, vEn, key){
-  var p = paths.split('|');
-  return '<div class="trow"><span class="k">' + esc(key ? lbl(key) : '') + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '" placeholder="عربي"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></div>';
+  var p = typeof paths === 'string' && paths.indexOf('|') > -1 ? paths.split('|') : [paths, paths];
+  var label = key ? esc(lbl(key)) : '';
+  return '<div class="trow" data-search="' + esc(label + ' ' + (vAr||'') + ' ' + (vEn||'')) + '"><span class="k">' + label + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '" placeholder="عربي"><span class="enwrap"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></span></div>';
 }
 
 function chipEditor(label, listPath, list, addLabel, withUpload){
@@ -678,45 +688,41 @@ function chipEditor(label, listPath, list, addLabel, withUpload){
 function secSettings(){
   var cfg = C.config;
   var h = '<h2 class="sec-title">' + t('settings') + '</h2>';
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'التواصل والروابط':'Contact & links') + '</h3><div class="row2">' +
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'التواصل والروابط':'Contact & links') + '</h3>' +
   fld(t('wa'), 'config.wa', cfg.wa) +
   fld(t('phone'), 'config.phone', cfg.phone) +
-  fld(t('phoneIntl'), 'config.phoneIntl', cfg.phoneIntl) +
-  fld(t('currency'), 'config.currency.0', cfg.currency ? cfg.currency[0] : '') +
-  fld(t('currencyEn'), 'config.currency.1', cfg.currency ? cfg.currency[1] : '') +
   fld(t('hsLink'), 'config.hungerStation', cfg.hungerStation, 'https://…') +
   fld(t('ig'), 'config.instagram', cfg.instagram, 'https://…') +
   fld(t('snap'), 'config.snapchat', cfg.snapchat, 'https://…') +
-  fld(t('coords'), 'config.mapCoords', cfg.mapCoords, '19.1089791,42.1296272') +
-  '</div></div>';
+  '</div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'الموقع على الخريطة':'Map location') + '</h3>' +
+  fld(t('coords'), 'config.mapCoords', cfg.mapCoords, t('coordsHint')) +
+  '</div>';
   h += '<div class="card"><h3 style="margin-bottom:12px">' + t('branches') + '</h3>';
   (cfg.branches || []).forEach(function(b, i){
-    h += '<div class="block sub"><div class="row2">' +
+    h += '<div class="block sub">' +
     bi(t('title'), 'config.branches.' + i + '.n', b.n) +
     bi(t('addr'), 'config.branches.' + i + '.a', b.a) +
-    '</div><div class="block-head"><span class="grow"></span>' +
+    '<div class="block-head"><span class="grow"></span>' +
     '<button class="iconbtn danger" data-act="br-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div></div>';
   });
   h += '<button class="addbtn" data-act="br-add">' + t('branchT') + '</button></div>';
   h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'الشريط المتحرك ومعرض الصور':'Strip & gallery') + '</h3>' +
   chipEditor(t('marquee'), 'config.marquee', cfg.marquee, t('addWord'), false) +
   chipEditor(t('rail'), 'config.rail', cfg.rail, t('addPic'), true) +
-  '<div class="note">' + t('wherePics') + '</div></div>';
-  h += '<div class="card">' + chk(t('jolt'), 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
-  '<div class="note">' + t('joltHint') + '</div></div>';
-  return h;
-}
-
-function secSecurity(){
-  return '<h2 class="sec-title">' + t('security') + '</h2>' +
-  '<div class="card"><h3 style="margin-bottom:12px">' + t('secTitle') + '</h3>' +
+  '</div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'نافذة جولت بولينق':'JOLT Bowling popup') + '</h3>' +
+  chk(AUL==='ar'?'إظهار النافذة عند دخول الموقع':'Show popup on site entry', 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
+  '</div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + t('securityTitle') + '</h3>' +
   fld(t('currentPw'), 'pwCur', '', '', 'password') +
   fld(t('newPw'), 'pwNew', '', '', 'password') +
   fld(t('confirmPw'), 'pwNew2', '', '', 'password') +
   '<div class="err" id="pwErr"></div>' +
-  '<button class="btn" data-act="pw-change">' + t('changePw') + '</button></div>' +
-  '<div class="card"><button class="btn ghost" data-act="logout">' + t('logout') + '</button></div>' +
-  '<div class="card dangerzone"><button class="btn ghost" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>';
+  '<button class="btn" data-act="pw-change">' + t('changePw') + '</button></div>';
+  h += '<div class="card"><button class="btn ghost" data-act="logout">' + t('logout') + '</button></div>';
+  h += '<div class="card dangerzone"><button class="btn ghost" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>';
+  return h;
 }
 
 /* ---------- structural actions ---------- */
@@ -770,7 +776,7 @@ function act(a, el){
       (function(){
         var cur = $('#main [data-path="pwCur"]').value, nw = $('#main [data-path="pwNew"]').value, nw2 = $('#main [data-path="pwNew2"]').value;
         var e2 = $('#pwErr');
-        if (nw !== nw2){ e2.textContent = AUL === 'ar' ? 'التأكيد لا يطابق' : 'Confirmation does not match'; return; }
+        if (nw !== nw2){ e2.textContent = 'التأكيد لا يطابق'; return; }
         fetch('api/password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({current:cur, next:nw})})
           .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
           .then(function(res){
@@ -781,7 +787,7 @@ function act(a, el){
       break;
     default: return;
   }
-  if (a !== 'export' && a !== 'logout' && a !== 'pw-change'){ markDirty(); renderMain(); }
+  if (a !== 'logout' && a !== 'pw-change'){ markDirty(); renderMain(); }
 }
 
 /* ---------- image upload ---------- */
@@ -829,9 +835,19 @@ document.addEventListener('click', function(e){
   if (s){ curSec = s.dataset.sec; renderSide(); renderMain(); return; }
   var a = e.target.closest('[data-act]');
   if (a){ act(a.dataset.act, a); return; }
+  var sum = e.target.closest('summary');
+  if (sum) return; // let details toggle naturally
 });
 document.addEventListener('input', function(e){
   var p = e.target.dataset ? e.target.dataset.path : null;
+  if (e.target.id === 'tsearch'){
+    var q = e.target.value.trim();
+    document.querySelectorAll('details.tgroup').forEach(function(d){ d.open = !!q });
+    document.querySelectorAll('.trow').forEach(function(r){
+      r.style.display = (!q || (r.dataset.search || '').indexOf(q) > -1) ? '' : 'none';
+    });
+    return;
+  }
   if (!p || p.indexOf('pw') === 0) return;
   var v = e.target.value;
   if (e.target.type === 'number') v = (v === '' ? '' : Number(v));
@@ -856,8 +872,7 @@ document.addEventListener('change', function(e){
     uploadImage(input.files[0], function(url){
       if (lp){
         var list = lp === 'config.marquee' ? C.config.marquee : C.config.rail;
-        if (input.dataset.chipIndex != null){ list[+input.dataset.chipIndex] = url }
-        else { list.push(url) }
+        list.push(url);
         markDirty(); renderMain();
       } else {
         var holder = input.closest('.imgpick');
@@ -881,8 +896,18 @@ window.addEventListener('beforeunload', function(e){
 });
 
 /* ---------- save ---------- */
+function preSave(){
+  try{
+    var p = String(C.config.phone || '').replace(/\D/g, '');
+    if (/^0\d{9}$/.test(p)){
+      var intl = '+966' + p.slice(1);
+      if (!C.config.phoneIntl || /^\+966\d{9}$/.test(String(C.config.phoneIntl).replace(/\s/g, ''))) C.config.phoneIntl = intl;
+    }
+  }catch(e){}
+}
 function save(){
   $('#saveBtn').textContent = t('saving');
+  preSave();
   fetch('api/content', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -905,19 +930,10 @@ function save(){
 }
 $('#saveBtn').addEventListener('click', save);
 
-$('#langBtn').addEventListener('click', function(){
-  AUL = AUL === 'ar' ? 'en' : 'ar';
-  document.documentElement.lang = AUL;
-  document.documentElement.dir = AUL === 'ar' ? 'rtl' : 'ltr';
-  $('#langBtn').textContent = AUL === 'ar' ? 'EN' : 'عربي';
-  applyChrome();
-  if ($('#app').classList.contains('hidden')) return;
-  renderSide(); renderMain();
+$('#enBtn').addEventListener('click', function(){
+  document.body.classList.toggle('show-en');
+  $('#enBtn').classList.toggle('en-on');
 });
-
-function applyChrome(){
-  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t) });
-}
 
 /* ---------- login & boot ---------- */
 function showLogin(){
@@ -929,7 +945,6 @@ function showLogin(){
 function showApp(){
   $('#login').classList.add('hidden');
   $('#app').classList.remove('hidden');
-  applyChrome();
   renderSide(); renderMain();
   clearDirty();
 }
@@ -955,7 +970,6 @@ $('#loginForm').addEventListener('submit', function(e){
     .catch(function(){ err.textContent = 'network error' });
 });
 
-applyChrome();
 fetch('content.json').then(function(r){ return r.json() }).then(function(d){
   DEFAULTS = d;
   fetch('api/session').then(function(r){
