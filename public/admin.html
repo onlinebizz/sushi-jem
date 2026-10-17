@@ -83,6 +83,19 @@ body.show-en .varrow{grid-template-columns:1fr 1fr 90px 32px}
 .chk{display:inline-flex;gap:8px;align-items:center;font-weight:600;font-size:1rem;white-space:nowrap;cursor:pointer;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.45em 1.1em}
 .chk input{accent-color:var(--acc);width:18px;height:18px}
 
+/* menu: category chips + compact item rows */
+.catchips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px;scrollbar-width:thin}
+.catchip{flex:none;border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:.5em 1.2em;font-weight:600;font-size:.95rem;white-space:nowrap}
+.catchip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.catchip.add{border-style:dashed;color:var(--acc);background:none}
+.itemrow{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--bg);margin:8px 0;flex-wrap:wrap}
+.itemrow .thumb{width:52px;height:52px;border-radius:12px;background:var(--soft);border:1.5px solid var(--line);display:grid;place-items:center;padding:0;overflow:hidden;flex:none;color:var(--muted)}
+.itemrow .thumb img{width:100%;height:100%;object-fit:cover}
+.itemrow .nm{flex:1;min-width:130px;border:1.5px solid var(--line);border-radius:10px;padding:.5em .7em;background:var(--panel)}
+.itemrow .pr{width:95px;border:1.5px solid var(--line);border-radius:10px;padding:.5em .3em;background:var(--panel);text-align:center;direction:ltr}
+.itemmore{display:none;border:1px dashed var(--line);border-radius:14px;padding:12px 14px;margin:0 0 10px;background:var(--bg2)}
+.itemmore.open{display:block}
+
 /* menu tree */
 .block{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0;background:var(--bg)}
 .block .sub{border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--bg2)}
@@ -236,7 +249,7 @@ var T = {
     pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة',
     sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
     textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
-    menuHint:'القسم يحتوي مجموعات، وكل مجموعة تحتوي أصنافاً. رتّب بالأسهم واحذف بزر الحذف.',
+    menuHint:'اختر القسم بالأعلى لعرض أصنافه. كل صنف: الاسم والسعر ظاهران مباشرة، واضغط السهم الصغير للوصف والصورة والخيارات.',
     offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط على زر مفعل لإظهار أو إخفاء أي عرض.',
     resetDone:'تم تحميل المحتوى الافتراضي. اضغط حفظ ونشر لتطبيقه.',
     tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر',
@@ -370,9 +383,9 @@ var LBL = {
   'final.title':['القسم الختامي: العنوان','Final section: title'],
   'final.p':['القسم الختامي: النص','Final section: text'],
   'final.call':['القسم الختامي: زر الاتصال','Final section: call button'],
-  'f.tag':['التذييل: الوصف','Footer: tagline'],
-  'f.map':['التذييل: نص الخريطة','Footer: map link text'],
-  'f.rights':['التذييل: حقوق النشر','Footer: copyright'],
+  'f.tag':['الوصف','Tagline'],
+  'f.map':['نص الخريطة','Map link text'],
+  'f.rights':['حقوق النشر','Copyright'],
   'jolt.tag':['نافذة جولت: الوسم','JOLT popup: tag'],
   'jolt.title':['نافذة جولت: العنوان','JOLT popup: title'],
   'jolt.p':['نافذة جولت: النص','JOLT popup: text'],
@@ -575,59 +588,75 @@ function secPromo(){
   return h;
 }
 
+var curCat = 0;
 function secMenu(){
+  if (curCat >= C.menu.length) curCat = 0;
   var h = '<h2 class="sec-title">' + t('menu') + '</h2><p class="sec-sub">' + t('menuHint') + '</p>';
+  h += '<div class="catchips">';
   C.menu.forEach(function(cat, ci){
-    h += '<div class="card">' +
-    '<div class="block-head">' +
-    '<span class="grow">' + bi(t('title'), 'menu.' + ci + '.t', cat.t) + '</span>' +
-    '<button class="iconbtn" data-act="cat-up" data-i="' + ci + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
-    '<button class="iconbtn" data-act="cat-down" data-i="' + ci + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-    '<button class="iconbtn danger" data-act="cat-del" data-i="' + ci + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
-    '</div>';
-    (cat.groups || []).forEach(function(g, gi){
-      h += '<div class="block sub">' +
-      '<div class="block-head">' +
-      '<span class="grow">' + bi(t('title'), 'menu.' + ci + '.groups.' + gi + '.t', g.t || ['','']) + '</span>' +
-      '<button class="iconbtn" data-act="grp-up" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-up"/></svg></button>' +
-      '<button class="iconbtn" data-act="grp-down" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
-      '</div>';
-      (g.items || []).forEach(function(it, ii){
-        var p = 'menu.' + ci + '.groups.' + gi + '.items.' + ii;
-        h += '<div class="block sub">' +
-        '<div class="block-head">' +
-        '<span class="grow">' + bi(t('title'), p + '.n', it.n) + '</span>' +
-        '<button class="iconbtn" data-act="item-up" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-up"/></svg></button>' +
-        '<button class="iconbtn" data-act="item-down" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-        '<button class="iconbtn danger" data-act="item-del" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
-        bi(t('desc'), p + '.d', it.d || ['','']) +
-        fld(t('price'), p + '.v.0.2', (it.v && it.v[0]) ? it.v[0][2] : '', '', 'num');
-        if ((it.v || []).length > 1){
-          h += '<div class="items-head" style="font-size:.85rem;color:var(--muted);font-weight:600;margin:8px 0 4px">' + (AUL==='ar'?'الخيارات':'Options') + ':</div>';
-          (it.v || []).forEach(function(v, vi){
-            h += '<div class="varrow">' +
-            '<span class="arw"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '"></span>' +
-            '<span class="enwrap"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="EN"></span>' +
-            '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '">' +
-            '<button class="iconbtn danger" data-act="var-del" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
-            '</div>';
-          });
-        }
-        h += imgPick(t('image'), p + '.img', it.img) +
-        '<button class="addbtn" data-act="var-add" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
-        '</div>';
-      });
-      h += '<button class="addbtn" data-act="item-add" data-ci="' + ci + '" data-i="' + gi + '">' + t('addItem') + '</button></div>';
-    });
-    h += '<button class="addbtn" data-act="grp-add" data-i="' + ci + '">' + t('addGrp') + '</button></div>';
+    h += '<button type="button" class="catchip' + (ci === curCat ? ' on' : '') + '" data-catchip="' + ci + '">' + esc(cat.t[0] || cat.t[1] || (AUL==='ar'?'قسم':'Section')) + '</button>';
   });
-  h += '<button class="addbtn" data-act="cat-add">' + t('addCat') + '</button>';
+  h += '<button type="button" class="catchip add" data-act="cat-add">' + t('addCat') + '</button></div>';
+  var cat = C.menu[curCat];
+  if (!cat) return h;
+  h += '<div class="card">';
+  h += '<div class="block-head">' +
+  bi(AUL==='ar'?'اسم القسم':'Section name', 'menu.' + curCat + '.t', cat.t) +
+  '<span class="grow"></span>' +
+  '<button class="iconbtn" data-act="cat-up" data-i="' + curCat + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+  '<button class="iconbtn" data-act="cat-down" data-i="' + curCat + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+  '<button class="iconbtn danger" data-act="cat-del" data-i="' + curCat + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+  '</div>';
+  (cat.groups || []).forEach(function(g, gi){
+    var multi = (cat.groups || []).length > 1 || (g.t && (g.t[0] || g.t[1]));
+    if (multi){
+      h += '<div class="block-head" style="margin-top:14px">' +
+      bi(AUL==='ar'?'اسم المجموعة':'Group name', 'menu.' + curCat + '.groups.' + gi + '.t', g.t || ['','']) +
+      '<button class="iconbtn" data-act="grp-up" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+      '<button class="iconbtn" data-act="grp-down" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+      '</div>';
+    }
+    (g.items || []).forEach(function(it, ii){
+      var p = 'menu.' + curCat + '.groups.' + gi + '.items.' + ii;
+      var mid = 'more-' + curCat + '-' + gi + '-' + ii;
+      var pv = imgPreviewSrc(it.img);
+      h += '<div class="itemrow">' +
+      '<button type="button" class="thumb" data-act="more" data-more="' + mid + '" title="' + esc(t('image')) + '">' + (pv ? '<img src="' + esc(pv) + '" alt="" referrerpolicy="no-referrer">' : '<svg class="i"><use href="#i-img"/></svg>') + '</button>' +
+      '<input class="nm" data-path="' + p + '.n.0" value="' + esc(it.n ? it.n[0] : '') + '" placeholder="' + (AUL==='ar'?'اسم الصنف':'Item name') + '">' +
+      '<span class="enwrap"><input class="nm" data-path="' + p + '.n.1" value="' + esc(it.n ? it.n[1] : '') + '" placeholder="English"></span>' +
+      '<input class="pr" type="number" step="any" inputmode="decimal" data-path="' + p + '.v.0.2" value="' + esc((it.v && it.v[0]) ? it.v[0][2] : '') + '" placeholder="' + esc(t('price')) + '">' +
+      '<button class="iconbtn" data-act="item-up" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+      '<button class="iconbtn" data-act="item-down" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+      '<button class="iconbtn danger" data-act="item-del" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+      '<button class="iconbtn" data-act="more" data-more="' + mid + '" title="' + (AUL==='ar'?'التفاصيل':'Details') + '"><svg class="i"><use href="#i-chev"/></svg></button>' +
+      '</div>';
+      h += '<div class="itemmore" id="' + mid + '">' +
+      bi(t('desc'), p + '.d', it.d || ['','']) +
+      imgPick(t('image'), p + '.img', it.img);
+      if ((it.v || []).length > 1){
+        h += '<div style="font-size:.85rem;color:var(--muted);font-weight:600;margin:8px 0 4px">' + (AUL==='ar'?'الخيارات':'Options') + ':</div>';
+        (it.v || []).forEach(function(v, vi){
+          h += '<div class="varrow">' +
+          '<span class="arw"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '"></span>' +
+          '<span class="enwrap"><input class="mini" style="width:100%" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '"></span>' +
+          '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '">' +
+          '<button class="iconbtn danger" data-act="var-del" data-ci="' + curCat + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+          '</div>';
+        });
+      }
+      h += '<button class="addbtn" data-act="var-add" data-ci="' + curCat + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
+      '</div>';
+    });
+    h += '<button class="addbtn" data-act="item-add" data-ci="' + curCat + '" data-i="' + gi + '">' + t('addItem') + '</button>';
+  });
+  h += '<button class="addbtn" data-act="grp-add" data-i="' + curCat + '">' + t('addGrp') + '</button>';
+  h += '</div>';
   return h;
 }
 
 var TEXT_GROUPS = [
-  {ar:'شريط التنقل والأزرار', en:'Navigation & buttons', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title' || k==='skip'}},
+  {ar:'عام وشريط التنقل', en:'General & navigation', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title' || k==='skip' || k==='title'}},
   {ar:'الواجهة الرئيسية', en:'Hero', test:function(k){return k.indexOf('hero.')===0 || k.indexOf('fact')===0 || k.indexOf('c.')===0 || k==='band'}},
   {ar:'قسم القائمة والعروض', en:'Menu & offers', test:function(k){return k.indexOf('m.')===0 || k.indexOf('offers.')===0 || k==='ann.more'}},
   {ar:'الأطباق المميزة', en:'Featured dishes', test:function(k){return k.indexOf('dishes.')===0 || k.indexOf('d1.')===0 || k.indexOf('d2.')===0 || k.indexOf('d3.')===0 || k==='dish.go'}},
@@ -635,7 +664,7 @@ var TEXT_GROUPS = [
   {ar:'الفروع وممشى الضباب', en:'Branches & fog walk', test:function(k){return k.indexOf('p.')===0 || k.indexOf('b1.')===0 || k.indexOf('b2.')===0 || k.indexOf('walk.')===0}},
   {ar:'خطوات الطلب', en:'Order steps', test:function(k){return k.indexOf('order.')===0 || k.indexOf('s1.')===0 || k.indexOf('s2.')===0 || k.indexOf('s3.')===0}},
   {ar:'التقييم والختام', en:'Review & final', test:function(k){return k.indexOf('review.')===0 || k.indexOf('final.')===0}},
-  {ar:'التذييل', en:'Footer', test:function(k){return k.indexOf('f.')===0 || k==='title'}},
+  {ar:'التذييل', en:'Footer', test:function(k){return k.indexOf('f.')===0}},
   {ar:'نافذة جولت', en:'JOLT popup', test:function(k){return k.indexOf('jolt.')===0}},
   {ar:'السلة والطلب', en:'Cart & ordering', dyn:true},
   {ar:'أخرى', en:'Other', test:function(k){return true}}
@@ -740,7 +769,7 @@ function getActList(el){
 function act(a, el){
   var i = +el.dataset.i, ci = el.dataset.ci != null ? +el.dataset.ci : null, gi = el.dataset.gi != null ? +el.dataset.gi : null, ii = el.dataset.ii != null ? +el.dataset.ii : null;
   switch (a){
-    case 'cat-add': C.menu.push({id:'c' + Date.now().toString(36), t:['قسم جديد','New section'], groups:[{t:['',''], items:[]}]}); break;
+    case 'cat-add': C.menu.push({id:'c' + Date.now().toString(36), t:['قسم جديد','New section'], groups:[{t:['',''], items:[]}]}); curCat = C.menu.length - 1; break;
     case 'cat-del': if (C.menu.length < 2 || confirm(t('confirmDel'))) C.menu.splice(i, 1); break;
     case 'cat-up': arrOp(C.menu, i, -1); break;
     case 'cat-down': arrOp(C.menu, i, 1); break;
@@ -833,6 +862,10 @@ function uploadImage(file, onDone){
 document.addEventListener('click', function(e){
   var s = e.target.closest('[data-sec]');
   if (s){ curSec = s.dataset.sec; renderSide(); renderMain(); return; }
+  var cc = e.target.closest('[data-catchip]');
+  if (cc){ curCat = +cc.dataset.catchip; renderMain(); return; }
+  var more = e.target.closest('[data-act="more"]');
+  if (more){ var panel = document.getElementById(more.dataset.more); if (panel) panel.classList.toggle('open'); return; }
   var a = e.target.closest('[data-act]');
   if (a){ act(a.dataset.act, a); return; }
   var sum = e.target.closest('summary');
