@@ -28,7 +28,7 @@ input,textarea{font:inherit;color:inherit}
 /* English fields hidden unless enabled */
 .enwrap{display:none}
 body.show-en .enwrap{display:contents}
-body.show-en .bi{grid-template-columns:auto 1fr auto 1fr}
+body.show-en .bi{grid-template-columns:1fr 1fr}
 body.show-en .trow{grid-template-columns:230px 1fr 1fr}
 
 /* settings groups (collapsible) */
@@ -86,7 +86,7 @@ details.sgroup .sbody{padding:2px 18px 16px}
 .fld textarea{resize:vertical;min-height:60px}
 .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--acc)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.bi{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}
+.bi{display:grid;grid-template-columns:1fr;gap:8px;align-items:center}
 .bi b{font-size:.8rem;color:var(--muted);font-weight:600}
 .chk{display:inline-flex;gap:8px;align-items:center;font-weight:600;font-size:1rem;white-space:nowrap;cursor:pointer;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.45em 1.1em}
 .chk input{accent-color:var(--acc);width:18px;height:18px}
@@ -179,7 +179,8 @@ details.tgroup .tbody{padding:0 18px 12px}
   .trow{grid-template-columns:1fr;gap:4px}
   body.show-en .trow{grid-template-columns:1fr}
   body.show-en .enwrap{display:block}
-  body.show-en .bi .enwrap{grid-column:2}
+  body.show-en .bi{grid-template-columns:1fr}
+  body.show-en .varrow .enwrap input{grid-column:1;grid-row:2}
 }
 @media (max-width:640px){
   .topbar .t{display:none}
@@ -195,6 +196,9 @@ details.tgroup .tbody{padding:0 18px 12px}
   details.sgroup .sbody{padding:2px 14px 14px}
   details.tgroup .tbody{padding:0 14px 12px}
   #toast{bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-width:420px){
+  .topbar a[href="/"]{display:none}
 }
 </style>
 </head>
@@ -514,7 +518,7 @@ var LBL = {
   'why.sub':['قسم لماذا سوشي جيم: النص','Why section: text'],
   'why.title':['قسم لماذا سوشي جيم: العنوان','Why section: title']
 };
-function lbl(k){ return LBL[k] ? LBL[k][0] : k.replace(/^.*[.]/, '').replace(/[._]/g, ' ') }
+function lbl(k){ return LBL[k] ? LBL[k][AUL === 'ar' ? 0 : 1] : k.replace(/^.*[.]/, '').replace(/[._]/g, ' ') }
 
 /* ---------- helpers ---------- */
 function getPath(o, path){ return path.split('.').reduce(function(x,k){return x==null?x:x[k]}, o) }
@@ -554,7 +558,7 @@ function clearDirty(){
 }
 function fmtDate(ms){
   if (!ms) return t('never');
-  try { return new Date(ms).toLocaleString('ar-SA') } catch(e){ return String(ms) }
+  try { return new Date(ms).toLocaleString(AUL === 'ar' ? 'ar-SA' : 'en-GB') } catch(e){ return String(ms) }
 }
 function imgPreviewSrc(v){
   if (!v) return '';
@@ -567,7 +571,7 @@ function fld(label, path, val, hint, type){
   var h = '<div class="fld"><label>' + esc(label) + '</label>';
   if (type === 'num') h += '<input data-path="' + path + '" type="number" step="any" inputmode="decimal" value="' + esc(val) + '">';
   else if (type === 'password') h += '<input data-path="' + path + '" type="password" autocomplete="new-password" value="">';
-  else if (type === 'ltr') h += '<input data-path="' + path + '" dir="ltr" style="text-align:end" value="' + esc(val) + '">';
+  else if (type === 'ltr') h += '<input data-path="' + path + '" dir="ltr" value="' + esc(val) + '">';
   else h += '<input data-path="' + path + '" value="' + esc(val) + '">';
   if (hint) h += '<span class="hint">' + (/^https?:/.test(hint) ? '<bdi>' + esc(hint) + '</bdi>' : esc(hint)) + '</span>';
   return h + '</div>';
@@ -587,7 +591,7 @@ function imgPick(label, path, val){
   return '<div class="fld"><label>' + esc(label) + '</label>' +
   '<div class="imgpick">' +
   '<div class="prev">' + (pv ? '<img src="' + esc(pv) + '" alt="" referrerpolicy="no-referrer">' : '<svg class="i"><use href="#i-img"/></svg>') + '</div>' +
-  '<div class="ipt"><input data-path="' + path + '" dir="ltr" style="text-align:end" value="' + esc(val || '') + '" placeholder="' + esc(t('imgHint')) + '"></div>' +
+  '<div class="ipt"><input data-path="' + path + '" dir="ltr" value="' + esc(val || '') + '" placeholder="' + esc(t('imgHint')) + '"></div>' +
   '<label class="btn sm up">' + esc(t('uploadBtn')) + '<input type="file" accept="image/*" class="hidden" data-upload></label>' +
   '</div>' +
   '<span class="hint">' + esc(t('wherePics')) + '</span>' +
@@ -769,17 +773,20 @@ function secTexts(){
     if (!gk.length) return;
     h += '<details class="tgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL === 'ar' ? g.ar : g.en) + '</summary><div class="tbody">';
     gk.forEach(function(k){
-      var ar = getPath(C, 'strings.ar.' + k), en = getPath(C, 'strings.en.' + k);
-      h += trow('strings.ar.' + k + '|' + 'strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en, k);
+      var ar = C.strings && C.strings.ar ? C.strings.ar[k] : null;
+      var en = C.strings && C.strings.en ? C.strings.en[k] : null;
+      h += trow('strings.ar|strings.en', ar == null ? '' : ar, en == null ? '' : en, k, true);
     });
     h += '</div></details>';
   });
   return h;
 }
-function trow(paths, vAr, vEn, key){
+function trow(paths, vAr, vEn, key, flat){
   var p = typeof paths === 'string' && paths.indexOf('|') > -1 ? paths.split('|') : [paths, paths];
   var label = key ? esc(lbl(key)) : '';
-  return '<div class="trow" data-search="' + esc(label + ' ' + (vAr||'') + ' ' + (vEn||'')) + '"><span class="k">' + label + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '"><span class="enwrap"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></span></div>';
+  var arAttr = flat ? 'data-spath="ar|' + key + '"' : 'data-path="' + p[0] + '"';
+  var enAttr = flat ? 'data-spath="en|' + key + '"' : 'data-path="' + p[1] + '"';
+  return '<div class="trow" data-search="' + esc(label + ' ' + (vAr||'') + ' ' + (vEn||'')) + '"><span class="k">' + label + '</span><input ' + arAttr + ' value="' + esc(vAr) + '"><span class="enwrap"><input ' + enAttr + ' value="' + esc(vEn) + '" placeholder="English"></span></div>';
 }
 
 function chipEditor(label, listPath, list, addLabel, withUpload){
@@ -794,39 +801,41 @@ function chipEditor(label, listPath, list, addLabel, withUpload){
   return h;
 }
 
+var sgOpen = [true, false, false, false, false];
+function sgroup(i, title, body){
+  return '<details class="sgroup" data-sg="' + i + '"' + (sgOpen[i] ? ' open' : '') + '><summary><svg class="i"><use href="#i-chev"/></svg>' + title + '</summary><div class="sbody">' + body + '</div></details>';
+}
 function secSettings(){
   var cfg = C.config;
   var h = '<h2 class="sec-title">' + t('settings') + '</h2>';
-  h += '<details class="sgroup" open><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL==='ar'?'التواصل والروابط':'Contact & links') + '</summary><div class="sbody">' +
+  h += sgroup(0, (AUL==='ar'?'التواصل والروابط':'Contact & links'),
   fld(t('wa'), 'config.wa', cfg.wa, '', 'ltr') +
   fld(t('phone'), 'config.phone', cfg.phone, '', 'ltr') +
   fld(t('hsLink'), 'config.hungerStation', cfg.hungerStation, 'https://…', 'ltr') +
   fld(t('ig'), 'config.instagram', cfg.instagram, 'https://…', 'ltr') +
   fld(t('snap'), 'config.snapchat', cfg.snapchat, 'https://…', 'ltr') +
-  fld(t('coords'), 'config.mapCoords', cfg.mapCoords, t('coordsHint'), 'ltr') +
-  '</div></details>';
-  h += '<details class="sgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + t('branches') + '</summary><div class="sbody">';
+  fld(t('coords'), 'config.mapCoords', cfg.mapCoords, t('coordsHint'), 'ltr'));
+  var bh = '';
   (cfg.branches || []).forEach(function(b, i){
-    h += '<div class="block sub">' +
+    bh += '<div class="block sub">' +
     bi(t('title'), 'config.branches.' + i + '.n', b.n) +
     bi(t('addr'), 'config.branches.' + i + '.a', b.a) +
     '<div class="block-head"><span class="grow"></span>' +
     '<button class="iconbtn danger" data-act="br-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div></div>';
   });
-  h += '<button class="addbtn" data-act="br-add">' + t('branchT') + '</button></div></details>';
-  h += '<details class="sgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL==='ar'?'الشريط المتحرك ومعرض الصور':'Strip & gallery') + '</summary><div class="sbody">' +
+  bh += '<button class="addbtn" data-act="br-add">' + t('branchT') + '</button>';
+  h += sgroup(1, t('branches'), bh);
+  h += sgroup(2, (AUL==='ar'?'الشريط المتحرك ومعرض الصور':'Strip & gallery'),
   chipEditor(t('marquee'), 'config.marquee', cfg.marquee, t('addWord'), false) +
-  chipEditor(t('rail'), 'config.rail', cfg.rail, t('addPic'), true) +
-  '</div></details>';
-  h += '<details class="sgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL==='ar'?'نافذة جولت بولينق':'JOLT Bowling popup') + '</summary><div class="sbody">' +
-  chk(AUL==='ar'?'إظهار النافذة عند دخول الموقع':'Show popup on site entry', 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
-  '</div></details>';
-  h += '<details class="sgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + t('securityTitle') + '</summary><div class="sbody">' +
+  chipEditor(t('rail'), 'config.rail', cfg.rail, t('addPic'), true));
+  h += sgroup(3, (AUL==='ar'?'نافذة جولت بولينق':'JOLT Bowling popup'),
+  chk(AUL==='ar'?'إظهار النافذة عند دخول الموقع':'Show popup on site entry', 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)));
+  h += sgroup(4, t('securityTitle'),
   fld(t('currentPw'), 'pwCur', '', '', 'password') +
   fld(t('newPw'), 'pwNew', '', '', 'password') +
   fld(t('confirmPw'), 'pwNew2', '', '', 'password') +
   '<div class="err" id="pwErr"></div>' +
-  '<button class="btn" data-act="pw-change">' + t('changePw') + '</button></div></details>';
+  '<button class="btn" data-act="pw-change">' + t('changePw') + '</button>');
   h += '<div class="card block-head"><button class="btn ghost" data-act="logout">' + t('logout') + '</button>' +
   '<span class="grow"></span>' +
   '<button class="btn ghost" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>';
@@ -951,6 +960,11 @@ document.addEventListener('click', function(e){
   if (sum) return; // let details toggle naturally
 });
 document.addEventListener('input', function(e){
+  if (e.target.dataset && e.target.dataset.spath){
+    var sp = e.target.dataset.spath.split('|');
+    if (C && C.strings && C.strings[sp[0]]){ C.strings[sp[0]][sp[1]] = e.target.value; markDirty(); }
+    return;
+  }
   var p = e.target.dataset ? e.target.dataset.path : null;
   if (e.target.id === 'tsearch'){
     var q = e.target.value.trim();
@@ -1042,9 +1056,30 @@ function save(){
 }
 $('#saveBtn').addEventListener('click', save);
 
+document.addEventListener('toggle', function(e){
+  var d = e.target;
+  if (d && d.classList && d.classList.contains('sgroup') && d.dataset.sg != null) sgOpen[+d.dataset.sg] = d.open;
+}, true);
+
+/* ---------- admin language ---------- */
+function setLang(l){
+  AUL = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  document.title = t('loginTitle');
+  document.body.classList.toggle('show-en', l === 'en');
+  var eb = $('#enBtn');
+  eb.textContent = l === 'ar' ? 'EN' : 'عربي';
+  eb.classList.toggle('en-on', l === 'en');
+  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t) });
+  $('#loginPw').placeholder = l === 'ar' ? 'كلمة المرور' : 'Password';
+  try{ localStorage.setItem('sjAdminLang', l) }catch(e){}
+  renderSide();
+  if (!$('#app').classList.contains('hidden')) renderMain();
+}
+
 $('#enBtn').addEventListener('click', function(){
-  document.body.classList.toggle('show-en');
-  $('#enBtn').classList.toggle('en-on');
+  setLang(AUL === 'ar' ? 'en' : 'ar');
 });
 
 /* ---------- login & boot ---------- */
@@ -1084,6 +1119,9 @@ $('#loginForm').addEventListener('submit', function(e){
 
 fetch('content.json').then(function(r){ return r.json() }).then(function(d){
   DEFAULTS = d;
+  var savedLang = null;
+  try{ savedLang = localStorage.getItem('sjAdminLang') }catch(e){}
+  if (savedLang === 'en') setLang('en');
   fetch('api/session').then(function(r){
     if (r.ok) loadContent();
     else showLogin();
