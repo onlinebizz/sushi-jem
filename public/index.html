@@ -390,6 +390,16 @@ main,header,footer{position:relative;z-index:1}
 @media (max-width:560px){.t3,.t4{grid-column:span 2}.amen-grid{grid-template-columns:1fr}.hero .cta .btn{flex:1 1 100%}.fl{display:none}}
 .hero-logo{width:min(460px,80%)}.walk .btn{background:#fff;color:#8A1120}.final .btn{box-shadow:none}
 
+/* announcement bar */
+.annbar{background:var(--acc);color:var(--on-acc);font-weight:600;font-size:.97rem}
+.annbar .wrap{display:flex;align-items:center;gap:10px;justify-content:center;padding:9px 0;flex-wrap:wrap;text-align:center}
+.annbar a{color:inherit;text-decoration:underline}
+.annbar .x{border:0;background:rgba(255,255,255,.22);color:inherit;width:1.9em;height:1.9em;border-radius:50%;display:grid;place-items:center;padding:0;flex:none}
+.annbar .x:hover{background:rgba(255,255,255,.35)}
+/* offers */
+.old{text-decoration:line-through;color:var(--muted);font-family:var(--f-display);font-size:1.2rem;opacity:.7}
+#offers .badge{margin-bottom:8px}
+
 /* opening JOLT popup */
 .jpop{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:clamp(14px,3vw,36px);overflow:auto;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s ease}
 .jpop.on{opacity:1;visibility:visible}
@@ -465,6 +475,8 @@ html.jpop-open{overflow:hidden}
 <symbol id="riyal" viewBox="0 0 1124.14 1256.39"><path fill="currentColor" d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z"/><path fill="currentColor" d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z"/></symbol>
 </svg>
 
+<div class="annbar" id="annBar" hidden><div class="wrap"><span id="annText"></span><a id="annLink" hidden></a><button class="x" id="annClose" type="button" aria-label="إغلاق التنبيه"><svg class="i"><use href="#i-x"/></svg></button></div></div>
+
 <header class="nav" id="top">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Sushi Jem"><img src="images/logo-pagoda-transparent.png" alt="Sushi Jem"></a>
@@ -505,7 +517,7 @@ html.jpop-open{overflow:hidden}
     </div>
   </div>
 </section>
-<div class="marq" aria-hidden="true"><div><span>SUSHI</span><i>✦</i><span>寿司</span><i>✦</i><span>سوشي</span><i>✦</i><span>RAMEN</span><i>✦</i><span>رامن</span><i>✦</i><span>NOODLES</span><i>✦</i><span>أونيغيري</span><i>✦</i><span>POKE</span><i>✦</i><span>كيك السوشي</span><i>✦</i><span>SUSHI</span><i>✦</i><span>寿司</span><i>✦</i><span>سوشي</span><i>✦</i><span>RAMEN</span><i>✦</i><span>رامن</span><i>✦</i><span>NOODLES</span><i>✦</i><span>أونيغيري</span><i>✦</i><span>POKE</span><i>✦</i><span>كيك السوشي</span><i>✦</i></div></div>
+<div class="marq" aria-hidden="true"><div id="marqTrack"><span>SUSHI</span><i>✦</i><span>寿司</span><i>✦</i><span>سوشي</span><i>✦</i><span>RAMEN</span><i>✦</i><span>رامن</span><i>✦</i><span>NOODLES</span><i>✦</i><span>أونيغيري</span><i>✦</i><span>POKE</span><i>✦</i><span>كيك السوشي</span><i>✦</i><span>SUSHI</span><i>✦</i><span>寿司</span><i>✦</i><span>سوشي</span><i>✦</i><span>RAMEN</span><i>✦</i><span>رامن</span><i>✦</i><span>NOODLES</span><i>✦</i><span>أونيغيري</span><i>✦</i><span>POKE</span><i>✦</i><span>كيك السوشي</span><i>✦</i></div></div>
 <section class="warn gold" aria-label="Warning"><div class="wrap"><p><svg class="i"><use href="#i-warn"/></svg><span data-i18n="warn">تحذير: قد تتحول من مجرّب إلى عميل دائم</span></p></div></section>
 
 <section class="sec menu" id="menu">
@@ -517,6 +529,13 @@ html.jpop-open{overflow:hidden}
     <div class="tabs" id="tabs" role="tablist"></div>
     <div id="menuBody"></div>
     <p class="note" data-i18n="m.note">الأسعار بالريال السعودي. السعرات تقريبية لكل قطعة.</p>
+  </div>
+</section>
+
+<section class="sec" id="offers" hidden>
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="offers.t">عروض جيم</h2></div>
+    <div class="grid" id="offersGrid"></div>
   </div>
 </section>
 
@@ -575,7 +594,7 @@ html.jpop-open{overflow:hidden}
         </div>
       </div>
       <div>
-        <div class="map"><iframe title="Sushi Jem, Al-Namas" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=19.1089791,42.1296272&amp;z=16&amp;output=embed"></iframe></div>
+        <div class="map"><iframe id="mapFrame" title="Sushi Jem, Al-Namas" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=19.1089791,42.1296272&amp;z=16&amp;output=embed"></iframe></div>
         <img class="sign" src="images/sign.jpg" alt="Sushi Jem" loading="lazy">
       </div>
       <img class="wall" src="images/wall.jpg" alt="寿司吉姆" loading="lazy">
@@ -607,7 +626,7 @@ html.jpop-open{overflow:hidden}
   </div>
 </section>
 
-<section class="sec" style="padding-top:0"><div class="wrap"><div class="review rv"><div><h2 data-i18n="review.title">جرّبت جيم؟ شاركنا رأيك</h2><p data-i18n="review.p">تقييمك على خرائط قوقل يدلّ كل محب للسوشي في النماص إلى طاولتنا.</p></div><a class="btn" href="https://www.google.com/maps?q=19.1089791,42.1296272" target="_blank" rel="noopener"><svg class="i"><use href="#i-chat"/></svg><span data-i18n="review.cta">قيّمنا على خرائط قوقل</span></a></div></div></section>
+<section class="sec" style="padding-top:0"><div class="wrap"><div class="review rv"><div><h2 data-i18n="review.title">جرّبت جيم؟ شاركنا رأيك</h2><p data-i18n="review.p">تقييمك على خرائط قوقل يدلّ كل محب للسوشي في النماص إلى طاولتنا.</p></div><a class="btn" id="reviewLink" href="https://www.google.com/maps?q=19.1089791,42.1296272" target="_blank" rel="noopener"><svg class="i"><use href="#i-chat"/></svg><span data-i18n="review.cta">قيّمنا على خرائط قوقل</span></a></div></div></section>
 
 <section class="final"><div class="wrap"><h2 data-i18n="final.title">جاهز تصير عميل دائم؟</h2><p data-i18n="final.p">اطلب الآن، وخلّ أول تجربة تكون بداية عادة جديدة.</p><div class="actions"><a class="btn" style="background:var(--on-acc);color:var(--acc)" href="#menu"><svg class="i"><use href="#i-menu"/></svg><span data-i18n="hero.order">اطلب الآن</span></a><a class="btn" style="background:var(--text);color:var(--bg)" href="tel:+966553694398"><svg class="i"><use href="#i-phone"/></svg><span data-i18n="final.call">اتصل الآن</span></a></div></div></section>
 </main>
@@ -617,10 +636,10 @@ html.jpop-open{overflow:hidden}
     <a class="brand" href="#top" aria-label="Sushi Jem"><img src="images/logo-pagoda-transparent.png" alt="Sushi Jem"></a>
     <p><span data-i18n="f.tag">تجربة سوشي تجمع الفن والجودة والنكهات المميزة.</span></p>
     <div class="links">
-      <a href="tel:+966553694398"><svg class="i"><use href="#i-phone"/></svg> 0553694398</a>
-      <a href="https://www.instagram.com/sushi.jem/" target="_blank" rel="noopener"><svg class="i"><use href="#i-ig"/></svg> @sushi.jem</a>
-      <a href="https://www.snapchat.com/@sushijem" target="_blank" rel="noopener"><svg class="i"><use href="#i-snap"/></svg> @sushijem</a>
-      <a href="https://www.google.com/maps?q=19.1089791,42.1296272" target="_blank" rel="noopener"><svg class="i"><use href="#i-pin"/></svg><span data-i18n="f.map">الموقع على الخريطة</span></a>
+      <a id="telLink" href="tel:+966553694398"><svg class="i"><use href="#i-phone"/></svg> <span id="footPhone">0553694398</span></a>
+      <a id="igLink" href="https://www.instagram.com/sushi.jem/" target="_blank" rel="noopener"><svg class="i"><use href="#i-ig"/></svg> @sushi.jem</a>
+      <a id="snapLink" href="https://www.snapchat.com/@sushijem" target="blank" rel="noopener"><svg class="i"><use href="#i-snap"/></svg> @sushijem</a>
+      <a id="mapLink" href="https://www.google.com/maps?q=19.1089791,42.1296272" target="_blank" rel="noopener"><svg class="i"><use href="#i-pin"/></svg><span data-i18n="f.map">الموقع على الخريطة</span></a>
     </div>
     <small data-i18n="f.rights">سوشي جيم، النماص. جميع الحقوق محفوظة.</small>
   </div>
@@ -761,8 +780,8 @@ var IMG={
  katsu:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=1600&q=80&auto=format&fit=crop', jdrink:'https://images.unsplash.com/photo-1604259596747-2377448d916d?w=1600&q=80&auto=format&fit=crop',
  bt:'https://images.unsplash.com/photo-1624896276654-2eb0c7e8247c?w=1600&q=80&auto=format&fit=crop', soda:'https://images.unsplash.com/photo-1567103472667-6898f3a79cf2?w=1600&q=80&auto=format&fit=crop'
 };
-Object.keys(byIdInit()).forEach(function(k){var it=byIdInit()[k];if(IMG[k]){it.chain=['images/menu/'+k+'.jpg',IMG[k]].concat(it.img?[src(it.img)]:[]);it.img=it.chain[0]}});
-function byIdInit(){var o={};MENU.forEach(function(c){c.groups.forEach(function(g){g.items.forEach(function(it){o[it.id]=it})})});return o}
+function byIdInit(){var o={};(MENU||[]).forEach(function(c){c.groups.forEach(function(g){g.items.forEach(function(it){o[it.id]=it})})});return o}
+function sjBuildChains(){Object.keys(byIdInit()).forEach(function(k){var it=byIdInit()[k];if(IMG[k]){it.chain=['images/menu/'+k+'.jpg',IMG[k]].concat(it.img?[src(it.img)]:[]);it.img=it.chain[0]}})}
 function src(x){return /^(http|images\/)/.test(x)?x:'images/'+x+'.jpg'}
 /* ---------- strings ---------- */
 var EN = Object.assign({"skip": "Skip to content", "nav.dishes": "Dishes", "nav.menu": "Order now", "nav.services": "Services", "nav.branches": "Locations", "nav.order": "How to order", "nav.cta": "Order now", "hero.h1a": "One bite to try.", "hero.h1b": "Then you're one of us.", "hero.sub": "Sushi rolls with creamy sauce and a crispy finish, spicy noodles that wake the senses, and a bento box that gathers East Asian flavors on one table. Straight from the heart of Al-Namas.", "hero.cta1": "Order now", "hero.cta2": "Explore the dishes", "fact1": "Two branches in Al-Namas", "fact2": "East Asian flavors", "fact3": "Delivery to your door", "warn": "Warning: a first-timer may turn into a regular", "svc.title": "Your order, the way you like it", "svc.sub": "Takeaway, delivery or straight from your car. You choose, we prepare.", "svc.take.t": "Takeaway", "svc.take.p": "Order ahead and pick it up ready.", "svc.del.t": "Delivery", "svc.del.p": "Your order reaches your door in Al-Namas.", "svc.nc.t": "No-contact delivery", "svc.nc.p": "Your order arrives with no direct contact, for your comfort and safety.", "svc.drive.t": "Drive-through", "svc.drive.p": "Order from your car and collect your meal.", "amen.title": "Details that make your visit easy", "amen.women": "Women-owned", "amen.time.l": "Popular for", "amen.time.v": "Lunch and dinner.", "amen.plates.l": "Serving", "amen.plates.v": "Small plates that widen your tasting.", "amen.kids.l": "Families", "amen.kids.v": "Good for kids.", "amen.pay.l": "Payment", "amen.pay.v": "Credit and debit cards, plus NFC mobile payments.", "amen.park.l": "Parking", "amen.park.v": "A free parking lot and free street parking.", "amen.tour.l": "Guests", "amen.tour.v": "A favorite stop for visitors to Al-Namas.", "why.title": "Four reasons you'll order again", "why.sub": "A sushi experience that combines art, quality and distinctive flavors. Every detail at Jem is made to be remembered.", "t1.t": "A glossy sauce on every roll", "t1.p": "Our team draws the creamy sauce by hand over each roll, then adds crispy flakes that give every bite two textures at once.", "t2.t": "Heat that pulls you in", "t2.p": "Jem's spicy noodles come with colorful vegetables and a rich sauce, made for anyone who loves heat and depth.", "t3.t": "A spread for the whole group", "t3.p": "A three-tier bento box that puts sushi and Japanese bites on one table.", "t4.t": "Tidy delivery", "t4.p": "Order through our app or WhatsApp and it arrives ready for the table.", "dishes.title": "Dishes that speak for themselves", "d1.t": "Jem creamy rolls", "d1.p": "Rice, nori and a rich filling, topped with a smooth white sauce and golden crispy flakes.", "d2.t": "Jem spicy noodles", "d2.p": "Noodles with colorful vegetables and a flavor-packed sauce, served in a sleek black bowl.", "d3.t": "Jem bento", "d3.p": "Three tiers of sushi and Japanese bites, arranged for a table you share.", "dish.order": "Order this dish", "menu.title": "Our menu", "menu.p": "Pick from our menu, then order on WhatsApp or through the app.", "menu.cta.t": "The full menu", "menu.cta.p": "Every dish and price in the restaurant's own menu.", "menu.btn": "Open the full menu", "place.title": "A golden glow over the Al-Namas night", "place.p": "A sign glowing above a pitched roof, Chinese characters on a stone wall, and a quiet place where you can settle in.", "place.cap": "Our name in Chinese characters", "walk.title": "Here the fog wraps the mountains and the nori wraps the rice.", "walk.p": "Our Fog Walk branch brings Al-Namas' cool air and Asia's spicy flavors to one table. Come after sunset and let the atmosphere finish the evening.", "walk.cta": "See the location", "gallery.title": "Moments at Jem", "jolt.title": "Sushi Jem × JOLT BOWLING", "jolt.p": "Strikes under purple neon lights and a sushi spread to finish the night. Gather your group and book your spot.", "jolt.cta": "Book your spot", "branches.title": "Two branches in Al-Namas, and a table waiting for you", "b1.t": "Main branch", "b1.p": "Al-Namas, Main Street, opposite Dunkin'", "b2.t": "Fog Walk branch", "b2.p": "Al-Namas, Fog Walk", "b.call": "Call us", "b.map": "Open the map", "order.title": "Three steps and the feast begins", "s1.n": "1", "s1.t": "Pick your dishes", "s1.p": "Browse the menu in the app or ask for it on WhatsApp.", "s2.n": "2", "s2.t": "Confirm your order", "s2.p": "Our team arranges every detail to your taste.", "s3.n": "3", "s3.t": "Receive and enjoy", "s3.p": "From the branch or at your door in Al-Namas.", "review.title": "Tried Jem? Share your review", "review.p": "Your Google Maps review guides every sushi lover in Al-Namas to our table.", "review.cta": "Review us on Google Maps", "final.title": "Ready to become a regular?", "final.p": "Order now and let your first try start a new habit.", "final.wa": "Place order", "final.call": "Call now", "foot.tag": "Sushi Jem, East Asian food in Al-Namas", "foot.ig": "Instagram", "foot.snap": "Snapchat", "foot.rights": "© 2026 Sushi Jem. All rights reserved.", "bar.order": "Place order", "bar.call": "Call", "wa.msg": "Hello, I'd like to place an order at Sushi Jem", "wa.dish": "Hello, I'd like to order: {dish}", "title": "Sushi Jem | East Asian Food in Al-Namas", "desc": "Sushi Jem in Al-Namas: sushi rolls with creamy sauces, spicy noodles and bento boxes. Takeaway, delivery and drive-through, with two branches in Al-Namas."}, {
@@ -777,7 +796,7 @@ var EN = Object.assign({"skip": "Skip to content", "nav.dishes": "Dishes", "nav.
  'p.t':'Our branches','b1.t':'Main branch','b1.p':'Al-Namas, Main Street, opposite Dunkin\'.','b2.t':'Al-Dabab Walkway branch','b2.p':'The fog and the mountains of Al-Namas in the evening.',
  'a.women':'Women-owned','a.cosy':'Quiet and cosy','a.kids':'Kid friendly','a.park':'Free parking',
  'f.tag':'A sushi experience that combines art, quality and distinctive flavors.','f.map':'Find us on the map','f.rights':'Sushi Jem, Al-Namas. All rights reserved.'
-}, {"nav.svc": "Services", "nav.dishes": "Dishes", "hero.sub2": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.", "fact1": "Two branches in Al-Namas", "t1.t": "Sauce that shines on every roll", "t1.p": "Creamy sauce on every roll, plus crunchy flakes that give each bite two textures.", "t2.t": "A menu for every mood", "t2.p": "Rolls, sushi cake, poke bowl, ramen, noodles and onigiri in one place.", "t3.t": "A spread for the whole group", "t3.p": "The Jem Signature Box with twenty mixed pieces, and a sushi cake that serves up to seven.", "t4.t": "Easy ordering", "t4.p": "Add to the cart and send on WhatsApp, or order delivery on HungerStation.", "d1.t": "Jem crispy rolls", "d1.p": "Crispy rolls with a spicy creamy sauce, sesame and green onion on every piece.", "d2.t": "Jem golden rice", "d2.p": "Rich, flavorful rice topped with crunch, seaweed and sauce, on a shining gold plate.", "d3.t": "Sushi cake", "d3.p": "Layers of rice and filling crowned with crunch and candles, for your occasions and gatherings.", "dish.go": "Order from the menu", "s1.n": "1", "s2.n": "2", "s3.n": "3", "s1.t": "Pick your dishes", "s1.p": "Browse the menu and add what you like to the cart.", "s2.t": "Enter your details", "s2.p": "Your name and number, then choose the branch and order type.", "s3.t": "Send and enjoy", "s3.p": "WhatsApp opens with your order ready, just press send. For delivery, order on HungerStation.", "jolt.tag": "Exclusive · JOLT Bowling", "jolt.skip": "Let's go"});
+}, {"nav.svc": "Services", "nav.dishes": "Dishes", "hero.sub2": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.", "fact1": "Two branches in Al-Namas", "t1.t": "Sauce that shines on every roll", "t1.p": "Creamy sauce on every roll, plus crunchy flakes that give each bite two textures.", "t2.t": "A menu for every mood", "t2.p": "Rolls, sushi cake, poke bowl, ramen, noodles and onigiri in one place.", "t3.t": "A spread for the whole group", "t3.p": "The Jem Signature Box with twenty mixed pieces, and a sushi cake that serves up to seven.", "t4.t": "Easy ordering", "t4.p": "Add to the cart and send on WhatsApp, or order delivery on HungerStation.", "d1.t": "Jem crispy rolls", "d1.p": "Crispy rolls with a spicy creamy sauce, sesame and green onion on every piece.", "d2.t": "Jem golden rice", "d2.p": "Rich, flavorful rice topped with crunch, seaweed and sauce, on a shining gold plate.", "d3.t": "Sushi cake", "d3.p": "Layers of rice and filling crowned with crunch and candles, for your occasions and gatherings.", "dish.go": "Order from the menu", "s1.n": "1", "s2.n": "2", "s3.n": "3", "s1.t": "Pick your dishes", "s1.p": "Browse the menu and add what you like to the cart.", "s2.t": "Enter your details", "s2.p": "Your name and number, then choose the branch and order type.", "s3.t": "Send and enjoy", "s3.p": "WhatsApp opens with your order ready, just press send. For delivery, order on HungerStation.", "jolt.tag": "Exclusive · JOLT Bowling", "jolt.skip": "Let's go", "offers.t": "Jem offers", "offers.cta": "Order now", "ann.more": "Learn more"});
 var DYN = {
  add:['أضف','Add'], view:['عرض السلة','View cart'], items:['منتجات','items'], cartT:['سلتك','Your cart'], detT:['بياناتك','Your details'],
  s1:['السلة','Cart'], s2:['البيانات والفرع','Details and branch'],
@@ -793,8 +812,23 @@ var DYN = {
 };
 var PH = {name:['مثال: سارة','e.g. Sara'], phone:['05xxxxxxxx','05xxxxxxxx'], notes:['مثال: بدون وسابي','e.g. no wasabi']};
 
+/* ---------- admin content override ---------- */
+var SJ_CONTENT = null;
+function sjApplyContent(c){
+  SJ_CONTENT = c;
+  try{
+    if (c.config) Object.assign(CONFIG, c.config);
+    if (c.menu && c.menu.length) MENU = c.menu;
+    if (c.img) Object.assign(IMG, c.img);
+    if (c.strings && c.strings.en) Object.assign(EN, c.strings.en);
+    if (c.dyn) DYN = c.dyn;
+    if (c.ph) PH = c.ph;
+  }catch(e){}
+}
+
 /* ---------- state ---------- */
-var L = 'ar', LI = 0, tab = MENU[0].id, step = 1, cart = {}, sel = {};
+function sjInit(){
+var L = 'ar', LI = 0, tab = (MENU[0]||{id:'menu'}).id, step = 1, cart = {}, sel = {};
 var AR = {}, $ = function(s,r){return (r||document).querySelector(s)}, $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 function d(k){return DYN[k][LI]}
 function cur(){return LI ? CONFIG.currency[1] : '<svg class="riyal" role="img" aria-label="ريال"><use href="#riyal"/></svg>'}
@@ -840,10 +874,11 @@ function listRow(it){
   var si = 0, key = it.id+'|0', q = cart[key]||0, v = it.v[0];
   var ctl = q ? '<span class="step"><button type="button" data-dec="'+key+'" aria-label="-"><svg class="i"><use href="#i-minus"/></svg></button><b>'+q+'</b><button type="button" data-inc="'+key+'" aria-label="+"><svg class="i"><use href="#i-plus"/></svg></button></span>'
      : '<button class="add" type="button" data-inc="'+key+'" aria-label="'+d('add')+'"><svg class="i"><use href="#i-plus"/></svg><span>'+d('add')+'</span></button>';
-  return '<div class="row">'+(it.img?'<img class="th" src="'+src(it.img)+'" data-fb="'+it.chain.slice(1).join('|')+'" referrerpolicy="no-referrer" alt="" loading="lazy">':'')+'<div class="nm">'+esc(it.n[LI])+'<small>'+esc(it.n[1-LI])+'</small>'+(it.d?'<small class="dsc">'+esc(it.d[LI])+'</small>':'')+'</div><span class="price">'+v[2]+'<small>'+cur()+'</small></span>'+ctl+'</div>';
+  return '<div class="row">'+(it.img?'<img class="th" src="'+src(it.img)+'"'+(it.chain?' data-fb="'+it.chain.slice(1).join('|')+'"':'')+' referrerpolicy="no-referrer" alt="" loading="lazy">':'')+'<div class="nm">'+esc(it.n[LI])+'<small>'+esc(it.n[1-LI])+'</small>'+(it.d?'<small class="dsc">'+esc(it.d[LI])+'</small>':'')+'</div><span class="price">'+v[2]+'<small>'+cur()+'</small></span>'+ctl+'</div>';
 }
 function renderMenu(){
-  var c = MENU.filter(function(x){return x.id===tab})[0];
+  var c = MENU.filter(function(x){return x.id===tab})[0] || MENU[0];
+  if(!c || !c.groups){ $('#menuBody').innerHTML=''; return; }
   $('#menuBody').innerHTML = c.groups.map(function(g){
     var head = g.t[0] ? '<h3>'+esc(g.t[LI])+'</h3>' : '';
     var body = g.list ? '<div class="rows">'+g.items.map(listRow).join('')+'</div>' : '<div class="grid">'+g.items.map(card).join('')+'</div>';
@@ -936,6 +971,50 @@ function submit(){
   window.open('https://wa.me/'+CONFIG.wa+'?text='+encodeURIComponent(msg()),'_blank','noopener');
 }
 
+/* ---------- offers, announcement, dynamic links ---------- */
+function st(k){var v = LI ? EN[k] : AR[k]; return v==null?'':v}
+function sjImgSrc(x){return /^(https?:|images\/|data:)/.test(x)?x:(x?'images/'+x+'.jpg':'')}
+function renderOffers(){
+  var sec = $('#offers'); if(!sec) return;
+  var list = ((SJ_CONTENT && SJ_CONTENT.offers) || []).filter(function(o){return o && o.enabled!==false && o.t && (o.t[0]||o.t[1])});
+  if(!list.length){ sec.hidden = true; return; }
+  sec.hidden = false;
+  $('#offersGrid').innerHTML = list.map(function(o){
+    var ph = o.img ? '<div class="ph"><img src="'+esc(sjImgSrc(o.img))+'" alt="'+esc(o.t[LI]||o.t[0])+'" loading="lazy" referrerpolicy="no-referrer"></div>' : '<div class="ph pat"><span>✦</span></div>';
+    var badge = (o.badge && o.badge[LI]) ? '<div style="margin-bottom:8px"><span class="badge">'+esc(o.badge[LI])+'</span></div>' : '';
+    var price = '';
+    if(o.oldPrice) price += '<span class="old">'+esc(String(o.oldPrice))+'</span>';
+    if(o.price !== '' && o.price != null) price += '<span class="price">'+esc(String(o.price))+'<small>'+cur()+'</small></span>';
+    var link = o.link ? '<a class="dish-link" href="'+esc(o.link)+'" target="_blank" rel="noopener">'+esc(st('offers.cta'))+'</a>' : '';
+    return '<article class="card">'+ph+'<div class="cb">'+badge+'<h4>'+esc(o.t[LI]||o.t[0])+'</h4>'+(o.d&&o.d[LI]?'<p class="ing">'+esc(o.d[LI])+'</p>':'')+((price||link)?'<div class="buy">'+price+link+'</div>':'')+'</div></article>';
+  }).join('');
+}
+function renderAnnouncement(){
+  var bar = $('#annBar'); if(!bar) return;
+  var a = SJ_CONTENT && SJ_CONTENT.announcement;
+  var txt = a && a.text ? (a.text[LI] || a.text[0] || a.text[1] || '') : '';
+  if(!(a && a.enabled && txt)){ bar.hidden = true; return; }
+  var seen = false;
+  try{ seen = sessionStorage.getItem('sj-ann') === txt.slice(0,40) }catch(e){}
+  if(seen){ bar.hidden = true; return; }
+  bar.hidden = false;
+  $('#annText').textContent = txt;
+  var l = $('#annLink');
+  if(a.link){ l.hidden = false; l.href = a.link; l.textContent = st('ann.more'); } else { l.hidden = true; }
+}
+function applyLinks(){
+  var cfg = CONFIG;
+  $$('a[href^="tel:"]').forEach(function(a){ a.href = 'tel:' + cfg.phoneIntl });
+  var fp = $('#footPhone'); if(fp) fp.textContent = cfg.phone;
+  var ig = $('#igLink'); if(ig && cfg.instagram) ig.href = cfg.instagram;
+  var sn = $('#snapLink'); if(sn && cfg.snapchat) sn.href = cfg.snapchat;
+  var mf = $('#mapFrame'); if(mf) mf.src = 'https://www.google.com/maps?q=' + cfg.mapCoords + '&z=16&output=embed';
+  var maps = 'https://www.google.com/maps?q=' + cfg.mapCoords;
+  var rv = $('#reviewLink'); if(rv) rv.href = maps;
+  var ml = $('#mapLink'); if(ml) ml.href = maps;
+  var mt = $('#marqTrack'); if(mt && cfg.marquee && cfg.marquee.length){ var one = cfg.marquee.map(function(w){return '<span>'+esc(w)+'</span><i>✦</i>'}).join(''); mt.innerHTML = one + one; }
+}
+
 /* ---------- language ---------- */
 function applyLang(l){
   L = l; LI = l==='en'?1:0;
@@ -943,17 +1022,20 @@ function applyLang(l){
   $$('[data-i18n]').forEach(function(el){var k=el.getAttribute('data-i18n'),v=LI?EN[k]:AR[k];if(v!=null)el.innerHTML=v});
   $('#langBtn').textContent = LI?'AR':'EN';
   document.title = LI ? 'Sushi Jem | East Asian food in Al-Namas' : AR.title;
-  renderTabs(); refresh();
+  renderTabs(); refresh(); renderOffers(); renderAnnouncement();
   try{localStorage.setItem('sj-lang',l)}catch(e){}
 }
 
 /* ---------- init ---------- */
 $$('[data-i18n]').forEach(function(el){AR[el.getAttribute('data-i18n')]=el.innerHTML});
 AR.title = document.title;
+if (SJ_CONTENT && SJ_CONTENT.strings && SJ_CONTENT.strings.ar) Object.assign(AR, SJ_CONTENT.strings.ar);
+sjBuildChains();
+applyLinks();
 $$('[data-hs]').forEach(function(a){a.href=CONFIG.hungerStation});
 CONFIG.rail.forEach(function(n){imgExists(n,function(ok){if(!ok)return;var im=new Image();im.src='images/'+n+'.jpg';im.alt='';im.loading='lazy';$('#rail').appendChild(im)})});
 document.addEventListener('click',function(e){
-  var t = e.target.closest('[data-go],[data-tab],[data-var],[data-inc],[data-dec],#next,#back,#send,#clr,#dClose,#veil,#navCart,#barBtn,#langBtn,#joltClose,#joltSkip,#joltPop');
+  var t = e.target.closest('[data-go],[data-tab],[data-var],[data-inc],[data-dec],#next,#back,#send,#clr,#dClose,#veil,#navCart,#barBtn,#langBtn,#joltClose,#joltSkip,#joltPop,#annClose');
   if(!t) return;
   if(t.dataset.go){tab=t.dataset.go;renderTabs();renderMenu();window.scrollTo({top:$('#menu').offsetTop-70,behavior:'smooth'})}
   else if(t.dataset.tab){tab=t.dataset.tab;renderTabs();renderMenu();var tb=$('#tabs');window.scrollTo({top:$('#menu').offsetTop-70,behavior:'smooth'})}
@@ -968,6 +1050,7 @@ document.addEventListener('click',function(e){
   else if(t.id==='navCart'||t.id==='barBtn'){openDrawer()}
   else if(t.id==='joltClose'||t.id==='joltSkip'){closeJolt()}
   else if(t.id==='joltPop'&&e.target.classList.contains('veil2')){closeJolt()}
+  else if(t.id==='annClose'){try{sessionStorage.setItem('sj-ann',String(((SJ_CONTENT&&SJ_CONTENT.announcement&&SJ_CONTENT.announcement.text||['',''])[0]||'').slice(0,40)))}catch(e){} var ab=$('#annBar'); if(ab) ab.hidden=true}
   else if(t.id==='langBtn'){applyLang(L==='ar'?'en':'ar')}
 });
 document.addEventListener('error',function(e){var im=e.target;if(!im||im.tagName!=='IMG'||!(im.closest('.ph')||im.classList.contains('th')))return;
@@ -989,7 +1072,19 @@ function closeJolt(){ if(!jp||!jp.classList.contains('on')) return; jp.classList
 var start='ar';try{localStorage.removeItem('sj-lang')}catch(e){}
 applyLang('ar');
 var jSeen=false;try{jSeen=!!sessionStorage.getItem('sj-jolt')}catch(e){}
-if(!jSeen) setTimeout(openJolt, 400);
+if(!jSeen && (!SJ_CONTENT || !SJ_CONTENT.jolt || SJ_CONTENT.jolt.enabled !== false)) setTimeout(openJolt, 400);
+}
+
+/* boot: published content first (admin), embedded defaults as fallback */
+(function(){
+  var booted = false, to = null;
+  function go(){ if(booted) return; booted = true; if(to) clearTimeout(to); sjInit(); }
+  to = setTimeout(go, 1500);
+  fetch('api/content', {cache:'no-store'}).then(function(r){ return r.ok ? r.json() : null }).then(function(j){
+    if(j && j.content) sjApplyContent(j.content);
+    go();
+  }).catch(function(){ go() });
+})();
 })();
 </script>
 </body>

@@ -1,0 +1,12 @@
+name = "restaurant"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sushi-jem-content"
+database_id = "404b93ab-ab90-4b89-9038-d768cd6a7696"

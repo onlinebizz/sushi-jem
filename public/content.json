@@ -1,0 +1,1294 @@
+{
+ "_comment": "Sushi Jem site content defaults. Edited via /admin — stored overrides live in D1, not here.",
+ "meta": {
+  "title": [
+   "سوشي جيم | مأكولات شرق آسيا في النماص",
+   "Sushi Jem | East Asian food in Al-Namas"
+  ],
+  "description": [
+   "اطلب من قائمة سوشي جيم في النماص: رولات سوشي، كيك سوشي، بوكي، رامن ونودلز. أضف إلى السلة وأرسل طلبك عبر واتساب، أو اطلب التوصيل من هنقرستيشن.",
+   ""
+  ]
+ },
+ "config": {
+  "wa": "966553694398",
+  "phone": "0553694398",
+  "phoneIntl": "+966553694398",
+  "currency": [
+   "ريال",
+   "SAR"
+  ],
+  "hungerStation": "https://hungerstation.com/sa-ar/restaurants/regions/%D8%A7%D9%84%D9%86%D9%85%D8%A7%D8%B5/%D8%A7%D9%84%D9%86%D9%85%D8%A7%D8%B5/%d8%b3%d9%88%d8%b4%d9%8a-%d8%ac%d9%8a%d9%85-194512",
+  "instagram": "https://www.instagram.com/sushi.jem/",
+  "snapchat": "https://www.snapchat.com/@sushijem",
+  "mapCoords": "19.1089791,42.1296272",
+  "branches": [
+   {
+    "id": "main",
+    "n": [
+     "الفرع الرئيسي",
+     "Main branch"
+    ],
+    "a": [
+     "النماص، الشارع العام، مقابل دانكن",
+     "Al-Namas, Main Street, opposite Dunkin'"
+    ]
+   },
+   {
+    "id": "mashaa",
+    "n": [
+     "فرع ممشى الضباب",
+     "Al-Dabab Walkway branch"
+    ],
+    "a": [
+     "ممشى الضباب، النماص",
+     "Al-Dabab Walkway, Al-Namas"
+    ]
+   }
+  ],
+  "rail": [
+   "dish-1",
+   "gallery-2",
+   "dish-2",
+   "gallery-4",
+   "dish-3",
+   "gallery-1"
+  ],
+  "marquee": [
+   "SUSHI",
+   "寿司",
+   "سوشي",
+   "RAMEN",
+   "رامن",
+   "NOODLES",
+   "أونيغيري",
+   "POKE",
+   "كيك السوشي"
+  ]
+ },
+ "menu": [
+  {
+   "id": "sushi",
+   "t": [
+    "السوشي",
+    "Sushi"
+   ],
+   "groups": [
+    {
+     "t": [
+      "رولات السوشي",
+      "Sushi rolls"
+     ],
+     "items": [
+      {
+       "id": "r1",
+       "n": [
+        "نوري شرمب رول",
+        "Nori Shrimp Roll"
+       ],
+       "d": [
+        "شرمب، خيار، جزر",
+        "Shrimp, cucumber, carrot"
+       ],
+       "k": "虾",
+       "num": 1,
+       "kcal": 120,
+       "pcs": 1,
+       "v": [
+        [
+         "",
+         "",
+         23
+        ]
+       ]
+      },
+      {
+       "id": "r2",
+       "n": [
+        "تشكن شيدر أورماكي",
+        "Chicken Cheddar Uramaki"
+       ],
+       "d": [
+        "دجاج مقلي، خيار، جزر",
+        "Fried chicken, cucumber, carrot"
+       ],
+       "k": "鸡",
+       "num": 2,
+       "kcal": 130,
+       "pcs": 1,
+       "v": [
+        [
+         "",
+         "",
+         20
+        ]
+       ]
+      },
+      {
+       "id": "r3",
+       "n": [
+        "ديب فرايد ماكي",
+        "Deep Fried Maki"
+       ],
+       "d": [
+        "أصابع سمك مقلية، خيار، جزر",
+        "Fried fish fingers, cucumber, carrot"
+       ],
+       "k": "鱼",
+       "num": 3,
+       "kcal": 150,
+       "pcs": 1,
+       "v": [
+        [
+         "",
+         "",
+         24
+        ]
+       ]
+      },
+      {
+       "id": "r4",
+       "n": [
+        "قولدن كراب رول",
+        "Golden Crab Roll"
+       ],
+       "d": [
+        "أصابع الكراب، أفوكادو",
+        "Crab sticks, avocado"
+       ],
+       "k": "蟹",
+       "num": 4,
+       "kcal": 140,
+       "pcs": 1,
+       "v": [
+        [
+         "",
+         "",
+         25
+        ]
+       ]
+      },
+      {
+       "id": "best",
+       "n": [
+        "جيم بيست مشكل",
+        "Jem Best Mix"
+       ],
+       "d": [
+        "أشهر أربع رولات بمطبخ جيم، خمس قطع.",
+        "The four most famous rolls from the Jem kitchen, five pieces."
+       ],
+       "k": "誉",
+       "v": [
+        [
+         "",
+         "",
+         25
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "t": [
+      "البوكس",
+      "The box"
+     ],
+     "items": [
+      {
+       "id": "box",
+       "feat": 1,
+       "n": [
+        "جيم سجنتشر بوكس",
+        "Jem Signature Box"
+       ],
+       "d": [
+        "20 قطعة مشكلة، خمس قطع من كل نوع. الأنسب للمشاركة.",
+        "20 mixed pieces, five of each roll. Made for sharing."
+       ],
+       "img": "gallery-3",
+       "v": [
+        [
+         "",
+         "",
+         85
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "special",
+   "t": [
+    "أطباق جيم",
+    "Jem specials"
+   ],
+   "groups": [
+    {
+     "t": [
+      "",
+      ""
+     ],
+     "items": [
+      {
+       "id": "cake",
+       "n": [
+        "كيك السوشي",
+        "Sushi Cake"
+       ],
+       "d": [
+        "طبقات من الرز والحشوة بتتويجة مقرمشة. للمناسبات والتجمعات.",
+        "Layers of rice and filling with a crunchy crown. For occasions and gatherings."
+       ],
+       "img": "gallery-5",
+       "v": [
+        [
+         "صغير دجاج · يكفي 3 إلى 4",
+         "Small chicken · serves 3-4",
+         40
+        ],
+        [
+         "صغير شرمب · يكفي 3 إلى 4",
+         "Small shrimp · serves 3-4",
+         45
+        ],
+        [
+         "كبير دجاج · يكفي 5 إلى 7",
+         "Large chicken · serves 5-7",
+         125
+        ],
+        [
+         "كبير شرمب · يكفي 5 إلى 7",
+         "Large shrimp · serves 5-7",
+         135
+        ]
+       ]
+      },
+      {
+       "id": "cup",
+       "n": [
+        "كوب السوشي",
+        "Sushi Cup"
+       ],
+       "d": [
+        "السوشي في كوب، سهل الحمل ولذيذ.",
+        "Sushi in a cup, easy to carry and full of flavor."
+       ],
+       "img": "gallery-6",
+       "v": [
+        [
+         "دجاج",
+         "Chicken",
+         20
+        ],
+        [
+         "شرمب",
+         "Shrimp",
+         25
+        ]
+       ]
+      },
+      {
+       "id": "burger",
+       "n": [
+        "برجر السوشي",
+        "Sushi Burger"
+       ],
+       "d": [
+        "رز مضغوط وحشوة غنية بتقديم برجر.",
+        "Pressed rice and a rich filling, served burger style."
+       ],
+       "k": "寿",
+       "v": [
+        [
+         "دجاج",
+         "Chicken",
+         30
+        ],
+        [
+         "شرمب",
+         "Shrimp",
+         35
+        ]
+       ]
+      },
+      {
+       "id": "poke",
+       "n": [
+        "بوكي بول",
+        "Poke Bowl"
+       ],
+       "d": [
+        "جزر، خيار، كورن، خس، أفوكادو",
+        "Carrot, cucumber, corn, lettuce, avocado"
+       ],
+       "k": "碗",
+       "v": [
+        [
+         "دجاج",
+         "Chicken",
+         30
+        ],
+        [
+         "شرمب",
+         "Shrimp",
+         35
+        ]
+       ]
+      },
+      {
+       "id": "onigiri",
+       "n": [
+        "أونيغيري",
+        "Onigiri"
+       ],
+       "d": [
+        "مثلثات الرز اليابانية بالنوري.",
+        "Japanese rice triangles wrapped in nori."
+       ],
+       "k": "米",
+       "v": [
+        [
+         "تونة",
+         "Tuna",
+         5
+        ],
+        [
+         "دجاج",
+         "Chicken",
+         5
+        ],
+        [
+         "شرمب",
+         "Shrimp",
+         8
+        ]
+       ]
+      },
+      {
+       "id": "rollipop",
+       "n": [
+        "رولي بوب",
+        "Rollipop"
+       ],
+       "d": [
+        "لفائف رولي بوب المبتكرة، خفيفة ومناسبة للتذوق السريع.",
+        "Innovative rollipop wraps, light and perfect for a quick taste."
+       ],
+       "k": "巻",
+       "v": [
+        [
+         "",
+         "",
+         20
+        ]
+       ]
+      },
+      {
+       "id": "burrito",
+       "n": [
+        "سوشي بوريتو فرايد",
+        "Fried Sushi Burrito"
+       ],
+       "d": [
+        "بوريتو سوشي مقلي، مزيج مقرمش ولذيذ من الأرز والمكونات.",
+        "A fried sushi burrito, a crispy tasty mix of rice and ingredients."
+       ],
+       "k": "巻",
+       "v": [
+        [
+         "",
+         "",
+         50
+        ]
+       ]
+      },
+      {
+       "id": "volcano",
+       "n": [
+        "فولكانو أونيغيري",
+        "Volcano Onigiri"
+       ],
+       "d": [
+        "أونيغيري مقرمش مغطى بالصوص الخاص بسوشي جيم وصوص الترياكي.",
+        "Crispy onigiri coated in the Sushi Jem special sauce and teriyaki."
+       ],
+       "k": "米",
+       "v": [
+        [
+         "",
+         "",
+         18
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hot",
+   "t": [
+    "رامن ونودلز",
+    "Ramen and noodles"
+   ],
+   "groups": [
+    {
+     "t": [
+      "",
+      ""
+     ],
+     "items": [
+      {
+       "id": "rb",
+       "n": [
+        "رامن باللحم الطازج",
+        "Beef Ramen"
+       ],
+       "d": [
+        "نودلز في مرق لحم غني مع شرائح لحم طازجة وبيض وخضار وأعشاب.",
+        "Ramen noodles in a rich beef broth with fresh beef slices, eggs, vegetables and herbs."
+       ],
+       "k": "面",
+       "v": [
+        [
+         "",
+         "",
+         25
+        ]
+       ]
+      },
+      {
+       "id": "rv",
+       "n": [
+        "رامن بالخضار",
+        "Vegetable Ramen"
+       ],
+       "d": [
+        "نودلز في مرق خفيف مع خضار طازجة.",
+        "Noodles in a light broth with fresh vegetables."
+       ],
+       "k": "面",
+       "v": [
+        [
+         "",
+         "",
+         20
+        ]
+       ]
+      },
+      {
+       "id": "nc",
+       "n": [
+        "نودلز بالدجاج",
+        "Chicken Noodles"
+       ],
+       "d": [
+        "نودلز مقلية مع دجاج وخضار طازجة وصوص خاص.",
+        "Stir-fried noodles with chicken, fresh vegetables and our special sauce."
+       ],
+       "k": "面",
+       "v": [
+        [
+         "",
+         "",
+         12
+        ]
+       ]
+      },
+      {
+       "id": "nv",
+       "n": [
+        "نودلز بالخضار",
+        "Vegetable Noodles"
+       ],
+       "d": [
+        "نودلز مقلية مع خضار طازجة وصوص خفيف.",
+        "Stir-fried noodles with fresh vegetables and a light sauce."
+       ],
+       "k": "面",
+       "v": [
+        [
+         "",
+         "",
+         10
+        ]
+       ]
+      },
+      {
+       "id": "katsu",
+       "n": [
+        "كاتسو الدجاج",
+        "Chicken Katsu"
+       ],
+       "d": [
+        "دجاج مقرمش مع أرز ياباني وصوص غني.",
+        "Crispy chicken with Japanese rice and a rich sauce."
+       ],
+       "k": "鸡",
+       "v": [
+        [
+         "",
+         "",
+         51
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sides",
+   "t": [
+    "مقبلات وصوصات ومشروبات",
+    "Appetizers, sauces and drinks"
+   ],
+   "groups": [
+    {
+     "t": [
+      "المقبلات",
+      "Appetizers"
+     ],
+     "items": [
+      {
+       "id": "a1",
+       "n": [
+        "سلطة الكاني (كراب)",
+        "Crab Salad"
+       ],
+       "d": [
+        "سلطة منعشة تجمع بين شرائح الكابوريا والخضروات الطازجة.",
+        "A refreshing salad of crab sticks and fresh vegetables."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         30
+        ]
+       ]
+      },
+      {
+       "id": "a2",
+       "n": [
+        "ادمامي",
+        "Edamame"
+       ],
+       "d": [
+        "قرون فول الصويا الخضراء مطهوة على البخار، تقدم ساخنة مع رشة ملح.",
+        "Green soybean pods steamed and served hot with a pinch of salt."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         25
+        ]
+       ]
+      },
+      {
+       "id": "a3",
+       "n": [
+        "كيمتشي",
+        "Kimchi"
+       ],
+       "d": [
+        "الأنواع: الملفوف، الخيار، الجزر، الملفوف الحار.",
+        "Types: cabbage, cucumber, carrot, spicy cabbage."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         10
+        ]
+       ]
+      },
+      {
+       "id": "gyozac",
+       "n": [
+        "قيوزا كريمي",
+        "Creamy Gyoza"
+       ],
+       "d": [
+        "جيوزا محمرة تُقدّم في صوص كريمي غني مع لمسة سبايسي.",
+        "Pan-fried gyoza served in a rich creamy sauce with a spicy touch."
+       ],
+       "k": "餃",
+       "v": [
+        [
+         "",
+         "",
+         38
+        ]
+       ]
+      },
+      {
+       "id": "gyozach",
+       "n": [
+        "قيوزا دجاج",
+        "Chicken Gyoza"
+       ],
+       "d": [
+        "عجينة آسيوية محشوة بالدجاج والخضار، محمصة ومقدمة مع صوص حار.",
+        "Asian dough stuffed with chicken and vegetables, toasted and served with a spicy sauce."
+       ],
+       "k": "餃",
+       "v": [
+        [
+         "",
+         "",
+         30
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "t": [
+      "الصوصات",
+      "Sauces"
+     ],
+     "list": 1,
+     "items": [
+      {
+       "id": "s1",
+       "n": [
+        "صوص الترياكي",
+        "Teriyaki sauce"
+       ],
+       "d": [
+        "صوص ترياكي كلاسيكي، حلو ومالح، يضيف نكهة آسيوية مميزة لأي طبق.",
+        "Classic teriyaki sauce, sweet and salty, adding a distinctive Asian flavor."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         2
+        ]
+       ]
+      },
+      {
+       "id": "s2",
+       "n": [
+        "صوص الصويا",
+        "Soy sauce"
+       ],
+       "d": [
+        "صوص الصويا الأصيل، مثالي لتغميس الأطباق أو لتعزيز النكهة.",
+        "Authentic soy sauce, ideal for dipping or boosting flavor."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         2
+        ]
+       ]
+      },
+      {
+       "id": "s3",
+       "n": [
+        "صوص المايو",
+        "Mayo sauce"
+       ],
+       "d": [
+        "صوص مايونيز كريمي غني يضيف لمسة مميزة لأطباقك المفضلة.",
+        "A rich creamy mayo sauce adding a special touch to your favorite dishes."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         2
+        ]
+       ]
+      },
+      {
+       "id": "s5",
+       "n": [
+        "وسابي",
+        "Wasabi"
+       ],
+       "d": [
+        "وسابي حار ومنعش، يقدم لمسة من النكهة اليابانية التقليدية.",
+        "Hot and refreshing wasabi, a touch of traditional Japanese flavor."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         2
+        ]
+       ]
+      },
+      {
+       "id": "s6",
+       "n": [
+        "جنجر الزنجبيل",
+        "Ginger"
+       ],
+       "d": [
+        "شرائح الزنجبيل الطازج المخلل، مثالية لتنظيف الحنك بين الأطباق.",
+        "Pickled fresh ginger slices, perfect for cleansing the palate between dishes."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         2
+        ]
+       ]
+      },
+      {
+       "id": "s7",
+       "n": [
+        "شيلي أويل",
+        "Chili oil"
+       ],
+       "d": [
+        "زيت الفلفل الحار لإضافة نكهة سبايسي وعمق لأطباقك، متوفر بحجم الكوب أو العلبة.",
+        "Hot chili oil adding spice and depth, available in cup or bottle size."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         4
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "t": [
+      "المشروبات",
+      "Drinks"
+     ],
+     "list": 1,
+     "items": [
+      {
+       "id": "d6",
+       "n": [
+        "ماء",
+        "Water"
+       ],
+       "d": [
+        "مياه نقية ومنعشة لترطيب جسمك، أساسية لأي وجبة أو استراحة.",
+        "Pure and refreshing water, essential with any meal or break."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         1
+        ]
+       ]
+      },
+      {
+       "id": "soda",
+       "n": [
+        "المشروبات الغازية",
+        "Soft drinks"
+       ],
+       "d": [
+        "مجموعة من المشروبات الغازية المنعشة والمشبعة بالفقاعات لتروي عطشك.",
+        "A selection of refreshing fizzy drinks to quench your thirst."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         3
+        ]
+       ]
+      },
+      {
+       "id": "jdrink",
+       "n": [
+        "المشروبات اليابانية",
+        "Japanese drinks"
+       ],
+       "d": [
+        "مجموعة مختارة من المشروبات اليابانية الأصيلة لتقديم تجربة ثقافية فريدة.",
+        "A selected set of authentic Japanese drinks for a unique experience."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         7.5
+        ]
+       ]
+      },
+      {
+       "id": "bt",
+       "n": [
+        "ايس تي (بوبل تي)",
+        "Iced tea (bubble tea)"
+       ],
+       "d": [
+        "النكهات: الباشن فروت، شمام وكمثرى، المانجو، الخوخ، التفاح، خوخ وفراولة.",
+        "Flavors: passion fruit, melon and pear, mango, peach, apple, peach and strawberry."
+       ],
+       "v": [
+        [
+         "",
+         "",
+         20
+        ]
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "img": {
+  "r1": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423946/6f549ce8-1bdd-4ff1-885f-6040d3b4a7d1.jpg?width=800&quality=75",
+  "r2": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423945/bc9e996c-c766-428b-a4cf-e2fa2a0e1760.jpg?width=800&quality=75",
+  "r3": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423958/a2e0e982-3745-403a-bfbf-ce9eb282ffc3.jpg?width=800&quality=75",
+  "r4": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423949/579bc00e-68f4-4390-91a1-721c266adb87.jpg?width=800&quality=75",
+  "box": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423964/061fe3e5-b0e9-4822-9cc5-3aadcd9651fe.jpg?width=800&quality=75",
+  "cup": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423954/0ce08aae-5bb5-470e-ac7e-c35a7bd98773.jpg?width=800&quality=75",
+  "burger": "https://images.unsplash.com/photo-1607301405891-3b679d1396e0?w=1600&q=80&auto=format&fit=crop",
+  "poke": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332626932396.jpeg?width=800&quality=75",
+  "onigiri": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332630456126.png?width=800&quality=75",
+  "a1": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332620532380.jpg?width=800&quality=75",
+  "a2": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332625047133.jpeg?width=800&quality=75",
+  "a3": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332628594764.png?width=800&quality=75",
+  "s1": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332823189965.JPG?width=800&quality=75",
+  "s2": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332628795708.jpg?width=800&quality=75",
+  "s3": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332619520128.jpg?width=800&quality=75",
+  "s5": "https://hungerstation.dhmedia.io/image/global-menu-service/HS_SA/vendor/194512/product/139423973/aeb8b0f2-55f9-40d7-ada5-e18a286edcb7.jpg?width=800&quality=75",
+  "s6": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332628316077.jpeg?width=800&quality=75",
+  "s7": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332629277299.jpg?width=800&quality=75",
+  "d6": "https://hungerstation.dhmedia.io/image/vso-so-backend/HS_SA/HT1DE4/attachment__1789297332817643339.jpg?width=800&quality=75",
+  "cake": "https://images.unsplash.com/photo-1692691462436-1e6ef36d8ee4?w=1600&q=80&auto=format&fit=crop",
+  "rb": "https://images.unsplash.com/photo-1617421753170-46511a8d73fc?w=1600&q=80&auto=format&fit=crop",
+  "rv": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=1600&q=80&auto=format&fit=crop",
+  "nc": "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=1600&q=80&auto=format&fit=crop",
+  "nv": "https://images.unsplash.com/photo-1553621043-f607bfbf6640?w=1600&q=80&auto=format&fit=crop",
+  "best": "https://images.unsplash.com/photo-1736885978380-8d7d9f7d7880?w=1600&q=80&auto=format&fit=crop",
+  "rollipop": "https://images.unsplash.com/photo-1617196035154-1e7e6e28b0db?w=1600&q=80&auto=format&fit=crop",
+  "burrito": "https://images.unsplash.com/photo-1726824861360-ceecef8fdaeb?w=1600&q=80&auto=format&fit=crop",
+  "volcano": "https://images.unsplash.com/photo-1696463469919-def9b2830857?w=1600&q=80&auto=format&fit=crop",
+  "gyozac": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=1600&q=80&auto=format&fit=crop",
+  "gyozach": "https://images.unsplash.com/photo-1558220831-9ad8f955fb9b?w=1600&q=80&auto=format&fit=crop",
+  "katsu": "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=1600&q=80&auto=format&fit=crop",
+  "jdrink": "https://images.unsplash.com/photo-1604259596747-2377448d916d?w=1600&q=80&auto=format&fit=crop",
+  "bt": "https://images.unsplash.com/photo-1624896276654-2eb0c7e8247c?w=1600&q=80&auto=format&fit=crop",
+  "soda": "https://images.unsplash.com/photo-1567103472667-6898f3a79cf2?w=1600&q=80&auto=format&fit=crop"
+ },
+ "strings": {
+  "ar": {
+   "nav.menu": "القائمة",
+   "nav.dishes": "الأطباق",
+   "nav.svc": "الخدمات",
+   "nav.place": "الفروع",
+   "nav.contact": "تواصل",
+   "cart.title": "السلة",
+   "hero.h1a": "أول لقمة تجربة،",
+   "hero.h1b": "وبعدها تصير من جماعتنا.",
+   "hero.sub2": "رولات سوشي بصوصات كريمية ومقرمشات ذهبية، وكيك سوشي وبوكي ورامن. اختر طبقك، أضفه إلى السلة، وتصلنا رسالتك جاهزة على واتساب.",
+   "hero.order": "اطلب الآن",
+   "hero.hs": "توصيل عبر هنقرستيشن",
+   "fact1": "فرعان في النماص",
+   "c.take": "سفري",
+   "c.car": "خدمة سيارات",
+   "c.del": "توصيل",
+   "warn": "تحذير: قد تتحول من مجرّب إلى عميل دائم",
+   "m.t": "القائمة",
+   "m.p": "اختر طبقك وأضفه إلى السلة. بعدها اكتب اسمك وجوالك واختر الفرع، وترسل الطلب لنا على واتساب.",
+   "m.note": "الأسعار بالريال السعودي. السعرات تقريبية لكل قطعة.",
+   "offers.t": "عروض جيم",
+   "dishes.title": "أطباق تتكلم عن نفسها",
+   "d1.t": "رولات جيم المقرمشة",
+   "d1.p": "رولات مقرمشة بصوص حار وكريمي، وسمسم وبصل أخضر فوق كل قطعة.",
+   "dish.go": "اطلب من القائمة",
+   "d2.t": "رز جيم الذهبي",
+   "d2.p": "رز بنكهة غنية مغطّى بالمقرمشات والأعشاب البحرية والصوص، في صحن ذهبي لامع.",
+   "d3.t": "كيك السوشي",
+   "d3.p": "طبقات من الرز والحشوة تتوّجها المقرمشات والشموع، لمناسباتكم وسهراتكم.",
+   "svc.title": "طلبك بالطريقة اللي تريحك",
+   "svc.sub": "سفري، توصيل، أو من سيارتك. اختر وإحنا نجهّز.",
+   "svc.take.t": "سفري",
+   "svc.take.p": "اطلب ومرّ تستلمه جاهز.",
+   "svc.del.t": "توصيل",
+   "svc.del.p": "يوصلك الطلب لحد بيتك في النماص.",
+   "svc.nc.t": "توصيل بدون تلامس",
+   "svc.nc.p": "يصلك الطلب بدون تلامس مباشر، براحتك وأمانك.",
+   "svc.drive.t": "خدمة السيارات",
+   "svc.drive.p": "اطلب وأنت في سيارتك واستلم طلبك.",
+   "amen.title": "تفاصيل تريّحك قبل لا تجي",
+   "amen.women": "مطعم تملكه سيدة",
+   "amen.time.l": "الأوقات المفضلة",
+   "amen.time.v": "الغداء والعشاء.",
+   "amen.plates.l": "التقديم",
+   "amen.plates.v": "أطباق صغيرة تنوّع تجربتك.",
+   "amen.kids.l": "العائلة",
+   "amen.kids.v": "مناسب للأطفال.",
+   "amen.pay.l": "الدفع",
+   "amen.pay.v": "بطاقات ائتمانية وبطاقات خصم والدفع بالجوال NFC.",
+   "amen.park.l": "المواقف",
+   "amen.park.v": "موقف مجاني، ومواقف مجانية على الشارع.",
+   "amen.tour.l": "الضيوف",
+   "amen.tour.v": "محطة يزورها سيّاح النماص.",
+   "p.t": "الفروع",
+   "b1.t": "الفرع الرئيسي",
+   "b1.p": "النماص، الشارع العام، مقابل دانكن.",
+   "b2.t": "فرع ممشى الضباب",
+   "b2.p": "أجواء الضباب والنماص بعد المغرب.",
+   "a.women": "مطعم تملكه سيدة",
+   "a.cosy": "هادئ ودافئ",
+   "a.kids": "مناسب للأطفال",
+   "a.park": "مواقف مجانية",
+   "walk.title": "هنا الضباب يلفّ الجبال، والنوري يلفّ الرز.",
+   "walk.p": "فرعنا في ممشى الضباب يجمع هواء النماص البارد ونكهات آسيا الحارّة على طاولة وحدة. تعال بعد المغرب وخلّ الأجواء تكمّل السهرة.",
+   "walk.cta": "شوف الموقع",
+   "order.title": "ثلاث خطوات وتبدأ السفرة",
+   "s1.n": "١",
+   "s1.t": "اختر أطباقك",
+   "s1.p": "تصفّح القائمة وأضف ما يعجبك إلى السلة.",
+   "s2.n": "٢",
+   "s2.t": "اكتب بياناتك",
+   "s2.p": "اسمك وجوالك، ثم اختر الفرع ونوع الطلب.",
+   "s3.n": "٣",
+   "s3.t": "أرسل واستمتع",
+   "s3.p": "يفتح واتساب والطلب جاهز، اضغط إرسال. وللتوصيل اطلب من هنقرستيشن.",
+   "review.title": "جرّبت جيم؟ شاركنا رأيك",
+   "review.p": "تقييمك على خرائط قوقل يدلّ كل محب للسوشي في النماص إلى طاولتنا.",
+   "review.cta": "قيّمنا على خرائط قوقل",
+   "final.title": "جاهز تصير عميل دائم؟",
+   "final.p": "اطلب الآن، وخلّ أول تجربة تكون بداية عادة جديدة.",
+   "final.call": "اتصل الآن",
+   "f.tag": "تجربة سوشي تجمع الفن والجودة والنكهات المميزة.",
+   "f.map": "الموقع على الخريطة",
+   "f.rights": "سوشي جيم، النماص. جميع الحقوق محفوظة.",
+   "jolt.tag": "حصريا · جولت بولينق",
+   "jolt.title": "سوشي جيم × JOLT BOWLING",
+   "jolt.p": "سترايكات تحت إضاءة النيون البنفسجي، وسفرة سوشي تكمّل الليلة. اجمع شلّتك واحجز مكانك.",
+   "jolt.skip": "يلا ندخل"
+  },
+  "en": {
+   "skip": "Skip to content",
+   "nav.dishes": "Dishes",
+   "nav.menu": "Order now",
+   "nav.services": "Services",
+   "nav.branches": "Locations",
+   "nav.order": "How to order",
+   "nav.cta": "Order now",
+   "hero.h1a": "One bite to try.",
+   "hero.h1b": "Then you're one of us.",
+   "hero.sub": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.",
+   "hero.cta1": "Order now",
+   "hero.cta2": "Explore the dishes",
+   "fact1": "Two branches in Al-Namas",
+   "fact2": "East Asian flavors",
+   "fact3": "Delivery to your door",
+   "warn": "Warning: a first-timer may turn into a regular",
+   "svc.title": "Your order, the way you like it",
+   "svc.sub": "Takeaway, delivery or straight from your car. You choose, we prepare.",
+   "svc.take.t": "Takeaway",
+   "svc.take.p": "Order ahead and pick it up ready.",
+   "svc.del.t": "Delivery",
+   "svc.del.p": "Your order reaches your door in Al-Namas.",
+   "svc.nc.t": "No-contact delivery",
+   "svc.nc.p": "Your order arrives with no direct contact, for your comfort and safety.",
+   "svc.drive.t": "Drive-through",
+   "svc.drive.p": "Order from your car and collect your meal.",
+   "amen.title": "Details that make your visit easy",
+   "amen.women": "Women-owned",
+   "amen.time.l": "Popular for",
+   "amen.time.v": "Lunch and dinner.",
+   "amen.plates.l": "Serving",
+   "amen.plates.v": "Small plates that widen your tasting.",
+   "amen.kids.l": "Families",
+   "amen.kids.v": "Good for kids.",
+   "amen.pay.l": "Payment",
+   "amen.pay.v": "Credit and debit cards, plus NFC mobile payments.",
+   "amen.park.l": "Parking",
+   "amen.park.v": "A free parking lot and free street parking.",
+   "amen.tour.l": "Guests",
+   "amen.tour.v": "A favorite stop for visitors to Al-Namas.",
+   "why.title": "Four reasons you'll order again",
+   "why.sub": "A sushi experience that combines art, quality and distinctive flavors. Every detail at Jem is made to be remembered.",
+   "t1.t": "Sauce that shines on every roll",
+   "t1.p": "Creamy sauce on every roll, plus crunchy flakes that give each bite two textures.",
+   "t2.t": "A menu for every mood",
+   "t2.p": "Rolls, sushi cake, poke bowl, ramen, noodles and onigiri in one place.",
+   "t3.t": "A spread for the whole group",
+   "t3.p": "The Jem Signature Box with twenty mixed pieces, and a sushi cake that serves up to seven.",
+   "t4.t": "Easy ordering",
+   "t4.p": "Add to the cart and send on WhatsApp, or order delivery on HungerStation.",
+   "dishes.title": "Dishes that speak for themselves",
+   "d1.t": "Jem crispy rolls",
+   "d1.p": "Crispy rolls with a spicy creamy sauce, sesame and green onion on every piece.",
+   "d2.t": "Jem golden rice",
+   "d2.p": "Rich, flavorful rice topped with crunch, seaweed and sauce, on a shining gold plate.",
+   "d3.t": "Sushi cake",
+   "d3.p": "Layers of rice and filling crowned with crunch and candles, for your occasions and gatherings.",
+   "dish.order": "Order this dish",
+   "menu.title": "Our menu",
+   "menu.p": "Pick from our menu, then order on WhatsApp or through the app.",
+   "menu.cta.t": "The full menu",
+   "menu.cta.p": "Every dish and price in the restaurant's own menu.",
+   "menu.btn": "Open the full menu",
+   "place.title": "A golden glow over the Al-Namas night",
+   "place.p": "A sign glowing above a pitched roof, Chinese characters on a stone wall, and a quiet place where you can settle in.",
+   "place.cap": "Our name in Chinese characters",
+   "walk.title": "Here the fog wraps the mountains and the nori wraps the rice.",
+   "walk.p": "Our Fog Walk branch brings Al-Namas' cool air and Asia's spicy flavors to one table. Come after sunset and let the atmosphere finish the evening.",
+   "walk.cta": "See the location",
+   "gallery.title": "Moments at Jem",
+   "jolt.title": "Sushi Jem × JOLT BOWLING",
+   "jolt.p": "Strikes under purple neon lights and a sushi spread to finish the night. Gather your group and book your spot.",
+   "jolt.cta": "Book your spot",
+   "branches.title": "Two branches in Al-Namas, and a table waiting for you",
+   "b1.t": "Main branch",
+   "b1.p": "Al-Namas, Main Street, opposite Dunkin'.",
+   "b2.t": "Al-Dabab Walkway branch",
+   "b2.p": "The fog and the mountains of Al-Namas in the evening.",
+   "b.call": "Call us",
+   "b.map": "Open the map",
+   "order.title": "Three steps and the feast begins",
+   "s1.n": "1",
+   "s1.t": "Pick your dishes",
+   "s1.p": "Browse the menu and add what you like to the cart.",
+   "s2.n": "2",
+   "s2.t": "Enter your details",
+   "s2.p": "Your name and number, then choose the branch and order type.",
+   "s3.n": "3",
+   "s3.t": "Send and enjoy",
+   "s3.p": "WhatsApp opens with your order ready, just press send. For delivery, order on HungerStation.",
+   "review.title": "Tried Jem? Share your review",
+   "review.p": "Your Google Maps review guides every sushi lover in Al-Namas to our table.",
+   "review.cta": "Review us on Google Maps",
+   "final.title": "Ready to become a regular?",
+   "final.p": "Order now and let your first try start a new habit.",
+   "final.wa": "Place order",
+   "final.call": "Call now",
+   "foot.tag": "Sushi Jem, East Asian food in Al-Namas",
+   "foot.ig": "Instagram",
+   "foot.snap": "Snapchat",
+   "foot.rights": "© 2026 Sushi Jem. All rights reserved.",
+   "bar.order": "Place order",
+   "bar.call": "Call",
+   "wa.msg": "Hello, I'd like to place an order at Sushi Jem",
+   "wa.dish": "Hello, I'd like to order: {dish}",
+   "title": "Sushi Jem | East Asian Food in Al-Namas",
+   "desc": "Sushi Jem in Al-Namas: sushi rolls with creamy sauces, spicy noodles and bento boxes. Takeaway, delivery and drive-through, with two branches in Al-Namas.",
+   "nav.place": "Branches",
+   "nav.contact": "Contact",
+   "cart.title": "Cart",
+   "hero.h1": "One bite to try. <em>Then you're one of us.</em>",
+   "hero.order": "Order now",
+   "hero.hs": "Delivery on HungerStation",
+   "c.take": "Takeaway",
+   "c.car": "Drive-through",
+   "c.del": "Delivery",
+   "c.pay": "Cards and NFC",
+   "band": "Warning: a first-timer can turn into a regular",
+   "k.t": "From our kitchen",
+   "m.t": "The menu",
+   "m.p": "Pick your dish and add it to the cart. Then enter your name and number, choose a branch, and send the order to us on WhatsApp.",
+   "m.note": "Prices in Saudi riyals. Calories are approximate per piece.",
+   "p.t": "Our branches",
+   "a.women": "Women-owned",
+   "a.cosy": "Quiet and cosy",
+   "a.kids": "Kid friendly",
+   "a.park": "Free parking",
+   "f.tag": "A sushi experience that combines art, quality and distinctive flavors.",
+   "f.map": "Find us on the map",
+   "f.rights": "Sushi Jem, Al-Namas. All rights reserved.",
+   "nav.svc": "Services",
+   "hero.sub2": "Sushi rolls with creamy sauces and golden crunch, sushi cake, poke and ramen. Pick your dish, add it to the cart, and your message reaches us ready on WhatsApp.",
+   "dish.go": "Order from the menu",
+   "jolt.tag": "Exclusive · JOLT Bowling",
+   "jolt.skip": "Let's go",
+   "offers.t": "Jem offers",
+   "offers.cta": "Order now",
+   "ann.more": "Learn more"
+  }
+ },
+ "dyn": {
+  "add": [
+   "أضف",
+   "Add"
+  ],
+  "view": [
+   "عرض السلة",
+   "View cart"
+  ],
+  "items": [
+   "منتجات",
+   "items"
+  ],
+  "cartT": [
+   "سلتك",
+   "Your cart"
+  ],
+  "detT": [
+   "بياناتك",
+   "Your details"
+  ],
+  "s1": [
+   "السلة",
+   "Cart"
+  ],
+  "s2": [
+   "البيانات والفرع",
+   "Details and branch"
+  ],
+  "empty": [
+   "السلة فارغة. اختر من القائمة وأضف ما يعجبك.",
+   "Your cart is empty. Pick something from the menu."
+  ],
+  "total": [
+   "المجموع",
+   "Total"
+  ],
+  "next": [
+   "التالي: بياناتك والفرع",
+   "Next: your details"
+  ],
+  "back": [
+   "رجوع للسلة",
+   "Back to cart"
+  ],
+  "send": [
+   "اطلب",
+   "Place order"
+  ],
+  "hsT": [
+   "تفضّل التوصيل لباب بيتك؟",
+   "Prefer delivery to your door?"
+  ],
+  "hsS": [
+   "اطلب من هنقرستيشن",
+   "Order on HungerStation"
+  ],
+  "name": [
+   "الاسم",
+   "Name"
+  ],
+  "phone": [
+   "رقم الجوال",
+   "Phone number"
+  ],
+  "branch": [
+   "الفرع",
+   "Branch"
+  ],
+  "type": [
+   "نوع الطلب",
+   "Order type"
+  ],
+  "notes": [
+   "ملاحظات (اختياري)",
+   "Notes (optional)"
+  ],
+  "t2": [
+   "سفري",
+   "Takeaway"
+  ],
+  "t3": [
+   "خدمة سيارات",
+   "Drive-through"
+  ],
+  "eName": [
+   "اكتب اسمك",
+   "Please enter your name"
+  ],
+  "ePhone": [
+   "اكتب رقم جوال صحيح",
+   "Please enter a valid phone number"
+  ],
+  "eBranch": [
+   "اختر الفرع",
+   "Please choose a branch"
+  ],
+  "added": [
+   "تمت الإضافة إلى السلة",
+   "Added to cart"
+  ],
+  "clear": [
+   "تفريغ السلة",
+   "Clear cart"
+  ],
+  "mHead": [
+   "طلب جديد من الموقع",
+   "New order from the website"
+  ],
+  "mName": [
+   "الاسم",
+   "Name"
+  ],
+  "mPhone": [
+   "الجوال",
+   "Phone"
+  ],
+  "mBranch": [
+   "الفرع",
+   "Branch"
+  ],
+  "mType": [
+   "نوع الطلب",
+   "Order type"
+  ],
+  "mTotal": [
+   "المجموع",
+   "Total"
+  ],
+  "mNotes": [
+   "ملاحظات",
+   "Notes"
+  ],
+  "mItems": [
+   "الأصناف",
+   "Items"
+  ],
+  "mQty": [
+   "الكمية",
+   "Qty"
+  ],
+  "mUnit": [
+   "سعر الوحدة",
+   "Unit price"
+  ],
+  "mLine": [
+   "الإجمالي",
+   "Line total"
+  ]
+ },
+ "ph": {
+  "name": [
+   "مثال: سارة",
+   "e.g. Sara"
+  ],
+  "phone": [
+   "05xxxxxxxx",
+   "05xxxxxxxx"
+  ],
+  "notes": [
+   "مثال: بدون وسابي",
+   "e.g. no wasabi"
+  ]
+ },
+ "announcement": {
+  "enabled": false,
+  "text": [
+   "",
+   ""
+  ],
+  "link": ""
+ },
+ "offers": [],
+ "jolt": {
+  "enabled": true
+ }
+}

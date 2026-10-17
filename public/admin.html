@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#C4162A">
+<title>Sushi Jem Admin</title>
+<link rel="icon" href="images/logo-pagoda.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF;--bg2:#FBF6F2;--panel:#FFFFFF;--soft:#FDEDEA;--line:#EBD9D2;
+  --acc:#C4162A;--on-acc:#FFFFFF;--text:#2A1B16;--muted:#7A655C;--shadow:rgba(196,22,42,.16);
+  --ok:#1B7A3D;--leaf:24px 6px 24px 6px;--f-display:'Lalezar','IBM Plex Sans Arabic',sans-serif;--f-body:'IBM Plex Sans Arabic',system-ui,sans-serif;
+}
+html[dir="rtl"] body{font-family:var(--f-body)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--f-body);font-size:.95rem;line-height:1.6}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.2}
+img{max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hidden{display:none!important}
+
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#FDE3DE,transparent 66%)}
+#login .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:38px 34px;width:min(400px,100%);text-align:center;box-shadow:0 24px 70px var(--shadow)}
+#login img{height:64px;margin:0 auto 6px}
+#login h1{font-size:1.7rem;color:var(--acc)}
+#login p{color:var(--muted);margin:2px 0 18px}
+#login input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:.75em 1em;background:var(--bg);margin-bottom:6px}
+#login input:focus{outline:none;border-color:var(--acc)}
+.err{color:var(--acc);font-size:.85rem;min-height:1.4em;margin-bottom:4px}
+
+/* shell */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;height:64px;padding:0 clamp(14px,3vw,28px)}
+.topbar img{height:40px}
+.topbar .t{font-family:var(--f-display);font-size:1.3rem;color:var(--acc)}
+.topbar .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:.6em 1.3em;font-weight:600;background:var(--acc);color:var(--on-acc);text-decoration:none;transition:transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:0 8px 22px var(--shadow)}
+.btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.btn.sm{padding:.4em 1em;font-size:.85rem}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.dirty-dot{width:9px;height:9px;border-radius:50%;background:#E4A11B;display:inline-block}
+.dirty-dot.saved{background:var(--ok)}
+.shell{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 64px)}
+.side{background:var(--panel);border-inline-end:1px solid var(--line);padding:18px 12px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto}
+.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:start;padding:.6em .9em;border-radius:12px;color:var(--text);font-weight:500;margin-bottom:2px}
+.side button:hover{background:var(--soft)}
+.side button.on{background:var(--acc);color:var(--on-acc)}
+.side .sep{font-size:.72rem;color:var(--muted);margin:16px 10px 6px;letter-spacing:.06em;text-transform:uppercase}
+.main{padding:clamp(18px,3vw,36px);max-width:1060px}
+.sec-title{font-size:1.9rem;color:var(--acc);margin-bottom:4px}
+.sec-sub{color:var(--muted);margin:0 0 22px;max-width:46em}
+
+/* cards & fields */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:18px 20px;margin-bottom:14px}
+.card.block{padding:14px 16px}
+.fld{display:grid;gap:5px;margin-bottom:12px}
+.fld>label{font-weight:600;font-size:.88rem}
+.fld .hint{color:var(--muted);font-size:.78rem}
+.fld input,.fld textarea,.fld select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.55em .8em;background:var(--bg)}
+.fld textarea{resize:vertical;min-height:60px}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--acc)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.bi{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center}
+.bi b{font-size:.78rem;color:var(--muted);font-weight:600}
+.chk{display:inline-flex;gap:7px;align-items:center;font-weight:500;font-size:.88rem;white-space:nowrap;cursor:pointer}
+.chk input{accent-color:var(--acc);width:17px;height:17px}
+
+/* menu tree */
+.block{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0;background:var(--bg)}
+.block .sub{border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--bg2)}
+.block-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.block-head .grow{flex:1;min-width:150px}
+.block-head .idbox{width:110px}
+.mini{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:.4em .6em;font-size:.88rem}
+.iconbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;width:32px;height:32px;display:grid;place-items:center;padding:0;font-size:.9rem}
+.iconbtn:hover{border-color:var(--acc);color:var(--acc)}
+.iconbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
+.addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.45em 1em;font-weight:600;font-size:.85rem;margin:6px 0}
+.addbtn:hover{background:var(--soft)}
+.varrow{display:grid;grid-template-columns:1fr 1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px}
+.items-head{font-size:.75rem;color:var(--muted);font-weight:600;margin:10px 0 4px}
+
+/* texts editor */
+.tgroup{margin-bottom:18px}
+.tgroup h3{font-size:1.25rem;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
+.trow{display:grid;grid-template-columns:200px 1fr 1fr;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.trow .k{font-size:.78rem;color:var(--muted);font-weight:600;word-break:break-all}
+.trow input{border:1.5px solid var(--line);border-radius:10px;padding:.45em .7em;background:var(--bg);width:100%}
+
+/* toast */
+#toast{position:fixed;inset-inline:0;bottom:26px;z-index:100;display:flex;justify-content:center;pointer-events:none;opacity:0;transform:translateY(10px);transition:.3s}
+#toast.on{opacity:1;transform:none}
+#toast span{background:var(--text);color:#fff;border-radius:999px;padding:.55em 1.4em;font-weight:600;box-shadow:0 12px 34px rgba(0,0,0,.25)}
+#toast.err span{background:var(--acc)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:center}
+.stat b{display:block;font-family:var(--f-display);font-size:2rem;color:var(--acc)}
+.stat span{color:var(--muted);font-size:.82rem}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;color:var(--text);font-size:.86rem;margin:10px 0}
+.dangerzone{border-color:#E7B3B9}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .side{position:static;height:auto;display:flex;overflow-x:auto;gap:6px;padding:10px}
+  .side button{white-space:nowrap;width:auto}
+  .side .sep{display:none}
+  .row2,.row3{grid-template-columns:1fr}
+  .trow{grid-template-columns:1fr;gap:4px}
+  .varrow{grid-template-columns:1fr 1fr 70px 32px}
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="hidden">
+  <div class="card">
+    <img src="images/logo-pagoda-transparent.png" alt="Sushi Jem">
+    <h1 data-t="loginTitle">Sushi Jem Admin</h1>
+    <p data-t="loginSub">Enter the admin password to manage the site</p>
+    <form id="loginForm">
+      <input type="password" id="loginPw" autocomplete="current-password" placeholder="Password" aria-label="Password">
+      <div class="err" id="loginErr"></div>
+      <button class="btn" type="submit" style="width:100%" data-t="loginBtn">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="topbar">
+    <img src="images/logo-pagoda-transparent.png" alt="">
+    <span class="t">Sushi Jem <span data-t="adminBadge">Admin</span></span>
+    <span class="sp"></span>
+    <span class="dirty-dot" id="dirtyDot" title="unsaved changes"></span>
+    <a class="btn ghost sm" href="/" target="_blank" rel="noopener" data-t="viewSite">View site</a>
+    <button class="btn ghost sm" id="langBtn" type="button">عربي</button>
+    <button class="btn" id="saveBtn" type="button" disabled data-t="save">Save & publish</button>
+  </div>
+  <div class="shell">
+    <aside class="side" id="side"></aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div id="toast" role="status"><span></span></div>
+
+<script>
+'use strict';
+var $ = function(s){return document.querySelector(s)};
+var AUL = 'en';
+var C = null, DEFAULTS = null, dirty = false, updated_at = null, curSec = 'dash';
+
+/* ---------- i18n (admin chrome) ---------- */
+var T = {
+  en: {
+    loginTitle:'Sushi Jem Admin', loginSub:'Enter the admin password to manage the site', loginBtn:'Sign in',
+    adminBadge:'Admin', viewSite:'View site', save:'Save & publish', saved:'Published', saving:'Publishing…',
+    unsaved:'You have unsaved changes', loginFail:'Wrong password', locked:'Too many attempts. Try again in ',
+    sec:'s', dash:'Dashboard', offers:'Offers', ann:'Announcement', menu:'Menu', texts:'Texts', settings:'Settings',
+    security:'Security', tools:'Tools', cat:'Category', grp:'Group', item:'Item', variant:'Variant',
+    addCat:'+ Add category', addGrp:'+ Add group', addItem:'+ Add item', addVar:'+ Add variant',
+    offerT:'+ Add offer', branchT:'+ Add branch', nameAr:'Arabic', nameEn:'English', price:'Price',
+    oldPrice:'Old price (optional)', badge:'Badge', desc:'Description', image:'Image (file name or URL)',
+    link:'Link (optional)', enabled:'Enabled', title:'Title', id:'id', kcal:'Calories / piece',
+    num:'Number badge', feat:'Featured (wide card)', kanji:'Kanji mark', listStyle:'List style (rows)',
+    currentPw:'Current password', newPw:'New password (min 8)', confirmPw:'Confirm new password',
+    changePw:'Change password', logout:'Log out', exportJ:'Export content (JSON)', importJ:'Import content (JSON)',
+    resetD:'Reset everything to defaults', confirmReset:'Reset ALL content to the site defaults? Unpublished changes are lost.',
+    confirmDel:'Delete this?', lastPub:'Last published', never:'never', items:'items', offersActive:'active offers',
+    annOn:'Announcement bar is ON', annOff:'Announcement bar is OFF', annText:'Announcement text',
+    jolt:'JOLT Bowling popup', joltHint:'Texts for the popup are in Texts (jolt section).',
+    howTitle:'How this works', howBody:'Every change you save here is published to the live site immediately. The site keeps working even if nothing was ever saved here (it falls back to its built-in defaults).',
+    imgHint:'File name like dish-1 (shown as images/dish-1.jpg) or a full https:// URL.',
+    marquee:'Moving strip words (one per line)', rail:'Home gallery photos (file names, comma separated)',
+    branches:'Branches', addr:'Address', phone:'Phone (display)', phoneIntl:'Phone (international, tel: links)',
+    wa:'WhatsApp number (digits only)', hsLink:'HungerStation link', ig:'Instagram URL', snap:'Snapchat URL',
+    coords:'Map coordinates (lat,lng)', currency:'Currency label', del:'Delete', up:'Up', down:'Down',
+    importBad:'That file is not valid content JSON', pwChanged:'Password changed. Sign in again.',
+    pwWrong:'Current password is wrong', sessionEnded:'Session expired. Sign in again.',
+    sec1:'Change admin password', sec2:'Log out of this device', toolsTitle:'Backup & reset',
+    textHint:'Every text has an Arabic and an English side. Some fields accept simple HTML like <em>…</em>.',
+    menuHint:'Drag-free ordering: use the arrows. The id is used by links (keep it short, lowercase, unique).',
+    offerHint:'Offers appear in their own section on the site. Empty offers section hides itself.',
+    annHint:'Shows a red bar at the very top of the site. Visitors can close it; it reappears when the text changes.',
+    resetDone:'Reset to defaults loaded. Press Save & publish to apply.'
+  },
+  ar: {
+    loginTitle:'إدارة سوشي جيم', loginSub:'اكتب كلمة مرور الإدارة للتحكم بالموقع', loginBtn:'تسجيل الدخول',
+    adminBadge:'الإدارة', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
+    unsaved:'لديك تغييرات غير محفوظة', loginFail:'كلمة المرور غير صحيحة', locked:'محاولات كثيرة. حاول بعد ',
+    sec:' ثانية', dash:'الرئيسية', offers:'العروض', ann:'التنبيه', menu:'القائمة', texts:'النصوص', settings:'الإعدادات',
+    security:'الأمان', tools:'أدوات', cat:'قسم', grp:'مجموعة', item:'صنف', variant:'خيار',
+    addCat:'+ إضافة قسم', addGrp:'+ إضافة مجموعة', addItem:'+ إضافة صنف', addVar:'+ إضافة خيار',
+    offerT:'+ إضافة عرض', branchT:'+ إضافة فرع', nameAr:'عربي', nameEn:'English', price:'السعر',
+    oldPrice:'السعر القديم (اختياري)', badge:'شارة العرض', desc:'الوصف', image:'الصورة (اسم ملف أو رابط)',
+    link:'رابط (اختياري)', enabled:'مفعل', title:'العنوان', id:'المعرف', kcal:'السعرات للقطعة',
+    num:'رقم الشارة', feat:'صنف مميز (بطاقة عريضة)', kanji:'رمز كانجي', listStyle:'عرض قائمة (صفوف)',
+    currentPw:'كلمة المرور الحالية', newPw:'كلمة المرور الجديدة (8 أحرف فأكثر)', confirmPw:'تأكيد كلمة المرور',
+    changePw:'تغيير كلمة المرور', logout:'تسجيل الخروج', exportJ:'تصدير المحتوى (JSON)', importJ:'استيراد المحتوى (JSON)',
+    resetD:'إرجاع كل شيء للوضع الافتراضي', confirmReset:'إرجاع كل المحتوى لافتراضيات الموقع؟ سيتم فقدان التغييرات غير المنشورة.',
+    confirmDel:'حذف هذا؟', lastPub:'آخر نشر', never:'أبداً', items:'صنف', offersActive:'عرض مفعل',
+    annOn:'شريط التنبيه مفعّل', annOff:'شريط التنبيه متوقف', annText:'نص التنبيه',
+    jolt:'نافذة JOLT Bowling', joltHint:'نصوص النافذة في قسم النصوص (jolt).',
+    howTitle:'كيف تعمل الصفحة', howBody:'كل حفظ هنا ينشر فوراً على الموقع. الموقع يعمل حتى لو لم تحفظ شيء هنا (يعود للقيم المدمجة).',
+    imgHint:'اسم ملف مثل dish-1 (يعرض images/dish-1.jpg) أو رابط https كامل.',
+    marquee:'كلمات الشريط المتحرك (كلمة في كل سطر)', rail:'صور معرض الصفحة الرئيسية (أسماء ملفات مفصولة بفواصل)',
+    branches:'الفروع', addr:'العنوان', phone:'الجوال (المعروض)', phoneIntl:'الجوال (دولي، روابط الاتصال)',
+    wa:'رقم واتساب (أرقام فقط)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
+    coords:'إحداثيات الخريطة (lat,lng)', currency:'اسم العملة', del:'حذف', up:'أعلى', down:'أسفل',
+    importBad:'الملف ليس JSON صالح للمحتوى', pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.',
+    pwWrong:'كلمة المرور الحالية غير صحيحة', sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
+    sec1:'تغيير كلمة مرور الإدارة', sec2:'تسجيل الخروج من هذا الجهاز', toolsTitle:'نسخ احتياطي وإرجاع',
+    textHint:'كل نص له خانة عربية وخانة إنجليزية. بعض الخانات تقبل HTML بسيط مثل <em>…</em>.',
+    menuHint:'الترتيب بالأسهم. المعرف تستخدمه روابط الموقع (قصير، أحرف صغيرة، غير مكرر).',
+    offerHint:'العروض تظهر في قسم خاص على الموقع. قسم العروض يختفي إذا كان فارغاً.',
+    annHint:'يظهر شريط أحمر أعلى الموقع. الزائر يستطيع إغلاقه، ويعود للظهور عند تغيّر النص.',
+    resetDone:'تم تحميل الافتراضيات. اضغط حفظ ونشر لتطبيقها.'
+  }
+};
+function t(k){ return T[AUL][k] || T.en[k] || k }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'\u0026amp;','<':'\u0026lt;','>':'\u0026gt;','"':'\u0026quot;'}[c]}) }
+
+/* ---------- helpers ---------- */
+function getPath(o, path){ return path.split('.').reduce(function(x,k){return x==null?x:x[k]}, o) }
+function setPath(o, path, v){
+  var ks = path.split('.'), t = o;
+  for (var i = 0; i < ks.length - 1; i++){
+    if (t[ks[i]] == null) t[ks[i]] = ks[i+1] === String(Math.floor(+ks[i+1])) && /^\d+$/.test(String(ks[i+1])) ? [] : {};
+    t = t[ks[i]];
+  }
+  t[ks[ks.length-1]] = v;
+}
+function deepMerge(base, src){
+  if (src === null || src === undefined) return base;
+  if (typeof src !== 'object' || Array.isArray(src)) return src;
+  var out = (typeof base === 'object' && base !== null && !Array.isArray(base)) ? base : {};
+  Object.keys(src).forEach(function(k){ out[k] = (typeof src[k] === 'object' && src[k] !== null && !Array.isArray(src[k]) && typeof out[k] === 'object' && out[k] !== null) ? deepMerge(out[k], src[k]) : src[k] });
+  return out;
+}
+function clone(o){ return JSON.parse(JSON.stringify(o)) }
+function toast(msg, isErr){
+  var el = $('#toast');
+  el.querySelector('span').textContent = msg;
+  el.classList.toggle('err', !!isErr);
+  el.classList.add('on');
+  clearTimeout(el._h);
+  el._h = setTimeout(function(){ el.classList.remove('on') }, 2400);
+}
+function markDirty(){
+  dirty = true;
+  $('#saveBtn').disabled = false;
+  $('#dirtyDot').classList.remove('saved');
+}
+function clearDirty(){
+  dirty = false;
+  $('#saveBtn').disabled = true;
+  $('#dirtyDot').classList.add('saved');
+}
+function fmtDate(ms){
+  if (!ms) return t('never');
+  try { return new Date(ms).toLocaleString(AUL === 'ar' ? 'ar-SA' : 'en-GB') } catch(e){ return String(ms) }
+}
+
+/* ---------- field builders ---------- */
+function fld(label, path, val, hint, type){
+  var h = '<div class="fld"><label>' + esc(label) + '</label>';
+  if (type === 'textarea') h += '<textarea data-path="' + path + '">' + esc(val) + '</textarea>';
+  else if (type === 'num') h += '<input data-path="' + path + '" type="number" step="any" value="' + esc(val) + '">';
+  else h += '<input data-path="' + path + '" value="' + esc(val) + '">';
+  if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
+  return h + '</div>';
+}
+function bi(label, basePath, pair, hint){
+  pair = pair || ['', ''];
+  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><b>ع</b><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '"><b>EN</b><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '"></div>';
+  if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
+  return h + '</div>';
+}
+function chk(label, path, val){
+  return '<label class="chk"><input type="checkbox" data-cast="bool" data-path="' + path + '"' + (val ? ' checked' : '') + '>' + esc(label) + '</label>';
+}
+
+/* ---------- sections ---------- */
+var SECTIONS = [
+  {id:'dash',   icon:'⌂',  en:'Dashboard',    ar:'الرئيسية'},
+  {id:'ann',    icon:'📣', en:'Announcement', ar:'التنبيه'},
+  {id:'offers', icon:'🎁', en:'Offers',       ar:'العروض'},
+  {id:'menu',   icon:'🍽', en:'Menu',         ar:'القائمة'},
+  {id:'texts',  icon:'✎',  en:'Texts',        ar:'النصوص'},
+  {id:'settings',icon:'⚙', en:'Settings',     ar:'الإعدادات'},
+  {id:'security',icon:'🔒', en:'Security',     ar:'الأمان'},
+  {id:'tools',  icon:'🧰', en:'Tools',        ar:'أدوات'}
+];
+
+function renderSide(){
+  $('#side').innerHTML = SECTIONS.map(function(s){
+    return '<button data-sec="' + s.id + '" class="' + (curSec === s.id ? 'on' : '') + '">' + s.icon + ' ' + (AUL === 'ar' ? s.ar : s.en) + '</button>';
+  }).join('');
+}
+
+function renderMain(){
+  var el = $('#main');
+  if (curSec === 'dash') el.innerHTML = secDash();
+  else if (curSec === 'ann') el.innerHTML = secAnn();
+  else if (curSec === 'offers') el.innerHTML = secOffers();
+  else if (curSec === 'menu') el.innerHTML = secMenu();
+  else if (curSec === 'texts') el.innerHTML = secTexts();
+  else if (curSec === 'settings') el.innerHTML = secSettings();
+  else if (curSec === 'security') el.innerHTML = secSecurity();
+  else if (curSec === 'tools') el.innerHTML = secTools();
+}
+
+function secDash(){
+  var items = 0;
+  C.menu.forEach(function(c){ (c.groups||[]).forEach(function(g){ items += (g.items||[]).length }) });
+  var offersOn = (C.offers||[]).filter(function(o){return o && o.enabled !== false}).length;
+  var annOn = C.announcement && C.announcement.enabled;
+  return '<h2 class="sec-title">' + t('dash') + '</h2>' +
+  '<p class="sec-sub">' + t('howBody') + '</p>' +
+  '<div class="stats">' +
+  '<div class="stat"><b>' + C.menu.length + '</b><span>' + t('cat') + '</span></div>' +
+  '<div class="stat"><b>' + items + '</b><span>' + t('items') + '</span></div>' +
+  '<div class="stat"><b>' + offersOn + '</b><span>' + t('offersActive') + '</span></div>' +
+  '<div class="stat"><b>' + (annOn ? '●' : '○') + '</b><span>' + (annOn ? t('annOn') : t('annOff')) + '</span></div>' +
+  '</div>' +
+  '<div class="note">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</div>';
+}
+
+function secAnn(){
+  var a = C.announcement || (C.announcement = {enabled:false, text:['',''], link:''});
+  return '<h2 class="sec-title">' + t('ann') + '</h2>' +
+  '<p class="sec-sub">' + t('annHint') + '</p>' +
+  '<div class="card">' +
+  chk(t('enabled'), 'announcement.enabled', a.enabled) +
+  bi(t('annText'), 'announcement.text', a.text) +
+  fld(t('link'), 'announcement.link', a.link, 'https://…') +
+  '</div>';
+}
+
+function secOffers(){
+  var list = C.offers || (C.offers = []);
+  var h = '<h2 class="sec-title">' + t('offers') + '</h2><p class="sec-sub">' + t('offerHint') + '</p>';
+  list.forEach(function(o, i){
+    h += '<div class="card block">' +
+    '<div class="block-head">' + chk(t('enabled'), 'offers.' + i + '.enabled', o.enabled !== false) +
+    '<span class="grow"></span>' +
+    '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '">↑</button>' +
+    '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '">↓</button>' +
+    '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '">✕</button></div>' +
+    '<div class="row2">' +
+    bi(t('title'), 'offers.' + i + '.t', o.t) +
+    bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
+    '</div><div class="row2">' +
+    bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
+    '<div><div class="row2">' +
+    fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
+    fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
+    '</div></div></div><div class="row2">' +
+    fld(t('image'), 'offers.' + i + '.img', o.img, t('imgHint')) +
+    fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…') +
+    '</div></div>';
+  });
+  h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button>';
+  return h;
+}
+
+function secMenu(){
+  var h = '<h2 class="sec-title">' + t('menu') + '</h2><p class="sec-sub">' + t('menuHint') + '</p>';
+  C.menu.forEach(function(cat, ci){
+    h += '<div class="card block">' +
+    '<div class="block-head">' +
+    '<input class="mini idbox" data-path="menu.' + ci + '.id" value="' + esc(cat.id) + '" placeholder="' + t('id') + '">' +
+    '<span class="grow">' + bi(t('cat'), 'menu.' + ci + '.t', cat.t) + '</span>' +
+    '<button class="iconbtn" data-act="cat-up" data-i="' + ci + '">↑</button>' +
+    '<button class="iconbtn" data-act="cat-down" data-i="' + ci + '">↓</button>' +
+    '<button class="iconbtn danger" data-act="cat-del" data-i="' + ci + '">✕</button>' +
+    '</div>';
+    (cat.groups || []).forEach(function(g, gi){
+      h += '<div class="block sub">' +
+      '<div class="block-head">' +
+      '<span class="grow">' + bi(t('grp'), 'menu.' + ci + '.groups.' + gi + '.t', g.t || ['','']) + '</span>' +
+      chk(t('listStyle'), 'menu.' + ci + '.groups.' + gi + '.list', g.list) +
+      '<button class="iconbtn" data-act="grp-up" data-ci="' + ci + '" data-i="' + gi + '">↑</button>' +
+      '<button class="iconbtn" data-act="grp-down" data-ci="' + ci + '" data-i="' + gi + '">↓</button>' +
+      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + ci + '" data-i="' + gi + '">✕</button>' +
+      '</div>' +
+      '<div class="items-head">' + t('item') + ':</div>';
+      (g.items || []).forEach(function(it, ii){
+        var p = 'menu.' + ci + '.groups.' + gi + '.items.' + ii;
+        h += '<div class="block sub">' +
+        '<div class="block-head">' +
+        '<input class="mini idbox" data-path="' + p + '.id" value="' + esc(it.id) + '" placeholder="' + t('id') + '">' +
+        '<span class="grow"></span>' +
+        '<button class="iconbtn" data-act="item-up" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">↑</button>' +
+        '<button class="iconbtn" data-act="item-down" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">↓</button>' +
+        '<button class="iconbtn danger" data-act="item-del" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">✕</button></div>' +
+        '<div class="row2">' + bi(t('title'), p + '.n', it.n) + bi(t('desc'), p + '.d', it.d || ['','']) + '</div>' +
+        '<div class="row3">' +
+        fld(t('kanji'), p + '.k', it.k || '') +
+        fld(t('num'), p + '.num', it.num, '', 'num') +
+        fld(t('kcal'), p + '.kcal', it.kcal || '', '', 'num') +
+        '</div>' +
+        '<div class="block-head">' + chk(t('feat'), p + '.feat', it.feat) +
+        '<span class="grow"></span>' + fld(t('image'), p + '.img', it.img || '', t('imgHint')) + '</div>' +
+        '<div class="items-head">' + t('variant') + ':</div>';
+        (it.v || []).forEach(function(v, vi){
+          h += '<div class="varrow">' +
+          '<input class="mini" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '">' +
+          '<input class="mini" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="' + t('nameEn') + '">' +
+          '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '" placeholder="' + t('price') + '">' +
+          '<button class="iconbtn danger" data-act="var-del" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '">✕</button>' +
+          '</div>';
+        });
+        h += '<button class="addbtn" data-act="var-add" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
+        '</div>';
+      });
+      h += '<button class="addbtn" data-act="item-add" data-ci="' + ci + '" data-i="' + gi + '">' + t('addItem') + '</button></div>';
+    });
+    h += '<button class="addbtn" data-act="grp-add" data-i="' + ci + '">' + t('addGrp') + '</button></div>';
+  });
+  h += '<button class="addbtn" data-act="cat-add">' + t('addCat') + '</button>';
+  return h;
+}
+
+var TEXT_GROUPS = [
+  {en:'Navigation', ar:'التنقل', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title'}},
+  {en:'Hero & chips', ar:'الواجهة', test:function(k){return k.indexOf('hero.')===0 || k.indexOf('fact')===0 || k.indexOf('c.')===0 || k==='band'}},
+  {en:'Menu section', ar:'القائمة', test:function(k){return k.indexOf('m.')===0 || k==='offers.t'}},
+  {en:'Dishes', ar:'الأطباق', test:function(k){return k.indexOf('dishes.')===0 || k.indexOf('d1.')===0 || k.indexOf('d2.')===0 || k.indexOf('d3.')===0 || k==='dish.go'}},
+  {en:'Services & amenities', ar:'الخدمات', test:function(k){return k.indexOf('svc.')===0 || k.indexOf('amen.')===0 || k.indexOf('a.')===0}},
+  {en:'Branches & walk', ar:'الفروع', test:function(k){return k.indexOf('p.')===0 || k.indexOf('b1.')===0 || k.indexOf('b2.')===0 || k.indexOf('walk.')===0}},
+  {en:'Order steps', ar:'خطوات الطلب', test:function(k){return k.indexOf('order.')===0 || k.indexOf('s1.')===0 || k.indexOf('s2.')===0 || k.indexOf('s3.')===0}},
+  {en:'Review & final', ar:'التقييم والخاتمة', test:function(k){return k.indexOf('review.')===0 || k.indexOf('final.')===0}},
+  {en:'Footer', ar:'التذييل', test:function(k){return k.indexOf('f.')===0 || k==='title'}},
+  {en:'JOLT popup', ar:'نافذة JOLT', test:function(k){return k.indexOf('jolt.')===0}},
+  {en:'Cart & order', ar:'السلة والطلب', test:function(k){return false}},
+  {en:'Other', ar:'أخرى', test:function(k){return true}}
+];
+
+function secTexts(){
+  var h = '<h2 class="sec-title">' + t('texts') + '</h2><p class="sec-sub">' + t('textHint') + '</p>';
+  var keys = [];
+  Object.keys(DEFAULTS.strings.ar).concat(Object.keys(DEFAULTS.strings.en)).forEach(function(k){ if (keys.indexOf(k) < 0) keys.push(k) });
+  TEXT_GROUPS.forEach(function(g){
+    var gk = keys.filter(function(k){return g.test(k)});
+    if (!gk.length && g.en !== 'Cart & order') return;
+    h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
+    if (g.en === 'Cart & order'){
+      Object.keys(C.dyn || {}).forEach(function(k){
+        h += trow(k, 'dyn.' + k + '.0', 'dyn.' + k + '.1', C.dyn[k][0], C.dyn[k][1]);
+      });
+      h += '</div><div class="tgroup"><h3>' + (AUL === 'ar' ? 'أمثلة الحقول' : 'Field placeholders') + '</h3>';
+      Object.keys(C.ph || {}).forEach(function(k){
+        h += trow(k, 'ph.' + k + '.0', 'ph.' + k + '.1', C.ph[k][0], C.ph[k][1]);
+      });
+      h += '</div>';
+      return;
+    }
+    gk.forEach(function(k){
+      var ar = getPath(C, 'strings.ar.' + k), en = getPath(C, 'strings.en.' + k);
+      h += trow(k, 'strings.ar.' + k, 'strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en);
+    });
+    h += '</div>';
+  });
+  return h;
+}
+function trow(k, pAr, pEn, vAr, vEn){
+  return '<div class="trow"><span class="k">' + esc(k) + '</span><input data-path="' + pAr + '" value="' + esc(vAr) + '" placeholder="عربي"><input data-path="' + pEn + '" value="' + esc(vEn) + '" placeholder="English"></div>';
+}
+
+function secSettings(){
+  var cfg = C.config;
+  var h = '<h2 class="sec-title">' + t('settings') + '</h2>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'التواصل والروابط':'Contact & links') + '</h3><div class="row2">' +
+  fld(t('wa'), 'config.wa', cfg.wa) +
+  fld(t('phone'), 'config.phone', cfg.phone) +
+  fld(t('phoneIntl'), 'config.phoneIntl', cfg.phoneIntl, '+966…') +
+  fld(t('currency'), 'config.currency.0', cfg.currency ? cfg.currency[0] : '') +
+  fld(t('hsLink'), 'config.hungerStation', cfg.hungerStation, 'https://…') +
+  fld(t('ig'), 'config.instagram', cfg.instagram, 'https://…') +
+  fld(t('snap'), 'config.snapchat', cfg.snapchat, 'https://…') +
+  fld(t('coords'), 'config.mapCoords', cfg.mapCoords, '19.1089791,42.1296272') +
+  '</div></div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?t('branches'):'Branches') + '</h3>';
+  (cfg.branches || []).forEach(function(b, i){
+    h += '<div class="block sub"><div class="row2">' +
+    bi(t('title'), 'config.branches.' + i + '.n', b.n) +
+    bi(t('addr'), 'config.branches.' + i + '.a', b.a) +
+    '</div><div class="block-head"><span class="grow"></span>' +
+    '<input class="mini idbox" data-path="config.branches.' + i + '.id" value="' + esc(b.id) + '" placeholder="' + t('id') + '">' +
+    '<button class="iconbtn danger" data-act="br-del" data-i="' + i + '">✕</button></div></div>';
+  });
+  h += '<button class="addbtn" data-act="br-add">' + t('branchT') + '</button></div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'الشريط والمعرض':'Strip & gallery') + '</h3>' +
+  fld(t('marquee'), 'config.marquee', (cfg.marquee||[]).join('\\n'), '', 'textarea') +
+  fld(t('rail'), 'config.rail', (cfg.rail||[]).join(', ')) +
+  '</div>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'نافذة JOLT':'JOLT popup') + '</h3>' +
+  chk(t('enabled'), 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
+  '<div class="note">' + t('joltHint') + '</div></div>';
+  return h;
+}
+
+function secSecurity(){
+  return '<h2 class="sec-title">' + t('security') + '</h2>' +
+  '<div class="card"><h3 style="margin-bottom:12px">' + t('sec1') + '</h3>' +
+  fld(t('currentPw'), 'pwCur', '', '', 'password') +
+  fld(t('newPw'), 'pwNew', '', '', 'password') +
+  fld(t('confirmPw'), 'pwNew2', '', '', 'password') +
+  '<div class="err" id="pwErr"></div>' +
+  '<button class="btn" data-act="pw-change">' + t('changePw') + '</button></div>' +
+  '<div class="card dangerzone"><button class="btn ghost" data-act="logout">' + t('logout') + '</button></div>';
+}
+
+function secTools(){
+  return '<h2 class="sec-title">' + t('toolsTitle') + '</h2>' +
+  '<div class="card">' +
+  '<p style="margin:0 0 12px">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</p>' +
+  '<div class="block-head"><button class="btn ghost sm" data-act="export">' + t('exportJ') + '</button>' +
+  '<label class="btn ghost sm" style="cursor:pointer">' + t('importJ') + '<input type="file" id="importFile" accept=".json,application/json" class="hidden"></label>' +
+  '<button class="btn ghost sm" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>' +
+  '<div class="err" id="impErr"></div></div>';
+}
+
+/* ---------- structural actions ---------- */
+function arrOp(arr, i, dir){
+  var j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+}
+function act(a, el){
+  var i = +el.dataset.i, ci = el.dataset.ci != null ? +el.dataset.ci : null, gi = el.dataset.gi != null ? +el.dataset.gi : null, ii = el.dataset.ii != null ? +el.dataset.ii : null;
+  switch (a){
+    case 'cat-add': C.menu.push({id:'cat' + Date.now() % 10000, t:['قسم جديد','New section'], groups:[{t:['',''], items:[]}]}); break;
+    case 'cat-del': if (C.menu.length < 2 || confirm(t('confirmDel'))) C.menu.splice(i, 1); break;
+    case 'cat-up': arrOp(C.menu, i, -1); break;
+    case 'cat-down': arrOp(C.menu, i, 1); break;
+    case 'grp-add': C.menu[ci].groups.push({t:['',''], items:[]}); break;
+    case 'grp-del': if (confirm(t('confirmDel'))) C.menu[ci].groups.splice(i, 1); break;
+    case 'grp-up': arrOp(C.menu[ci].groups, i, -1); break;
+    case 'grp-down': arrOp(C.menu[ci].groups, i, 1); break;
+    case 'item-add': C.menu[ci].groups[gi].items.push({id:'it' + Date.now() % 10000, n:['صنف جديد','New item'], d:['',''], v:[['','', 0]]}); break;
+    case 'item-del': if (confirm(t('confirmDel'))) C.menu[ci].groups[gi].items.splice(i, 1); break;
+    case 'item-up': arrOp(C.menu[ci].groups[gi].items, i, -1); break;
+    case 'item-down': arrOp(C.menu[ci].groups[gi].items, i, 1); break;
+    case 'var-add': C.menu[ci].groups[gi].items[ii].v.push(['','', 0]); break;
+    case 'var-del': C.menu[ci].groups[gi].items[ii].v.splice(i, 1); break;
+    case 'off-add': C.offers.push({enabled:true, t:['عرض جديد','New offer'], d:['',''], badge:['',''], price:'', oldPrice:'', img:'', link:''}); break;
+    case 'off-del': if (confirm(t('confirmDel'))) C.offers.splice(i, 1); break;
+    case 'off-up': arrOp(C.offers, i, -1); break;
+    case 'off-down': arrOp(C.offers, i, 1); break;
+    case 'br-add': C.config.branches.push({id:'br' + Date.now() % 10000, n:['فرع جديد','New branch'], a:['','']}); break;
+    case 'br-del': if (confirm(t('confirmDel'))) C.config.branches.splice(i, 1); break;
+    case 'reset':
+      if (confirm(t('confirmReset'))){
+        C = clone(DEFAULTS); delete C._comment;
+        toast(t('resetDone'));
+      }
+      break;
+    case 'export':
+      (function(){
+        var blob = new Blob([JSON.stringify(C, null, 1)], {type:'application/json'});
+        var a2 = document.createElement('a');
+        a2.href = URL.createObjectURL(blob);
+        a2.download = 'sushi-jem-content.json';
+        a2.click();
+        URL.revokeObjectURL(a2.href);
+      })();
+      break;
+    case 'logout':
+      fetch('api/logout', {method:'POST'}).then(function(){ location.reload() });
+      break;
+    case 'pw-change':
+      (function(){
+        var cur = $('#main [data-path="pwCur"]').value, nw = $('#main [data-path="pwNew"]').value, nw2 = $('#main [data-path="pwNew2"]').value;
+        var e2 = $('#pwErr');
+        if (nw !== nw2){ e2.textContent = AUL === 'ar' ? 'التأكيد لا يطابق' : 'Confirmation does not match'; return; }
+        fetch('api/password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({current:cur, next:nw})})
+          .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
+          .then(function(res){
+            if (res.ok){ toast(t('pwChanged')); setTimeout(function(){ location.reload() }, 1200); }
+            else e2.textContent = res.j.error || t('pwWrong');
+          });
+      })();
+      break;
+    default: return;
+  }
+  if (a !== 'export' && a !== 'logout' && a !== 'pw-change'){ markDirty(); renderMain(); }
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', function(e){
+  var s = e.target.closest('[data-sec]');
+  if (s){ curSec = s.dataset.sec; renderSide(); renderMain(); return; }
+  var a = e.target.closest('[data-act]');
+  if (a){ act(a.dataset.act, a); return; }
+});
+document.addEventListener('input', function(e){
+  var p = e.target.dataset ? e.target.dataset.path : null;
+  if (!p || p.indexOf('pw') === 0) return;
+  var v = e.target.value;
+  if (e.target.dataset.cast === 'num' || e.target.type === 'number') v = (v === '' ? '' : Number(v));
+  if (p === 'config.marquee'){ setPath(C, p, v.split('\\n').map(function(x){return x.trim()}).filter(Boolean)); markDirty(); return; }
+  if (p === 'config.rail'){ setPath(C, p, v.split(',').map(function(x){return x.trim()}).filter(Boolean)); markDirty(); return; }
+  setPath(C, p, v);
+  markDirty();
+});
+document.addEventListener('change', function(e){
+  if (e.target.dataset && e.target.dataset.cast === 'bool' && e.target.dataset.path){
+    setPath(C, e.target.dataset.path, e.target.checked);
+    markDirty();
+  }
+});
+document.addEventListener('keydown', function(e){
+  if ((e.metaKey || e.ctrlKey) && e.key === 's'){ e.preventDefault(); if (dirty) save(); }
+});
+window.addEventListener('beforeunload', function(e){
+  if (dirty){ e.preventDefault(); e.returnValue = t('unsaved'); return e.returnValue }
+});
+
+/* ---------- save ---------- */
+function save(){
+  $('#saveBtn').textContent = t('saving');
+  fetch('api/content', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(C)
+  }).then(function(r){
+    return r.json().then(function(j){ return {ok: r.ok, j: j} });
+  }).then(function(res){
+    if (res.ok){
+      updated_at = res.j.updated_at;
+      clearDirty();
+      toast(t('saved'));
+    } else if (res.j && res.j.error === 'auth'){
+      toast(t('sessionEnded'), true);
+      showLogin();
+    } else {
+      toast(res.j.error || 'error', true);
+    }
+  }).catch(function(){ toast('network error', true) })
+  .finally(function(){ $('#saveBtn').textContent = t('save') });
+}
+$('#saveBtn').addEventListener('click', save);
+
+$('#langBtn').addEventListener('click', function(){
+  AUL = AUL === 'en' ? 'ar' : 'en';
+  document.documentElement.lang = AUL;
+  document.documentElement.dir = AUL === 'ar' ? 'rtl' : 'ltr';
+  $('#langBtn').textContent = AUL === 'en' ? 'عربي' : 'EN';
+  applyChrome();
+  if ($('#app').classList.contains('hidden')) return;
+  renderSide(); renderMain();
+});
+
+function applyChrome(){
+  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t) });
+}
+
+/* ---------- login & boot ---------- */
+function showLogin(){
+  $('#app').classList.add('hidden');
+  $('#login').classList.remove('hidden');
+  $('#loginPw').value = '';
+  $('#loginPw').focus();
+}
+function showApp(){
+  $('#login').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  applyChrome();
+  renderSide(); renderMain();
+  clearDirty();
+}
+function loadContent(){
+  return fetch('api/content').then(function(r){ return r.json() }).then(function(cc){
+    updated_at = cc.updated_at;
+    C = cc.content ? deepMerge(clone(DEFAULTS), cc.content) : clone(DEFAULTS);
+    if (C._comment) delete C._comment;
+    showApp();
+  });
+}
+$('#loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = $('#loginErr');
+  err.textContent = '';
+  fetch('api/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:$('#loginPw').value})})
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
+    .then(function(res){
+      if (res.ok) loadContent();
+      else if (res.j.retry_after) err.textContent = t('locked') + Math.ceil(res.j.retry_after/1000) + t('sec');
+      else err.textContent = t('loginFail');
+    })
+    .catch(function(){ err.textContent = 'network error' });
+});
+
+document.addEventListener('change', function(e){
+  if (e.target.id === 'importFile' && e.target.files && e.target.files[0]){
+    var f = e.target.files[0], rd = new FileReader();
+    rd.onload = function(){
+      try {
+        var j = JSON.parse(rd.result);
+        if (!j || !j.config || !j.menu || !j.strings) throw 0;
+        C = j;
+        markDirty(); renderMain();
+        toast('imported');
+      } catch (err){ $('#impErr').textContent = t('importBad') }
+    };
+    rd.readAsText(f);
+  }
+});
+
+applyChrome();
+fetch('content.json').then(function(r){ return r.json() }).then(function(d){
+  DEFAULTS = d;
+  fetch('api/session').then(function(r){
+    if (r.ok) loadContent();
+    else showLogin();
+  }).catch(showLogin);
+}).catch(function(){
+  $('#login').classList.remove('hidden');
+  $('#loginErr').textContent = 'failed to load defaults';
+});
+</script>
+</body>
+</html>
