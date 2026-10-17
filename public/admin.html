@@ -707,9 +707,9 @@ function secMenu(){
       h += '<button class="addbtn" data-act="var-add" data-ci="' + curCat + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
       '</div>';
     });
-    h += '<button class="bigadd" data-act="item-add" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-plus"/></svg>' + t('addItem') + '</button>';
+    h += '<button class="bigadd" data-act="item-add" data-ci="' + curCat + '" data-gi="' + gi + '"><svg class="i"><use href="#i-plus"/></svg>' + t('addItem') + '</button>';
   });
-  h += '<button class="addbtn" data-act="grp-add" data-i="' + curCat + '">' + t('addGrp') + '</button>';
+  h += '<button class="addbtn" data-act="grp-add" data-ci="' + curCat + '">' + t('addGrp') + '</button>';
   h += '</div>';
   return h;
 }
