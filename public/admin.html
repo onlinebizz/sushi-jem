@@ -180,7 +180,8 @@ details.tgroup .tbody{padding:0 18px 12px}
   body.show-en .trow{grid-template-columns:1fr}
   body.show-en .enwrap{display:block}
   body.show-en .bi{grid-template-columns:1fr}
-  body.show-en .varrow .enwrap input{grid-column:1;grid-row:2}
+  body.show-en .varrow{grid-template-columns:1fr 90px 40px}
+  body.show-en .varrow .enwrap input{grid-column:1;grid-row:2;min-width:0}
 }
 @media (max-width:640px){
   .topbar .t{display:none}
@@ -199,6 +200,8 @@ details.tgroup .tbody{padding:0 18px 12px}
 }
 @media (max-width:420px){
   .topbar a[href="/"]{display:none}
+  .itemrow{grid-template-columns:48px minmax(0,1fr) 44px}
+  .itemrow .pr{grid-column:2;grid-row:2}
 }
 </style>
 </head>
@@ -221,7 +224,8 @@ details.tgroup .tbody{padding:0 18px 12px}
 </svg>
 
 <div id="login" class="hidden">
-  <div class="card">
+  <div class="card" style="position:relative">
+    <button id="enBtnLogin" class="btn ghost sm" type="button" style="position:absolute;top:14px;inset-inline-end:14px">EN</button>
     <img src="images/logo-pagoda-transparent.png" alt="سوشي جيم">
     <h1 data-t="loginTitle">لوحة تحكم سوشي جيم</h1>
     <p data-t="loginSub">اكتب كلمة المرور للدخول</p>
@@ -284,7 +288,7 @@ var T = {
     wa:'رقم واتساب (بصيغة دولية مثل 966553694398)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
     coords:'إحداثيات الموقع', coordsHint:'من خرائط قوقل: اضغط بزر الفأرة الأيمن على موقع المطعم واختر نسخ الإحداثيات',
     currency:'اسم العملة', del:'حذف', up:'أعلى', down:'أسفل',
-    pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة',
+    pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة', pwMismatch:'التأكيد لا يطابق',
     sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
     textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
     menuHint:'اختر القسم بالأعلى. أمام كل صنف: الصورة والاسم والسعر فقط. اضغط السهم الصغير للوصف والصورة والخيارات والنقل والحذف.',
@@ -321,7 +325,7 @@ var T = {
     wa:'WhatsApp number (international, e.g. 966553694398)', hsLink:'HungerStation link', ig:'Instagram link', snap:'Snapchat link',
     coords:'Map coordinates', coordsHint:'From Google Maps: right-click the restaurant location and choose the coordinates',
     currency:'Currency label', del:'Delete', up:'Up', down:'Down',
-    pwChanged:'Password changed. Sign in again.', pwWrong:'Current password is wrong',
+    pwChanged:'Password changed. Sign in again.', pwWrong:'Current password is wrong', pwMismatch:'Confirmation does not match',
     sessionEnded:'Session expired. Sign in again.',
     textHint:'Search for the text you want to change, then open its group.',
     menuHint:'A section has groups, and each group has items. Reorder with arrows, delete with the red button.',
@@ -631,7 +635,7 @@ function secDash(){
   '<button class="tile" data-sec="texts"><svg class="i"><use href="#i-text"/></svg>' + t('texts') + '</button>' +
   '<button class="tile" data-sec="settings"><svg class="i"><use href="#i-settings"/></svg>' + t('settings') + '</button>' +
   '</div>' +
-  '<div class="note">' + t('tipSave') + ' &nbsp;·&nbsp; ' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</div>';
+  '<div class="note">' + t('tipSave') + ' &nbsp;·&nbsp; ' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + ' &nbsp;·&nbsp; <a href="/" target="_blank" rel="noopener" style="color:var(--acc);font-weight:600">' + t('viewSite') + ' ↗</a></div>';
 }
 
 function secPromo(){
@@ -670,6 +674,7 @@ function secPromo(){
 }
 
 var curCat = 0;
+var openMores = {};
 function secMenu(){
   if (curCat >= C.menu.length) curCat = 0;
   var h = '<h2 class="sec-title">' + t('menu') + '</h2><p class="sec-sub">' + t('menuHint') + '</p>';
@@ -709,7 +714,7 @@ function secMenu(){
       '<input class="pr" type="number" step="any" inputmode="decimal" data-path="' + p + '.v.0.2" value="' + esc((it.v && it.v[0]) ? it.v[0][2] : '') + '" placeholder="' + esc(t('price')) + '">' +
       '<button class="iconbtn" data-act="more" data-more="' + mid + '" title="' + (AUL==='ar'?'التفاصيل':'Details') + '"><svg class="i"><use href="#i-chev"/></svg></button>' +
       '</div>';
-      h += '<div class="itemmore" id="' + mid + '">' +
+      h += '<div class="itemmore' + (openMores[mid] ? ' open' : '') + '" id="' + mid + '">' +
       '<div class="morebar">' +
       '<button class="txtbtn" data-act="item-up" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-up"/></svg>' + (AUL==='ar'?'نقل لأعلى':'Move up') + '</button>' +
       '<button class="txtbtn" data-act="item-down" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-down"/></svg>' + (AUL==='ar'?'نقل لأسفل':'Move down') + '</button>' +
@@ -893,7 +898,7 @@ function act(a, el){
       (function(){
         var cur = $('#main [data-path="pwCur"]').value, nw = $('#main [data-path="pwNew"]').value, nw2 = $('#main [data-path="pwNew2"]').value;
         var e2 = $('#pwErr');
-        if (nw !== nw2){ e2.textContent = 'التأكيد لا يطابق'; return; }
+        if (nw !== nw2){ e2.textContent = t('pwMismatch'); return; }
         fetch('api/password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({current:cur, next:nw})})
           .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
           .then(function(res){
@@ -904,7 +909,7 @@ function act(a, el){
       break;
     default: return;
   }
-  if (a !== 'logout' && a !== 'pw-change'){ markDirty(); renderMain(); }
+  if (a !== 'logout' && a !== 'pw-change'){ markDirty(); openMores = {}; document.querySelectorAll('.itemmore.open').forEach(function(m){ openMores[m.id] = true }); renderMain(); }
 }
 
 /* ---------- image upload ---------- */
@@ -1068,18 +1073,23 @@ function setLang(l){
   document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
   document.title = t('loginTitle');
   document.body.classList.toggle('show-en', l === 'en');
-  var eb = $('#enBtn');
-  eb.textContent = l === 'ar' ? 'EN' : 'عربي';
-  eb.classList.toggle('en-on', l === 'en');
+  document.querySelectorAll('#enBtn, #enBtnLogin').forEach(function(eb){
+    eb.textContent = l === 'ar' ? 'EN' : 'عربي';
+    eb.classList.toggle('en-on', l === 'en');
+    eb.title = l === 'ar' ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic';
+  });
   document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t) });
-  $('#loginPw').placeholder = l === 'ar' ? 'كلمة المرور' : 'Password';
+  var lp = $('#loginPw');
+  lp.placeholder = l === 'ar' ? 'كلمة المرور' : 'Password';
+  lp.setAttribute('aria-label', l === 'ar' ? 'كلمة المرور' : 'Password');
   try{ localStorage.setItem('sjAdminLang', l) }catch(e){}
   renderSide();
   if (!$('#app').classList.contains('hidden')) renderMain();
 }
 
-$('#enBtn').addEventListener('click', function(){
-  setLang(AUL === 'ar' ? 'en' : 'ar');
+document.addEventListener('click', function(e){
+  var b = e.target.closest('#enBtn, #enBtnLogin');
+  if (b) setLang(AUL === 'ar' ? 'en' : 'ar');
 });
 
 /* ---------- login & boot ---------- */
