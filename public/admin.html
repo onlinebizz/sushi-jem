@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#C4162A">
-<title>Sushi Jem Admin</title>
+<title>لوحة تحكم سوشي جيم</title>
 <link rel="icon" href="images/logo-pagoda.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,10 +16,9 @@
   --acc:#C4162A;--on-acc:#FFFFFF;--text:#2A1B16;--muted:#7A655C;--shadow:rgba(196,22,42,.16);
   --ok:#1B7A3D;--leaf:24px 6px 24px 6px;--f-display:'Lalezar','IBM Plex Sans Arabic',sans-serif;--f-body:'IBM Plex Sans Arabic',system-ui,sans-serif;
 }
-html[dir="rtl"] body{font-family:var(--f-body)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--f-body);font-size:.95rem;line-height:1.6}
-h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.2}
+body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--f-body);font-size:.95rem;line-height:1.7}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;margin:0;line-height:1.25}
 img{max-width:100%}
 button{font:inherit;color:inherit;cursor:pointer}
 input,textarea,select{font:inherit;color:inherit}
@@ -37,7 +36,7 @@ input,textarea,select{font:inherit;color:inherit}
 .err{color:var(--acc);font-size:.85rem;min-height:1.4em;margin-bottom:4px}
 
 /* shell */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;height:64px;padding:0 clamp(14px,3vw,28px)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;height:64px;padding:0 clamp(14px,3vw,28px)}
 .topbar img{height:40px}
 .topbar .t{font-family:var(--f-display);font-size:1.3rem;color:var(--acc)}
 .topbar .sp{flex:1}
@@ -48,52 +47,67 @@ input,textarea,select{font:inherit;color:inherit}
 .btn[disabled]{opacity:.45;pointer-events:none}
 .dirty-dot{width:9px;height:9px;border-radius:50%;background:#E4A11B;display:inline-block}
 .dirty-dot.saved{background:var(--ok)}
-.shell{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 64px)}
-.side{background:var(--panel);border-inline-end:1px solid var(--line);padding:18px 12px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto}
-.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:start;padding:.6em .9em;border-radius:12px;color:var(--text);font-weight:500;margin-bottom:2px}
-.side button:hover{background:var(--soft)}
+.shell{display:grid;grid-template-columns:225px 1fr;min-height:calc(100vh - 64px)}
+.side{background:var(--panel);border-inline-end:1px solid var(--line);padding:14px 10px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto}
+.side button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:start;padding:.65em 1em;border-radius:12px;color:var(--text);font-weight:500;font-size:.97rem;margin-bottom:2px}
 .side button.on{background:var(--acc);color:var(--on-acc)}
-.side .sep{font-size:.72rem;color:var(--muted);margin:16px 10px 6px;letter-spacing:.06em;text-transform:uppercase}
-.main{padding:clamp(18px,3vw,36px);max-width:1060px}
+.main{padding:clamp(18px,3vw,36px);max-width:1040px}
 .sec-title{font-size:1.9rem;color:var(--acc);margin-bottom:4px}
 .sec-sub{color:var(--muted);margin:0 0 22px;max-width:46em}
 
 /* cards & fields */
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:18px 20px;margin-bottom:14px}
-.card.block{padding:14px 16px}
 .fld{display:grid;gap:5px;margin-bottom:12px}
 .fld>label{font-weight:600;font-size:.88rem}
 .fld .hint{color:var(--muted);font-size:.78rem}
-.fld input,.fld textarea,.fld select{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.55em .8em;background:var(--bg)}
+.fld input,.fld textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.55em .8em;background:var(--bg)}
 .fld textarea{resize:vertical;min-height:60px}
 .fld input:focus,.fld textarea:focus{outline:none;border-color:var(--acc)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .bi{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:8px;align-items:center}
 .bi b{font-size:.78rem;color:var(--muted);font-weight:600}
-.chk{display:inline-flex;gap:7px;align-items:center;font-weight:500;font-size:.88rem;white-space:nowrap;cursor:pointer}
+.chk{display:inline-flex;gap:7px;align-items:center;font-weight:500;font-size:.9rem;white-space:nowrap;cursor:pointer}
 .chk input{accent-color:var(--acc);width:17px;height:17px}
+.i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.2em}
+.side .i{width:19px;height:19px;stroke-width:1.6}
+.iconbtn .i{width:16px;height:16px}
+.dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:#D8CCC2}
+.dot.on{background:var(--ok)}
 
 /* menu tree */
 .block{border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0;background:var(--bg)}
 .block .sub{border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--bg2)}
 .block-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
-.block-head .grow{flex:1;min-width:150px}
-.block-head .idbox{width:110px}
+.block-head .grow{flex:1;min-width:130px}
 .mini{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:.4em .6em;font-size:.88rem}
 .iconbtn{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;width:32px;height:32px;display:grid;place-items:center;padding:0;font-size:.9rem}
 .iconbtn:hover{border-color:var(--acc);color:var(--acc)}
 .iconbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
-.addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.45em 1em;font-weight:600;font-size:.85rem;margin:6px 0}
+.addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.45em 1em;font-weight:600;font-size:.88rem;margin:6px 0}
 .addbtn:hover{background:var(--soft)}
 .varrow{display:grid;grid-template-columns:1fr 1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px}
-.items-head{font-size:.75rem;color:var(--muted);font-weight:600;margin:10px 0 4px}
+.items-head{font-size:.8rem;color:var(--muted);font-weight:600;margin:10px 0 4px}
+
+/* image picker */
+.imgpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1px dashed var(--line);border-radius:14px;padding:10px;background:var(--bg)}
+.imgpick .prev{width:74px;height:74px;border-radius:12px;background:var(--soft);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted);font-size:1.6rem}
+.imgpick .prev img{width:100%;height:100%;object-fit:cover}
+.imgpick .ipt{flex:1;min-width:170px}
+.imgpick .ipt input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:.45em .7em;background:var(--panel);font-size:.85rem}
+.imgpick .up{flex:none}
+
+/* chips (marquee / gallery) */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 6px 4px 12px}
+.chip input{border:0;background:none;min-width:90px;font-size:.9rem;outline:none}
+.chip button{border:0;background:var(--soft);color:var(--acc);border-radius:50%;width:24px;height:24px;display:grid;place-items:center;padding:0}
 
 /* texts editor */
 .tgroup{margin-bottom:18px}
 .tgroup h3{font-size:1.25rem;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
-.trow{display:grid;grid-template-columns:200px 1fr 1fr;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
-.trow .k{font-size:.78rem;color:var(--muted);font-weight:600;word-break:break-all}
+.trow{display:grid;grid-template-columns:230px 1fr 1fr;gap:10px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.trow .k{font-size:.85rem;font-weight:600}
 .trow input{border:1.5px solid var(--line);border-radius:10px;padding:.45em .7em;background:var(--bg);width:100%}
 
 /* toast */
@@ -106,14 +120,13 @@ input,textarea,select{font:inherit;color:inherit}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:center}
 .stat b{display:block;font-family:var(--f-display);font-size:2rem;color:var(--acc)}
 .stat span{color:var(--muted);font-size:.82rem}
-.note{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;color:var(--text);font-size:.86rem;margin:10px 0}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:12px 16px;font-size:.87rem;margin:10px 0}
 .dangerzone{border-color:#E7B3B9}
 
 @media (max-width:860px){
   .shell{grid-template-columns:1fr}
   .side{position:static;height:auto;display:flex;overflow-x:auto;gap:6px;padding:10px}
   .side button{white-space:nowrap;width:auto}
-  .side .sep{display:none}
   .row2,.row3{grid-template-columns:1fr}
   .trow{grid-template-columns:1fr;gap:4px}
   .varrow{grid-template-columns:1fr 1fr 70px 32px}
@@ -122,15 +135,30 @@ input,textarea,select{font:inherit;color:inherit}
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-dash" viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></symbol>
+<symbol id="i-ann" viewBox="0 0 24 24"><path d="M3 10v4l4 1 6 4V5L7 9l-4 1Z"/><path d="M17 8a6 6 0 0 1 0 8"/><path d="M17 5a10 10 0 0 1 0 14"/></symbol>
+<symbol id="i-offer" viewBox="0 0 24 24"><path d="M4 4h7l9 9-7 7-9-9V4Z"/><circle cx="9" cy="9" r="1.4"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5V3Z"/><path d="M8.5 9h7M8.5 13h7M8.5 17h4"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5Z"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-6 6"/></symbol>
+</svg>
+
 <div id="login" class="hidden">
   <div class="card">
-    <img src="images/logo-pagoda-transparent.png" alt="Sushi Jem">
-    <h1 data-t="loginTitle">Sushi Jem Admin</h1>
-    <p data-t="loginSub">Enter the admin password to manage the site</p>
+    <img src="images/logo-pagoda-transparent.png" alt="سوشي جيم">
+    <h1 data-t="loginTitle">لوحة تحكم سوشي جيم</h1>
+    <p data-t="loginSub">اكتب كلمة المرور للدخول والتحكم بالموقع</p>
     <form id="loginForm">
-      <input type="password" id="loginPw" autocomplete="current-password" placeholder="Password" aria-label="Password">
+      <input type="password" id="loginPw" autocomplete="current-password" placeholder="كلمة المرور" aria-label="كلمة المرور">
       <div class="err" id="loginErr"></div>
-      <button class="btn" type="submit" style="width:100%" data-t="loginBtn">Sign in</button>
+      <button class="btn" type="submit" style="width:100%" data-t="loginBtn">دخول</button>
     </form>
   </div>
 </div>
@@ -138,12 +166,12 @@ input,textarea,select{font:inherit;color:inherit}
 <div id="app" class="hidden">
   <div class="topbar">
     <img src="images/logo-pagoda-transparent.png" alt="">
-    <span class="t">Sushi Jem <span data-t="adminBadge">Admin</span></span>
+    <span class="t">سوشي جيم <span data-t="adminBadge">لوحة التحكم</span></span>
     <span class="sp"></span>
-    <span class="dirty-dot" id="dirtyDot" title="unsaved changes"></span>
-    <a class="btn ghost sm" href="/" target="_blank" rel="noopener" data-t="viewSite">View site</a>
-    <button class="btn ghost sm" id="langBtn" type="button">عربي</button>
-    <button class="btn" id="saveBtn" type="button" disabled data-t="save">Save & publish</button>
+    <span class="dirty-dot" id="dirtyDot" title="تغييرات غير محفوظة"></span>
+    <a class="btn ghost sm" href="/" target="_blank" rel="noopener" data-t="viewSite">الموقع</a>
+    <button class="btn ghost sm" id="langBtn" type="button">EN</button>
+    <button class="btn" id="saveBtn" type="button" disabled data-t="save">حفظ ونشر</button>
   </div>
   <div class="shell">
     <aside class="side" id="side"></aside>
@@ -156,85 +184,227 @@ input,textarea,select{font:inherit;color:inherit}
 <script>
 'use strict';
 var $ = function(s){return document.querySelector(s)};
-var AUL = 'en';
+var AUL = 'ar';
 var C = null, DEFAULTS = null, dirty = false, updated_at = null, curSec = 'dash';
 
-/* ---------- i18n (admin chrome) ---------- */
+/* ---------- admin chrome i18n ---------- */
 var T = {
-  en: {
-    loginTitle:'Sushi Jem Admin', loginSub:'Enter the admin password to manage the site', loginBtn:'Sign in',
-    adminBadge:'Admin', viewSite:'View site', save:'Save & publish', saved:'Published', saving:'Publishing…',
-    unsaved:'You have unsaved changes', loginFail:'Wrong password', locked:'Too many attempts. Try again in ',
-    sec:'s', dash:'Dashboard', offers:'Offers', ann:'Announcement', menu:'Menu', texts:'Texts', settings:'Settings',
-    security:'Security', tools:'Tools', cat:'Category', grp:'Group', item:'Item', variant:'Variant',
-    addCat:'+ Add category', addGrp:'+ Add group', addItem:'+ Add item', addVar:'+ Add variant',
-    offerT:'+ Add offer', branchT:'+ Add branch', nameAr:'Arabic', nameEn:'English', price:'Price',
-    oldPrice:'Old price (optional)', badge:'Badge', desc:'Description', image:'Image (file name or URL)',
-    link:'Link (optional)', enabled:'Enabled', title:'Title', id:'id', kcal:'Calories / piece',
-    num:'Number badge', feat:'Featured (wide card)', kanji:'Kanji mark', listStyle:'List style (rows)',
-    currentPw:'Current password', newPw:'New password (min 8)', confirmPw:'Confirm new password',
-    changePw:'Change password', logout:'Log out', exportJ:'Export content (JSON)', importJ:'Import content (JSON)',
-    resetD:'Reset everything to defaults', confirmReset:'Reset ALL content to the site defaults? Unpublished changes are lost.',
-    confirmDel:'Delete this?', lastPub:'Last published', never:'never', items:'items', offersActive:'active offers',
-    annOn:'Announcement bar is ON', annOff:'Announcement bar is OFF', annText:'Announcement text',
-    jolt:'JOLT Bowling popup', joltHint:'Texts for the popup are in Texts (jolt section).',
-    howTitle:'How this works', howBody:'Every change you save here is published to the live site immediately. The site keeps working even if nothing was ever saved here (it falls back to its built-in defaults).',
-    imgHint:'File name like dish-1 (shown as images/dish-1.jpg) or a full https:// URL.',
-    marquee:'Moving strip words (one per line)', rail:'Home gallery photos (file names, comma separated)',
-    branches:'Branches', addr:'Address', phone:'Phone (display)', phoneIntl:'Phone (international, tel: links)',
-    wa:'WhatsApp number (digits only)', hsLink:'HungerStation link', ig:'Instagram URL', snap:'Snapchat URL',
-    coords:'Map coordinates (lat,lng)', currency:'Currency label', del:'Delete', up:'Up', down:'Down',
-    importBad:'That file is not valid content JSON', pwChanged:'Password changed. Sign in again.',
-    pwWrong:'Current password is wrong', sessionEnded:'Session expired. Sign in again.',
-    sec1:'Change admin password', sec2:'Log out of this device', toolsTitle:'Backup & reset',
-    textHint:'Every text has an Arabic and an English side. Some fields accept simple HTML like <em>…</em>.',
-    menuHint:'Drag-free ordering: use the arrows. The id is used by links (keep it short, lowercase, unique).',
-    offerHint:'Offers appear in their own section on the site. Empty offers section hides itself.',
-    annHint:'Shows a red bar at the very top of the site. Visitors can close it; it reappears when the text changes.',
-    resetDone:'Reset to defaults loaded. Press Save & publish to apply.'
-  },
   ar: {
-    loginTitle:'إدارة سوشي جيم', loginSub:'اكتب كلمة مرور الإدارة للتحكم بالموقع', loginBtn:'تسجيل الدخول',
-    adminBadge:'الإدارة', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
+    loginTitle:'لوحة تحكم سوشي جيم', loginSub:'اكتب كلمة المرور للدخول والتحكم بالموقع', loginBtn:'دخول',
+    adminBadge:'لوحة التحكم', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
     unsaved:'لديك تغييرات غير محفوظة', loginFail:'كلمة المرور غير صحيحة', locked:'محاولات كثيرة. حاول بعد ',
-    sec:' ثانية', dash:'الرئيسية', offers:'العروض', ann:'التنبيه', menu:'القائمة', texts:'النصوص', settings:'الإعدادات',
-    security:'الأمان', tools:'أدوات', cat:'قسم', grp:'مجموعة', item:'صنف', variant:'خيار',
-    addCat:'+ إضافة قسم', addGrp:'+ إضافة مجموعة', addItem:'+ إضافة صنف', addVar:'+ إضافة خيار',
+    sec:' ثانية', dash:'الرئيسية', ann:'شريط التنبيه', offers:'العروض', menu:'القائمة', texts:'نصوص الموقع',
+    settings:'الإعدادات', security:'الأمان',
+    addCat:'+ إضافة قسم جديد', addGrp:'+ إضافة مجموعة', addItem:'+ إضافة صنف جديد', addVar:'+ إضافة خيار وسعر',
     offerT:'+ إضافة عرض', branchT:'+ إضافة فرع', nameAr:'عربي', nameEn:'English', price:'السعر',
-    oldPrice:'السعر القديم (اختياري)', badge:'شارة العرض', desc:'الوصف', image:'الصورة (اسم ملف أو رابط)',
-    link:'رابط (اختياري)', enabled:'مفعل', title:'العنوان', id:'المعرف', kcal:'السعرات للقطعة',
-    num:'رقم الشارة', feat:'صنف مميز (بطاقة عريضة)', kanji:'رمز كانجي', listStyle:'عرض قائمة (صفوف)',
-    currentPw:'كلمة المرور الحالية', newPw:'كلمة المرور الجديدة (8 أحرف فأكثر)', confirmPw:'تأكيد كلمة المرور',
-    changePw:'تغيير كلمة المرور', logout:'تسجيل الخروج', exportJ:'تصدير المحتوى (JSON)', importJ:'استيراد المحتوى (JSON)',
-    resetD:'إرجاع كل شيء للوضع الافتراضي', confirmReset:'إرجاع كل المحتوى لافتراضيات الموقع؟ سيتم فقدان التغييرات غير المنشورة.',
-    confirmDel:'حذف هذا؟', lastPub:'آخر نشر', never:'أبداً', items:'صنف', offersActive:'عرض مفعل',
-    annOn:'شريط التنبيه مفعّل', annOff:'شريط التنبيه متوقف', annText:'نص التنبيه',
-    jolt:'نافذة JOLT Bowling', joltHint:'نصوص النافذة في قسم النصوص (jolt).',
-    howTitle:'كيف تعمل الصفحة', howBody:'كل حفظ هنا ينشر فوراً على الموقع. الموقع يعمل حتى لو لم تحفظ شيء هنا (يعود للقيم المدمجة).',
-    imgHint:'اسم ملف مثل dish-1 (يعرض images/dish-1.jpg) أو رابط https كامل.',
-    marquee:'كلمات الشريط المتحرك (كلمة في كل سطر)', rail:'صور معرض الصفحة الرئيسية (أسماء ملفات مفصولة بفواصل)',
-    branches:'الفروع', addr:'العنوان', phone:'الجوال (المعروض)', phoneIntl:'الجوال (دولي، روابط الاتصال)',
-    wa:'رقم واتساب (أرقام فقط)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
-    coords:'إحداثيات الخريطة (lat,lng)', currency:'اسم العملة', del:'حذف', up:'أعلى', down:'أسفل',
-    importBad:'الملف ليس JSON صالح للمحتوى', pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.',
-    pwWrong:'كلمة المرور الحالية غير صحيحة', sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
-    sec1:'تغيير كلمة مرور الإدارة', sec2:'تسجيل الخروج من هذا الجهاز', toolsTitle:'نسخ احتياطي وإرجاع',
-    textHint:'كل نص له خانة عربية وخانة إنجليزية. بعض الخانات تقبل HTML بسيط مثل <em>…</em>.',
-    menuHint:'الترتيب بالأسهم. المعرف تستخدمه روابط الموقع (قصير، أحرف صغيرة، غير مكرر).',
+    oldPrice:'السعر قبل الخصم (اختياري)', badge:'شارة العرض (مثل: جديد)', desc:'الوصف', image:'الصورة',
+    link:'رابط عند الضغط (اختياري)', enabled:'مفعل', title:'العنوان', kcal:'سعرات القطعة (اختياري)',
+    num:'رقم زخرفي (اختياري)', feat:'صنف مميز ببطاقة عريضة', kanji:'رمز كانجي زخرفي (اختياري)', listStyle:'عرض بأسطر مضغوطة',
+    currentPw:'كلمة المرور الحالية', newPw:'كلمة المرور الجديدة (٨ أحرف فأكثر)', confirmPw:'تأكيد كلمة المرور الجديدة',
+    changePw:'تغيير كلمة المرور', logout:'تسجيل الخروج', resetD:'استرجاع كل المحتوى الافتراضي',
+    confirmReset:'إرجاع كل المحتوى لوضعه الافتراضي؟ سيتم فقدان تعديلاتك غير المنشورة.',
+    confirmDel:'حذف هذا؟', lastPub:'آخر نشر', never:'لم يُنشر بعد', items:'صنف', offersActive:'عرض مفعل',
+    annOn:'التنبيه مفعّل', annOff:'التنبيه متوقف', annText:'نص التنبيه', annHint:'يظهر شريط أحمر أعلى الموقع. الزائر يستطيع إغلاقه، ويعود للظهور عند تغيّر النص.',
+    jolt:'نافذة جولت بولينق (تظهر عند دخول الموقع)', joltHint:'نصوص النافذة تعدّلها من قسم نصوص الموقع (مجموعة جولت).',
+    howBody:'كل ما تحفظه هنا ينشر فوراً على الموقع المباشر. اضغط حفظ ونشر بعد كل تعديل.',
+    imgHint:'اسم صورة موجودة في الموقع (مثل dish-1) أو رابط https كامل.',
+    uploadBtn:'رفع صورة', uploading:'جارٍ رفع الصورة…', uploadDone:'تم رفع الصورة', uploadFail:'فشل رفع الصورة',
+    uploadBig:'الصورة كبيرة جداً (الحد ~3MB)', wherePics:'الصور المرفوعة تُخزن في قاعدة بيانات الموقع وتظهر فوراً على الموقع.',
+    marquee:'كلمات الشريط المتحرك', rail:'صور معرض الصفحة الرئيسية', addWord:'+ كلمة', addPic:'+ صورة',
+    branches:'الفروع', addr:'العنوان', phone:'رقم الجوال المعروض (مثل 0553694398)',
+    phoneIntl:'رقم الجوال الدولي لروابط الاتصال (مثل +966553694398)',
+    wa:'رقم واتساب بالصيغة الدولية (مثل 966553694398)', hsLink:'رابط هنقرستيشن', ig:'رابط انستقرام', snap:'رابط سناب شات',
+    coords:'إحداثيات الموقع على الخريطة', currency:'اسم العملة بالعربي', currencyEn:'اسم العملة بالإنجليزي',
+    del:'حذف', up:'أعلى', down:'أسفل',
+    pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة',
+    sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.', secTitle:'كلمة المرور والجلسة',
+    textHint:'كل نص له خانة عربية وخانة إنجليزية. عدّل ما تحتاجه فقط.',
+    menuHint:'رتّب الأصناف بأسهم الترتيب، واحذف بزر الحذف الأحمر. الأسعار في خيارات الصنف.',
     offerHint:'العروض تظهر في قسم خاص على الموقع. قسم العروض يختفي إذا كان فارغاً.',
-    annHint:'يظهر شريط أحمر أعلى الموقع. الزائر يستطيع إغلاقه، ويعود للظهور عند تغيّر النص.',
-    resetDone:'تم تحميل الافتراضيات. اضغط حفظ ونشر لتطبيقها.'
+    resetDone:'تم تحميل المحتوى الافتراضي. اضغط حفظ ونشر لتطبيقه.',
+    catCount:'قسم', tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر'
+  },
+  en: {
+    loginTitle:'Sushi Jem Admin', loginSub:'Enter the password to manage the site', loginBtn:'Sign in',
+    adminBadge:'Admin', viewSite:'Site', save:'Save & publish', saved:'Published', saving:'Publishing…',
+    unsaved:'You have unsaved changes', loginFail:'Wrong password', locked:'Too many attempts. Try again in ',
+    sec:'s', dash:'Dashboard', ann:'Announcement bar', offers:'Offers', menu:'Menu', texts:'Site texts',
+    settings:'Settings', security:'Security',
+    addCat:'+ Add section', addGrp:'+ Add group', addItem:'+ Add item', addVar:'+ Add variant & price',
+    offerT:'+ Add offer', branchT:'+ Add branch', nameAr:'Arabic', nameEn:'English', price:'Price',
+    oldPrice:'Old price (optional)', badge:'Offer badge (e.g. New)', desc:'Description', image:'Image',
+    link:'Link on click (optional)', enabled:'Enabled', title:'Title', kcal:'Calories (optional)',
+    num:'Decorative number (optional)', feat:'Featured wide card', kanji:'Decorative kanji mark (optional)', listStyle:'Compact list style',
+    currentPw:'Current password', newPw:'New password (min 8)', confirmPw:'Confirm new password',
+    changePw:'Change password', logout:'Log out', resetD:'Reset all content to defaults',
+    confirmReset:'Reset ALL content to defaults? Unpublished changes are lost.',
+    confirmDel:'Delete this?', lastPub:'Last published', never:'never', items:'items', offersActive:'active offers',
+    annOn:'Announcement ON', annOff:'Announcement OFF', annText:'Announcement text', annHint:'A red bar at the top of the site. Visitors can close it; it returns when the text changes.',
+    jolt:'JOLT Bowling popup (shows on site entry)', joltHint:'Popup texts are under Site texts (JOLT group).',
+    howBody:'Everything you save here goes live instantly. Press Save & publish after each change.',
+    imgHint:'A file name already in the site (e.g. dish-1) or a full https link.',
+    uploadBtn:'Upload', uploading:'Uploading…', uploadDone:'Image uploaded', uploadFail:'Upload failed',
+    uploadBig:'Image too large (max ~3MB)', wherePics:'Uploaded images are stored in the site database and appear on the site instantly.',
+    marquee:'Moving strip words', rail:'Homepage gallery photos', addWord:'+ word', addPic:'+ photo',
+    branches:'Branches', addr:'Address', phone:'Phone shown (e.g. 0553694398)',
+    phoneIntl:'International phone for call links (e.g. +966553694398)',
+    wa:'WhatsApp number, international (e.g. 966553694398)', hsLink:'HungerStation link', ig:'Instagram link', snap:'Snapchat link',
+    coords:'Map coordinates', currency:'Currency label (Arabic)', currencyEn:'Currency label (English)',
+    del:'Delete', up:'Up', down:'Down',
+    pwChanged:'Password changed. Sign in again.', pwWrong:'Current password is wrong',
+    sessionEnded:'Session expired. Sign in again.', secTitle:'Password & session',
+    textHint:'Each text has an Arabic and an English field. Edit only what you need.',
+    menuHint:'Reorder with the arrows, delete with the red button. Prices live in the item variants.',
+    offerHint:'Offers appear in their own site section. Empty offers section hides itself.',
+    resetDone:'Defaults loaded. Press Save & publish to apply.',
+    catCount:'sections', tipSave:'Reminder: changes only go live after Save & publish'
   }
 };
-function t(k){ return T[AUL][k] || T.en[k] || k }
+function t(k){ return T[AUL][k] || T.ar[k] || k }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'\u0026amp;','<':'\u0026lt;','>':'\u0026gt;','"':'\u0026quot;'}[c]}) }
+
+/* ---------- friendly labels for every site string ---------- */
+var LBL = {
+  'nav.menu':['زر القائمة (الأعلى)','Menu button (top bar)'],
+  'nav.dishes':['زر الأطباق','Dishes button'],
+  'nav.svc':['زر الخدمات','Services button'],
+  'nav.place':['زر الفروع','Branches button'],
+  'nav.contact':['زر التواصل','Contact button'],
+  'cart.title':['زر السلة','Cart button'],
+  'hero.h1a':['العنوان الكبير – الجزء الأول','Big title – part 1'],
+  'hero.h1b':['العنوان الكبير – الجزء الثاني','Big title – part 2'],
+  'hero.sub2':['النص التعريفي تحت العنوان','Intro text under the title'],
+  'hero.order':['زر اطلب الآن','Order now button'],
+  'hero.hs':['زر توصيل هنقرستيشن','HungerStation delivery button'],
+  'fact1':['وسم: فرعان في النماص','Chip: two branches'],
+  'c.take':['وسم: سفري','Chip: takeaway'],
+  'c.car':['وسم: خدمة سيارات','Chip: drive-through'],
+  'c.del':['وسم: توصيل','Chip: delivery'],
+  'band':['الشريط الأحمر (تحذير)','Red warning strip'],
+  'm.t':['عنوان قسم القائمة','Menu section title'],
+  'm.p':['وصف قسم القائمة','Menu section description'],
+  'm.note':['ملاحظة الأسعار تحت القائمة','Prices note under the menu'],
+  'offers.t':['عنوان قسم العروض','Offers section title'],
+  'offers.cta':['زر العرض','Offer button'],
+  'ann.more':['نص رابط التنبيه','Announcement link text'],
+  'dishes.title':['عنوان قسم الأطباق','Dishes section title'],
+  'd1.t':['الطبق المميز ١: العنوان','Featured dish 1: title'],
+  'd1.p':['الطبق المميز ١: الوصف','Featured dish 1: description'],
+  'd2.t':['الطبق المميز ٢: العنوان','Featured dish 2: title'],
+  'd2.p':['الطبق المميز ٢: الوصف','Featured dish 2: description'],
+  'd3.t':['الطبق المميز ٣: العنوان','Featured dish 3: title'],
+  'd3.p':['الطبق المميز ٣: الوصف','Featured dish 3: description'],
+  'dish.go':['زر اطلب من القائمة','Order from menu button'],
+  'svc.title':['عنوان قسم الخدمات','Services section title'],
+  'svc.sub':['وصف قسم الخدمات','Services section description'],
+  'svc.take.t':['السفري: العنوان','Takeaway: title'],
+  'svc.take.p':['السفري: الوصف','Takeaway: description'],
+  'svc.del.t':['التوصيل: العنوان','Delivery: title'],
+  'svc.del.p':['التوصيل: الوصف','Delivery: description'],
+  'svc.nc.t':['توصيل بدون تلامس: العنوان','No-contact delivery: title'],
+  'svc.nc.p':['توصيل بدون تلامس: الوصف','No-contact delivery: description'],
+  'svc.drive.t':['خدمة السيارات: العنوان','Drive-through: title'],
+  'svc.drive.p':['خدمة السيارات: الوصف','Drive-through: description'],
+  'amen.title':['عنوان قسم التفاصيل','Amenities section title'],
+  'amen.women':['وسم: مطعم تملكه سيدة','Badge: women-owned'],
+  'amen.time.l':['الأوقات المفضلة: العنوان','Popular times: label'],
+  'amen.time.v':['الأوقات المفضلة: القيمة','Popular times: value'],
+  'amen.plates.l':['التقديم: العنوان','Serving: label'],
+  'amen.plates.v':['التقديم: القيمة','Serving: value'],
+  'amen.kids.l':['العائلة: العنوان','Families: label'],
+  'amen.kids.v':['العائلة: القيمة','Families: value'],
+  'amen.pay.l':['الدفع: العنوان','Payment: label'],
+  'amen.pay.v':['الدفع: القيمة','Payment: value'],
+  'amen.park.l':['المواقف: العنوان','Parking: label'],
+  'amen.park.v':['المواقف: القيمة','Parking: value'],
+  'amen.tour.l':['الضيوف: العنوان','Guests: label'],
+  'amen.tour.v':['الضيوف: القيمة','Guests: value'],
+  'a.women':['وسم: مطعم تملكه سيدة','Chip: women-owned'],
+  'a.cosy':['وسم: هادئ ودافئ','Chip: quiet and cosy'],
+  'a.kids':['وسم: مناسب للأطفال','Chip: kid friendly'],
+  'a.park':['وسم: مواقف مجانية','Chip: free parking'],
+  'p.t':['عنوان قسم الفروع','Branches section title'],
+  'b1.t':['الفرع الرئيسي: الاسم','Main branch: name'],
+  'b1.p':['الفرع الرئيسي: العنوان','Main branch: address'],
+  'b2.t':['فرع ممشى الضباب: الاسم','Fog walk branch: name'],
+  'b2.p':['فرع ممشى الضباب: الوصف','Fog walk branch: description'],
+  'walk.title':['قسم ممشى الضباب: العنوان','Fog walk section: title'],
+  'walk.p':['قسم ممشى الضباب: النص','Fog walk section: text'],
+  'walk.cta':['قسم ممشى الضباب: الزر','Fog walk section: button'],
+  'order.title':['عنوان قسم خطوات الطلب','Order steps title'],
+  's1.n':['الخطوة ١: الرقم','Step 1: number'],
+  's1.t':['الخطوة ١: العنوان','Step 1: title'],
+  's1.p':['الخطوة ١: الوصف','Step 1: description'],
+  's2.n':['الخطوة ٢: الرقم','Step 2: number'],
+  's2.t':['الخطوة ٢: العنوان','Step 2: title'],
+  's2.p':['الخطوة ٢: الوصف','Step 2: description'],
+  's3.n':['الخطوة ٣: الرقم','Step 3: number'],
+  's3.t':['الخطوة ٣: العنوان','Step 3: title'],
+  's3.p':['الخطوة ٣: الوصف','Step 3: description'],
+  'review.title':['قسم التقييم: العنوان','Review section: title'],
+  'review.p':['قسم التقييم: النص','Review section: text'],
+  'review.cta':['قسم التقييم: الزر','Review section: button'],
+  'final.title':['القسم الختامي: العنوان','Final section: title'],
+  'final.p':['القسم الختامي: النص','Final section: text'],
+  'final.call':['القسم الختامي: زر الاتصال','Final section: call button'],
+  'f.tag':['التذييل: الوصف','Footer: tagline'],
+  'f.map':['التذييل: نص الخريطة','Footer: map link text'],
+  'f.rights':['التذييل: حقوق النشر','Footer: copyright'],
+  'jolt.tag':['نافذة جولت: الوسم','JOLT popup: tag'],
+  'jolt.title':['نافذة جولت: العنوان','JOLT popup: title'],
+  'jolt.p':['نافذة جولت: النص','JOLT popup: text'],
+  'jolt.skip':['نافذة جولت: الزر','JOLT popup: button'],
+  'title':['عنوان المتصفح (التبويب)','Browser tab title'],
+  'skip':['رابط تخطي المحتوى','Skip link'],
+  'add':['زر الإضافة','Add button'],
+  'view':['زر عرض السلة','View cart button'],
+  'items':['كلمة منتجات','Items word'],
+  'cartT':['عنوان السلة','Cart title'],
+  'detT':['عنوان البيانات','Details title'],
+  's1':['خطوة السلة','Cart step label'],
+  's2':['خطوة البيانات','Details step label'],
+  'empty':['نص السلة الفارغة','Empty cart text'],
+  'total':['كلمة المجموع','Total word'],
+  'next':['زر التالي','Next button'],
+  'back':['زر الرجوع','Back button'],
+  'send':['زر الطلب','Place order button'],
+  'hsT':['هنقرستيشن: العنوان','HungerStation: title'],
+  'hsS':['هنقرستيشن: الزر','HungerStation: button'],
+  'name':['حقل الاسم','Name field'],
+  'phone':['حقل الجوال','Phone field'],
+  'branch':['حقل الفرع','Branch field'],
+  'type':['نوع الطلب','Order type'],
+  'notes':['حقل الملاحظات','Notes field'],
+  't2':['نوع الطلب: سفري','Order type: takeaway'],
+  't3':['نوع الطلب: سيارات','Order type: drive-through'],
+  'eName':['خطأ: كتابة الاسم','Error: name'],
+  'ePhone':['خطأ: رقم الجوال','Error: phone'],
+  'eBranch':['خطأ: اختيار الفرع','Error: branch'],
+  'added':['رسالة تمت الإضافة','Added to cart message'],
+  'clear':['زر تفريغ السلة','Clear cart button'],
+  'mHead':['رسالة واتساب: العنوان','WhatsApp message: header'],
+  'mName':['رسالة واتساب: الاسم','WhatsApp message: name'],
+  'mPhone':['رسالة واتساب: الجوال','WhatsApp message: phone'],
+  'mBranch':['رسالة واتساب: الفرع','WhatsApp message: branch'],
+  'mType':['رسالة واتساب: النوع','WhatsApp message: type'],
+  'mTotal':['رسالة واتساب: المجموع','WhatsApp message: total'],
+  'mNotes':['رسالة واتساب: الملاحظات','WhatsApp message: notes'],
+  'mItems':['رسالة واتساب: الأصناف','WhatsApp message: items'],
+  'mQty':['رسالة واتساب: الكمية','WhatsApp message: qty'],
+  'mUnit':['رسالة واتساب: سعر الوحدة','WhatsApp message: unit price'],
+  'mLine':['رسالة واتساب: إجمالي السطر','WhatsApp message: line total'],
+  'ph.name':['مثال حقل الاسم','Name placeholder'],
+  'ph.phone':['مثال حقل الجوال','Phone placeholder'],
+  'ph.notes':['مثال حقل الملاحظات','Notes placeholder']
+};
+function lbl(k){ return LBL[k] ? LBL[k][AUL === 'ar' ? 0 : 1] : k.replace(/^.*[.]/, '').replace(/[._]/g, ' ') }
 
 /* ---------- helpers ---------- */
 function getPath(o, path){ return path.split('.').reduce(function(x,k){return x==null?x:x[k]}, o) }
 function setPath(o, path, v){
   var ks = path.split('.'), t = o;
   for (var i = 0; i < ks.length - 1; i++){
-    if (t[ks[i]] == null) t[ks[i]] = ks[i+1] === String(Math.floor(+ks[i+1])) && /^\d+$/.test(String(ks[i+1])) ? [] : {};
+    if (t[ks[i]] == null) t[ks[i]] = {};
     t = t[ks[i]];
   }
   t[ks[ks.length-1]] = v;
@@ -269,12 +439,18 @@ function fmtDate(ms){
   if (!ms) return t('never');
   try { return new Date(ms).toLocaleString(AUL === 'ar' ? 'ar-SA' : 'en-GB') } catch(e){ return String(ms) }
 }
+function imgPreviewSrc(v){
+  if (!v) return '';
+  if (/^(https?:|\/|data:)/.test(v)) return v;
+  return 'images/' + v + '.jpg';
+}
 
 /* ---------- field builders ---------- */
 function fld(label, path, val, hint, type){
   var h = '<div class="fld"><label>' + esc(label) + '</label>';
   if (type === 'textarea') h += '<textarea data-path="' + path + '">' + esc(val) + '</textarea>';
   else if (type === 'num') h += '<input data-path="' + path + '" type="number" step="any" value="' + esc(val) + '">';
+  else if (type === 'password') h += '<input data-path="' + path + '" type="password" autocomplete="new-password" value="">';
   else h += '<input data-path="' + path + '" value="' + esc(val) + '">';
   if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
   return h + '</div>';
@@ -288,22 +464,32 @@ function bi(label, basePath, pair, hint){
 function chk(label, path, val){
   return '<label class="chk"><input type="checkbox" data-cast="bool" data-path="' + path + '"' + (val ? ' checked' : '') + '>' + esc(label) + '</label>';
 }
+function imgPick(label, path, val, hint){
+  var pv = imgPreviewSrc(val);
+  return '<div class="fld"><label>' + esc(label) + '</label>' +
+  '<div class="imgpick">' +
+  '<div class="prev">' + (pv ? '<img src="' + esc(pv) + '" alt="" referrerpolicy="no-referrer">' : '<svg class="i"><use href="#i-img"/></svg>') + '</div>' +
+  '<div class="ipt"><input data-path="' + path + '" value="' + esc(val || '') + '" placeholder="' + esc(t('imgHint')) + '"></div>' +
+  '<label class="btn sm up">' + esc(t('uploadBtn')) + '<input type="file" accept="image/*" class="hidden" data-upload></label>' +
+  '</div>' +
+  (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') +
+  '</div>';
+}
 
 /* ---------- sections ---------- */
 var SECTIONS = [
-  {id:'dash',   icon:'⌂',  en:'Dashboard',    ar:'الرئيسية'},
-  {id:'ann',    icon:'📣', en:'Announcement', ar:'التنبيه'},
-  {id:'offers', icon:'🎁', en:'Offers',       ar:'العروض'},
-  {id:'menu',   icon:'🍽', en:'Menu',         ar:'القائمة'},
-  {id:'texts',  icon:'✎',  en:'Texts',        ar:'النصوص'},
-  {id:'settings',icon:'⚙', en:'Settings',     ar:'الإعدادات'},
-  {id:'security',icon:'🔒', en:'Security',     ar:'الأمان'},
-  {id:'tools',  icon:'🧰', en:'Tools',        ar:'أدوات'}
+  {id:'dash',     ar:'الرئيسية',      en:'Dashboard'},
+  {id:'ann',      ar:'شريط التنبيه',   en:'Announcement'},
+  {id:'offers',   ar:'العروض',        en:'Offers'},
+  {id:'menu',     ar:'القائمة',       en:'Menu'},
+  {id:'texts',    ar:'نصوص الموقع',   en:'Site texts'},
+  {id:'settings', ar:'الإعدادات',     en:'Settings'},
+  {id:'security', ar:'الأمان',        en:'Security'}
 ];
 
 function renderSide(){
   $('#side').innerHTML = SECTIONS.map(function(s){
-    return '<button data-sec="' + s.id + '" class="' + (curSec === s.id ? 'on' : '') + '">' + s.icon + ' ' + (AUL === 'ar' ? s.ar : s.en) + '</button>';
+    return '<button data-sec="' + s.id + '" class="' + (curSec === s.id ? 'on' : '') + '"><svg class="i"><use href="#i-' + s.id + '"/></svg><span>' + (AUL === 'ar' ? s.ar : s.en) + '</span></button>';
   }).join('');
 }
 
@@ -316,7 +502,6 @@ function renderMain(){
   else if (curSec === 'texts') el.innerHTML = secTexts();
   else if (curSec === 'settings') el.innerHTML = secSettings();
   else if (curSec === 'security') el.innerHTML = secSecurity();
-  else if (curSec === 'tools') el.innerHTML = secTools();
 }
 
 function secDash(){
@@ -327,12 +512,13 @@ function secDash(){
   return '<h2 class="sec-title">' + t('dash') + '</h2>' +
   '<p class="sec-sub">' + t('howBody') + '</p>' +
   '<div class="stats">' +
-  '<div class="stat"><b>' + C.menu.length + '</b><span>' + t('cat') + '</span></div>' +
+  '<div class="stat"><b>' + C.menu.length + '</b><span>' + t('catCount') + '</span></div>' +
   '<div class="stat"><b>' + items + '</b><span>' + t('items') + '</span></div>' +
   '<div class="stat"><b>' + offersOn + '</b><span>' + t('offersActive') + '</span></div>' +
-  '<div class="stat"><b>' + (annOn ? '●' : '○') + '</b><span>' + (annOn ? t('annOn') : t('annOff')) + '</span></div>' +
+  '<div class="stat"><b>' + (annOn ? '<span class="dot on"></span>' : '<span class="dot"></span>') + '</b><span>' + (annOn ? t('annOn') : t('annOff')) + '</span></div>' +
   '</div>' +
-  '<div class="note">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</div>';
+  '<div class="note">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</div>' +
+  '<div class="note">' + t('tipSave') + '</div>';
 }
 
 function secAnn(){
@@ -350,24 +536,24 @@ function secOffers(){
   var list = C.offers || (C.offers = []);
   var h = '<h2 class="sec-title">' + t('offers') + '</h2><p class="sec-sub">' + t('offerHint') + '</p>';
   list.forEach(function(o, i){
-    h += '<div class="card block">' +
+    h += '<div class="card">' +
     '<div class="block-head">' + chk(t('enabled'), 'offers.' + i + '.enabled', o.enabled !== false) +
     '<span class="grow"></span>' +
-    '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '">↑</button>' +
-    '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '">↓</button>' +
-    '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '">✕</button></div>' +
+    '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+    '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+    '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
     '<div class="row2">' +
     bi(t('title'), 'offers.' + i + '.t', o.t) +
     bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
-    '</div><div class="row2">' +
+    '</div>' +
     bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
-    '<div><div class="row2">' +
+    '<div class="row2">' +
     fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
     fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
-    '</div></div></div><div class="row2">' +
-    fld(t('image'), 'offers.' + i + '.img', o.img, t('imgHint')) +
+    '</div>' +
+    imgPick(t('image'), 'offers.' + i + '.img', o.img, t('wherePics')) +
     fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…') +
-    '</div></div>';
+    '</div>';
   });
   h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button>';
   return h;
@@ -376,50 +562,52 @@ function secOffers(){
 function secMenu(){
   var h = '<h2 class="sec-title">' + t('menu') + '</h2><p class="sec-sub">' + t('menuHint') + '</p>';
   C.menu.forEach(function(cat, ci){
-    h += '<div class="card block">' +
+    h += '<div class="card">' +
     '<div class="block-head">' +
-    '<input class="mini idbox" data-path="menu.' + ci + '.id" value="' + esc(cat.id) + '" placeholder="' + t('id') + '">' +
-    '<span class="grow">' + bi(t('cat'), 'menu.' + ci + '.t', cat.t) + '</span>' +
-    '<button class="iconbtn" data-act="cat-up" data-i="' + ci + '">↑</button>' +
-    '<button class="iconbtn" data-act="cat-down" data-i="' + ci + '">↓</button>' +
-    '<button class="iconbtn danger" data-act="cat-del" data-i="' + ci + '">✕</button>' +
+    '<span class="grow">' + bi(t('title'), 'menu.' + ci + '.t', cat.t) + '</span>' +
+    '<button class="iconbtn" data-act="cat-up" data-i="' + ci + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+    '<button class="iconbtn" data-act="cat-down" data-i="' + ci + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+    '<button class="iconbtn danger" data-act="cat-del" data-i="' + ci + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
     '</div>';
     (cat.groups || []).forEach(function(g, gi){
       h += '<div class="block sub">' +
       '<div class="block-head">' +
-      '<span class="grow">' + bi(t('grp'), 'menu.' + ci + '.groups.' + gi + '.t', g.t || ['','']) + '</span>' +
+      '<span class="grow">' + bi(t('title'), 'menu.' + ci + '.groups.' + gi + '.t', g.t || ['','']) + '</span>' +
       chk(t('listStyle'), 'menu.' + ci + '.groups.' + gi + '.list', g.list) +
-      '<button class="iconbtn" data-act="grp-up" data-ci="' + ci + '" data-i="' + gi + '">↑</button>' +
-      '<button class="iconbtn" data-act="grp-down" data-ci="' + ci + '" data-i="' + gi + '">↓</button>' +
-      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + ci + '" data-i="' + gi + '">✕</button>' +
+      '<button class="iconbtn" data-act="grp-up" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+      '<button class="iconbtn" data-act="grp-down" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + ci + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
       '</div>' +
-      '<div class="items-head">' + t('item') + ':</div>';
+      '<div class="items-head">' + t('menu') + ':</div>';
       (g.items || []).forEach(function(it, ii){
         var p = 'menu.' + ci + '.groups.' + gi + '.items.' + ii;
         h += '<div class="block sub">' +
         '<div class="block-head">' +
-        '<input class="mini idbox" data-path="' + p + '.id" value="' + esc(it.id) + '" placeholder="' + t('id') + '">' +
-        '<span class="grow"></span>' +
-        '<button class="iconbtn" data-act="item-up" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">↑</button>' +
-        '<button class="iconbtn" data-act="item-down" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">↓</button>' +
-        '<button class="iconbtn danger" data-act="item-del" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '">✕</button></div>' +
-        '<div class="row2">' + bi(t('title'), p + '.n', it.n) + bi(t('desc'), p + '.d', it.d || ['','']) + '</div>' +
+        '<span class="grow">' + bi(t('title'), p + '.n', it.n) + '</span>' +
+        '<button class="iconbtn" data-act="item-up" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+        '<button class="iconbtn" data-act="item-down" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+        '<button class="iconbtn danger" data-act="item-del" data-ci="' + ci + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
+        bi(t('desc'), p + '.d', it.d || ['','']) +
         '<div class="row3">' +
-        fld(t('kanji'), p + '.k', it.k || '') +
-        fld(t('num'), p + '.num', it.num, '', 'num') +
+        fld(t('price'), p + '.v.0.2', (it.v && it.v[0]) ? it.v[0][2] : '', '', 'num') +
         fld(t('kcal'), p + '.kcal', it.kcal || '', '', 'num') +
+        fld(t('kanji'), p + '.k', it.k || '') +
         '</div>' +
-        '<div class="block-head">' + chk(t('feat'), p + '.feat', it.feat) +
-        '<span class="grow"></span>' + fld(t('image'), p + '.img', it.img || '', t('imgHint')) + '</div>' +
-        '<div class="items-head">' + t('variant') + ':</div>';
-        (it.v || []).forEach(function(v, vi){
-          h += '<div class="varrow">' +
-          '<input class="mini" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '">' +
-          '<input class="mini" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="' + t('nameEn') + '">' +
-          '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '" placeholder="' + t('price') + '">' +
-          '<button class="iconbtn danger" data-act="var-del" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '">✕</button>' +
-          '</div>';
-        });
+        '<div class="block-head">' +
+        chk(t('feat'), p + '.feat', it.feat) +
+        '</div>' +
+        imgPick(t('image'), p + '.img', it.img, t('wherePics'));
+        if ((it.v || []).length > 1){
+          h += '<div class="items-head">' + t('addVar').replace('+ ','') + ':</div>';
+          (it.v || []).forEach(function(v, vi){
+            h += '<div class="varrow">' +
+            '<input class="mini" data-path="' + p + '.v.' + vi + '.0" value="' + esc(v[0]) + '" placeholder="' + t('nameAr') + '">' +
+            '<input class="mini" data-path="' + p + '.v.' + vi + '.1" value="' + esc(v[1]) + '" placeholder="' + t('nameEn') + '">' +
+            '<input class="mini" type="number" step="any" data-path="' + p + '.v.' + vi + '.2" value="' + esc(v[2]) + '">' +
+            '<button class="iconbtn danger" data-act="var-del" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '" data-i="' + vi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+            '</div>';
+          });
+        }
         h += '<button class="addbtn" data-act="var-add" data-ci="' + ci + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
         '</div>';
       });
@@ -432,18 +620,18 @@ function secMenu(){
 }
 
 var TEXT_GROUPS = [
-  {en:'Navigation', ar:'التنقل', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title'}},
-  {en:'Hero & chips', ar:'الواجهة', test:function(k){return k.indexOf('hero.')===0 || k.indexOf('fact')===0 || k.indexOf('c.')===0 || k==='band'}},
-  {en:'Menu section', ar:'القائمة', test:function(k){return k.indexOf('m.')===0 || k==='offers.t'}},
-  {en:'Dishes', ar:'الأطباق', test:function(k){return k.indexOf('dishes.')===0 || k.indexOf('d1.')===0 || k.indexOf('d2.')===0 || k.indexOf('d3.')===0 || k==='dish.go'}},
-  {en:'Services & amenities', ar:'الخدمات', test:function(k){return k.indexOf('svc.')===0 || k.indexOf('amen.')===0 || k.indexOf('a.')===0}},
-  {en:'Branches & walk', ar:'الفروع', test:function(k){return k.indexOf('p.')===0 || k.indexOf('b1.')===0 || k.indexOf('b2.')===0 || k.indexOf('walk.')===0}},
-  {en:'Order steps', ar:'خطوات الطلب', test:function(k){return k.indexOf('order.')===0 || k.indexOf('s1.')===0 || k.indexOf('s2.')===0 || k.indexOf('s3.')===0}},
-  {en:'Review & final', ar:'التقييم والخاتمة', test:function(k){return k.indexOf('review.')===0 || k.indexOf('final.')===0}},
-  {en:'Footer', ar:'التذييل', test:function(k){return k.indexOf('f.')===0 || k==='title'}},
-  {en:'JOLT popup', ar:'نافذة JOLT', test:function(k){return k.indexOf('jolt.')===0}},
-  {en:'Cart & order', ar:'السلة والطلب', test:function(k){return false}},
-  {en:'Other', ar:'أخرى', test:function(k){return true}}
+  {ar:'شريط التنقل والأزرار', en:'Navigation & buttons', test:function(k){return k.indexOf('nav.')===0 || k==='cart.title' || k==='skip'}},
+  {ar:'الواجهة الرئيسية', en:'Hero', test:function(k){return k.indexOf('hero.')===0 || k.indexOf('fact')===0 || k.indexOf('c.')===0 || k==='band'}},
+  {ar:'قسم القائمة', en:'Menu section', test:function(k){return k.indexOf('m.')===0 || k.indexOf('offers.')===0 || k==='ann.more'}},
+  {ar:'الأطباق المميزة', en:'Featured dishes', test:function(k){return k.indexOf('dishes.')===0 || k.indexOf('d1.')===0 || k.indexOf('d2.')===0 || k.indexOf('d3.')===0 || k==='dish.go'}},
+  {ar:'الخدمات والتفاصيل', en:'Services & amenities', test:function(k){return k.indexOf('svc.')===0 || k.indexOf('amen.')===0 || k.indexOf('a.')===0}},
+  {ar:'الفروع وممشى الضباب', en:'Branches & fog walk', test:function(k){return k.indexOf('p.')===0 || k.indexOf('b1.')===0 || k.indexOf('b2.')===0 || k.indexOf('walk.')===0}},
+  {ar:'خطوات الطلب', en:'Order steps', test:function(k){return k.indexOf('order.')===0 || k.indexOf('s1.')===0 || k.indexOf('s2.')===0 || k.indexOf('s3.')===0}},
+  {ar:'التقييم والختام', en:'Review & final', test:function(k){return k.indexOf('review.')===0 || k.indexOf('final.')===0}},
+  {ar:'التذييل', en:'Footer', test:function(k){return k.indexOf('f.')===0 || k==='title'}},
+  {ar:'نافذة جولت', en:'JOLT popup', test:function(k){return k.indexOf('jolt.')===0}},
+  {ar:'السلة والطلب', en:'Cart & ordering', dyn:true},
+  {ar:'أخرى', en:'Other', test:function(k){return true}}
 ];
 
 function secTexts(){
@@ -451,30 +639,40 @@ function secTexts(){
   var keys = [];
   Object.keys(DEFAULTS.strings.ar).concat(Object.keys(DEFAULTS.strings.en)).forEach(function(k){ if (keys.indexOf(k) < 0) keys.push(k) });
   TEXT_GROUPS.forEach(function(g){
-    var gk = keys.filter(function(k){return g.test(k)});
-    if (!gk.length && g.en !== 'Cart & order') return;
-    h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
-    if (g.en === 'Cart & order'){
-      Object.keys(C.dyn || {}).forEach(function(k){
-        h += trow(k, 'dyn.' + k + '.0', 'dyn.' + k + '.1', C.dyn[k][0], C.dyn[k][1]);
-      });
-      h += '</div><div class="tgroup"><h3>' + (AUL === 'ar' ? 'أمثلة الحقول' : 'Field placeholders') + '</h3>';
-      Object.keys(C.ph || {}).forEach(function(k){
-        h += trow(k, 'ph.' + k + '.0', 'ph.' + k + '.1', C.ph[k][0], C.ph[k][1]);
-      });
+    if (g.dyn){
+      h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
+      Object.keys(C.dyn || {}).forEach(function(k){ h += trow('dyn.' + k, C.dyn[k][0], C.dyn[k][1]) });
+      h += '</div><div class="tgroup"><h3>' + (AUL === 'ar' ? 'أمثلة الحقول' : 'Field examples') + '</h3>';
+      Object.keys(C.ph || {}).forEach(function(k){ h += trow('ph.' + k, C.ph[k][0], C.ph[k][1]) });
       h += '</div>';
       return;
     }
+    var gk = keys.filter(function(k){return g.test(k)});
+    if (!gk.length) return;
+    h += '<div class="tgroup"><h3>' + (AUL === 'ar' ? g.ar : g.en) + '</h3>';
     gk.forEach(function(k){
       var ar = getPath(C, 'strings.ar.' + k), en = getPath(C, 'strings.en.' + k);
-      h += trow(k, 'strings.ar.' + k, 'strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en);
+      h += trow('strings.ar.' + k + '|strings.en.' + k, ar == null ? '' : ar, en == null ? '' : en, k);
     });
     h += '</div>';
   });
   return h;
 }
-function trow(k, pAr, pEn, vAr, vEn){
-  return '<div class="trow"><span class="k">' + esc(k) + '</span><input data-path="' + pAr + '" value="' + esc(vAr) + '" placeholder="عربي"><input data-path="' + pEn + '" value="' + esc(vEn) + '" placeholder="English"></div>';
+function trow(paths, vAr, vEn, key){
+  var p = paths.split('|');
+  return '<div class="trow"><span class="k">' + esc(key ? lbl(key) : '') + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '" placeholder="عربي"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></div>';
+}
+
+function chipEditor(label, listPath, list, addLabel, withUpload){
+  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="chips">';
+  (list || []).forEach(function(v, i){
+    h += '<span class="chip"><input data-list="' + listPath + '" data-i="' + i + '" value="' + esc(v) + '">' +
+    '<button type="button" data-act="chip-del" data-list="' + listPath + '" data-i="' + i + '"><svg class="i"><use href="#i-x"/></svg></button></span>';
+  });
+  h += '</div><div class="block-head"><button class="addbtn" type="button" data-act="chip-add" data-list="' + listPath + '">' + esc(addLabel) + '</button>';
+  if (withUpload) h += '<label class="btn ghost sm">' + esc(t('uploadBtn')) + '<input type="file" accept="image/*" class="hidden" data-upload data-list="' + listPath + '"></label>';
+  h += '</div></div>';
+  return h;
 }
 
 function secSettings(){
@@ -483,52 +681,42 @@ function secSettings(){
   h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'التواصل والروابط':'Contact & links') + '</h3><div class="row2">' +
   fld(t('wa'), 'config.wa', cfg.wa) +
   fld(t('phone'), 'config.phone', cfg.phone) +
-  fld(t('phoneIntl'), 'config.phoneIntl', cfg.phoneIntl, '+966…') +
+  fld(t('phoneIntl'), 'config.phoneIntl', cfg.phoneIntl) +
   fld(t('currency'), 'config.currency.0', cfg.currency ? cfg.currency[0] : '') +
+  fld(t('currencyEn'), 'config.currency.1', cfg.currency ? cfg.currency[1] : '') +
   fld(t('hsLink'), 'config.hungerStation', cfg.hungerStation, 'https://…') +
   fld(t('ig'), 'config.instagram', cfg.instagram, 'https://…') +
   fld(t('snap'), 'config.snapchat', cfg.snapchat, 'https://…') +
   fld(t('coords'), 'config.mapCoords', cfg.mapCoords, '19.1089791,42.1296272') +
   '</div></div>';
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?t('branches'):'Branches') + '</h3>';
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + t('branches') + '</h3>';
   (cfg.branches || []).forEach(function(b, i){
     h += '<div class="block sub"><div class="row2">' +
     bi(t('title'), 'config.branches.' + i + '.n', b.n) +
     bi(t('addr'), 'config.branches.' + i + '.a', b.a) +
     '</div><div class="block-head"><span class="grow"></span>' +
-    '<input class="mini idbox" data-path="config.branches.' + i + '.id" value="' + esc(b.id) + '" placeholder="' + t('id') + '">' +
-    '<button class="iconbtn danger" data-act="br-del" data-i="' + i + '">✕</button></div></div>';
+    '<button class="iconbtn danger" data-act="br-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div></div>';
   });
   h += '<button class="addbtn" data-act="br-add">' + t('branchT') + '</button></div>';
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'الشريط والمعرض':'Strip & gallery') + '</h3>' +
-  fld(t('marquee'), 'config.marquee', (cfg.marquee||[]).join('\\n'), '', 'textarea') +
-  fld(t('rail'), 'config.rail', (cfg.rail||[]).join(', ')) +
-  '</div>';
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'نافذة JOLT':'JOLT popup') + '</h3>' +
-  chk(t('enabled'), 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
+  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'الشريط المتحرك ومعرض الصور':'Strip & gallery') + '</h3>' +
+  chipEditor(t('marquee'), 'config.marquee', cfg.marquee, t('addWord'), false) +
+  chipEditor(t('rail'), 'config.rail', cfg.rail, t('addPic'), true) +
+  '<div class="note">' + t('wherePics') + '</div></div>';
+  h += '<div class="card">' + chk(t('jolt'), 'jolt.enabled', !(C.jolt && C.jolt.enabled === false)) +
   '<div class="note">' + t('joltHint') + '</div></div>';
   return h;
 }
 
 function secSecurity(){
   return '<h2 class="sec-title">' + t('security') + '</h2>' +
-  '<div class="card"><h3 style="margin-bottom:12px">' + t('sec1') + '</h3>' +
+  '<div class="card"><h3 style="margin-bottom:12px">' + t('secTitle') + '</h3>' +
   fld(t('currentPw'), 'pwCur', '', '', 'password') +
   fld(t('newPw'), 'pwNew', '', '', 'password') +
   fld(t('confirmPw'), 'pwNew2', '', '', 'password') +
   '<div class="err" id="pwErr"></div>' +
   '<button class="btn" data-act="pw-change">' + t('changePw') + '</button></div>' +
-  '<div class="card dangerzone"><button class="btn ghost" data-act="logout">' + t('logout') + '</button></div>';
-}
-
-function secTools(){
-  return '<h2 class="sec-title">' + t('toolsTitle') + '</h2>' +
-  '<div class="card">' +
-  '<p style="margin:0 0 12px">' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + '</p>' +
-  '<div class="block-head"><button class="btn ghost sm" data-act="export">' + t('exportJ') + '</button>' +
-  '<label class="btn ghost sm" style="cursor:pointer">' + t('importJ') + '<input type="file" id="importFile" accept=".json,application/json" class="hidden"></label>' +
-  '<button class="btn ghost sm" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>' +
-  '<div class="err" id="impErr"></div></div>';
+  '<div class="card"><button class="btn ghost" data-act="logout">' + t('logout') + '</button></div>' +
+  '<div class="card dangerzone"><button class="btn ghost" data-act="reset" style="color:var(--acc)">' + t('resetD') + '</button></div>';
 }
 
 /* ---------- structural actions ---------- */
@@ -537,10 +725,16 @@ function arrOp(arr, i, dir){
   if (j < 0 || j >= arr.length) return;
   var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
 }
+function getActList(el){
+  var lp = el.dataset.list;
+  if (lp === 'config.marquee') return C.config.marquee;
+  if (lp === 'config.rail') return C.config.rail;
+  return null;
+}
 function act(a, el){
   var i = +el.dataset.i, ci = el.dataset.ci != null ? +el.dataset.ci : null, gi = el.dataset.gi != null ? +el.dataset.gi : null, ii = el.dataset.ii != null ? +el.dataset.ii : null;
   switch (a){
-    case 'cat-add': C.menu.push({id:'cat' + Date.now() % 10000, t:['قسم جديد','New section'], groups:[{t:['',''], items:[]}]}); break;
+    case 'cat-add': C.menu.push({id:'c' + Date.now().toString(36), t:['قسم جديد','New section'], groups:[{t:['',''], items:[]}]}); break;
     case 'cat-del': if (C.menu.length < 2 || confirm(t('confirmDel'))) C.menu.splice(i, 1); break;
     case 'cat-up': arrOp(C.menu, i, -1); break;
     case 'cat-down': arrOp(C.menu, i, 1); break;
@@ -548,7 +742,7 @@ function act(a, el){
     case 'grp-del': if (confirm(t('confirmDel'))) C.menu[ci].groups.splice(i, 1); break;
     case 'grp-up': arrOp(C.menu[ci].groups, i, -1); break;
     case 'grp-down': arrOp(C.menu[ci].groups, i, 1); break;
-    case 'item-add': C.menu[ci].groups[gi].items.push({id:'it' + Date.now() % 10000, n:['صنف جديد','New item'], d:['',''], v:[['','', 0]]}); break;
+    case 'item-add': C.menu[ci].groups[gi].items.push({id:'i' + Date.now().toString(36), n:['صنف جديد','New item'], d:['',''], v:[['','', 0]]}); break;
     case 'item-del': if (confirm(t('confirmDel'))) C.menu[ci].groups[gi].items.splice(i, 1); break;
     case 'item-up': arrOp(C.menu[ci].groups[gi].items, i, -1); break;
     case 'item-down': arrOp(C.menu[ci].groups[gi].items, i, 1); break;
@@ -558,23 +752,16 @@ function act(a, el){
     case 'off-del': if (confirm(t('confirmDel'))) C.offers.splice(i, 1); break;
     case 'off-up': arrOp(C.offers, i, -1); break;
     case 'off-down': arrOp(C.offers, i, 1); break;
-    case 'br-add': C.config.branches.push({id:'br' + Date.now() % 10000, n:['فرع جديد','New branch'], a:['','']}); break;
+    case 'br-add': C.config.branches.push({id:'b' + Date.now().toString(36), n:['فرع جديد','New branch'], a:['','']}); break;
     case 'br-del': if (confirm(t('confirmDel'))) C.config.branches.splice(i, 1); break;
+    case 'chip-add': getActList(el).push(''); break;
+    case 'chip-del': getActList(el).splice(i, 1); break;
     case 'reset':
       if (confirm(t('confirmReset'))){
-        C = clone(DEFAULTS); delete C._comment;
+        C = clone(DEFAULTS);
+        if (C._comment) delete C._comment;
         toast(t('resetDone'));
       }
-      break;
-    case 'export':
-      (function(){
-        var blob = new Blob([JSON.stringify(C, null, 1)], {type:'application/json'});
-        var a2 = document.createElement('a');
-        a2.href = URL.createObjectURL(blob);
-        a2.download = 'sushi-jem-content.json';
-        a2.click();
-        URL.revokeObjectURL(a2.href);
-      })();
       break;
     case 'logout':
       fetch('api/logout', {method:'POST'}).then(function(){ location.reload() });
@@ -597,6 +784,45 @@ function act(a, el){
   if (a !== 'export' && a !== 'logout' && a !== 'pw-change'){ markDirty(); renderMain(); }
 }
 
+/* ---------- image upload ---------- */
+function compressImage(file, cb){
+  if (file.type === 'image/svg+xml' || file.type === 'image/gif'){
+    var rd = new FileReader();
+    rd.onload = function(){ cb(rd.result) };
+    rd.readAsDataURL(file);
+    return;
+  }
+  var img = new Image();
+  var ur = URL.createObjectURL(file);
+  img.onload = function(){
+    var MAX = 1600;
+    var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+    var cv = document.createElement('canvas');
+    cv.width = Math.max(1, Math.round(img.width * scale));
+    cv.height = Math.max(1, Math.round(img.height * scale));
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    cb(cv.toDataURL('image/jpeg', 0.82));
+    URL.revokeObjectURL(ur);
+  };
+  img.onerror = function(){ toast(t('uploadFail'), true) };
+  img.src = ur;
+}
+function uploadImage(file, onDone){
+  if (!file || !/^image\//.test(file.type)){ toast(t('uploadFail'), true); return; }
+  if (file.size > 25_000_000){ toast(t('uploadBig'), true); return; }
+  toast(t('uploading'));
+  compressImage(file, function(dataUrl){
+    if (dataUrl.length > 4_400_000){ toast(t('uploadBig'), true); return; }
+    fetch('api/media', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:dataUrl})})
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
+      .then(function(res){
+        if (res.ok){ toast(t('uploadDone')); onDone(res.j.url) }
+        else toast(res.j.error || t('uploadFail'), true);
+      })
+      .catch(function(){ toast(t('uploadFail'), true) });
+  });
+}
+
 /* ---------- events ---------- */
 document.addEventListener('click', function(e){
   var s = e.target.closest('[data-sec]');
@@ -608,16 +834,43 @@ document.addEventListener('input', function(e){
   var p = e.target.dataset ? e.target.dataset.path : null;
   if (!p || p.indexOf('pw') === 0) return;
   var v = e.target.value;
-  if (e.target.dataset.cast === 'num' || e.target.type === 'number') v = (v === '' ? '' : Number(v));
-  if (p === 'config.marquee'){ setPath(C, p, v.split('\\n').map(function(x){return x.trim()}).filter(Boolean)); markDirty(); return; }
-  if (p === 'config.rail'){ setPath(C, p, v.split(',').map(function(x){return x.trim()}).filter(Boolean)); markDirty(); return; }
+  if (e.target.type === 'number') v = (v === '' ? '' : Number(v));
   setPath(C, p, v);
+  markDirty();
+});
+document.addEventListener('input', function(e){
+  var lp = e.target.dataset ? e.target.dataset.list : null;
+  if (!lp) return;
+  var list = lp === 'config.marquee' ? C.config.marquee : C.config.rail;
+  list[+e.target.dataset.i] = e.target.value;
   markDirty();
 });
 document.addEventListener('change', function(e){
   if (e.target.dataset && e.target.dataset.cast === 'bool' && e.target.dataset.path){
     setPath(C, e.target.dataset.path, e.target.checked);
     markDirty();
+  }
+  if (e.target.dataset && e.target.dataset.upload != null && e.target.files && e.target.files[0]){
+    var input = e.target;
+    var lp = input.dataset.list;
+    uploadImage(input.files[0], function(url){
+      if (lp){
+        var list = lp === 'config.marquee' ? C.config.marquee : C.config.rail;
+        if (input.dataset.chipIndex != null){ list[+input.dataset.chipIndex] = url }
+        else { list.push(url) }
+        markDirty(); renderMain();
+      } else {
+        var holder = input.closest('.imgpick');
+        if (holder){
+          var ipt = holder.querySelector('[data-path]');
+          ipt.value = url;
+          ipt.dispatchEvent(new Event('input', {bubbles:true}));
+          var pv = holder.querySelector('.prev');
+          pv.innerHTML = '<img src="' + esc(url) + '" alt="" referrerpolicy="no-referrer">';
+        }
+      }
+    });
+    input.value = '';
   }
 });
 document.addEventListener('keydown', function(e){
@@ -653,10 +906,10 @@ function save(){
 $('#saveBtn').addEventListener('click', save);
 
 $('#langBtn').addEventListener('click', function(){
-  AUL = AUL === 'en' ? 'ar' : 'en';
+  AUL = AUL === 'ar' ? 'en' : 'ar';
   document.documentElement.lang = AUL;
   document.documentElement.dir = AUL === 'ar' ? 'rtl' : 'ltr';
-  $('#langBtn').textContent = AUL === 'en' ? 'عربي' : 'EN';
+  $('#langBtn').textContent = AUL === 'ar' ? 'EN' : 'عربي';
   applyChrome();
   if ($('#app').classList.contains('hidden')) return;
   renderSide(); renderMain();
@@ -700,22 +953,6 @@ $('#loginForm').addEventListener('submit', function(e){
       else err.textContent = t('loginFail');
     })
     .catch(function(){ err.textContent = 'network error' });
-});
-
-document.addEventListener('change', function(e){
-  if (e.target.id === 'importFile' && e.target.files && e.target.files[0]){
-    var f = e.target.files[0], rd = new FileReader();
-    rd.onload = function(){
-      try {
-        var j = JSON.parse(rd.result);
-        if (!j || !j.config || !j.menu || !j.strings) throw 0;
-        C = j;
-        markDirty(); renderMain();
-        toast('imported');
-      } catch (err){ $('#impErr').textContent = t('importBad') }
-    };
-    rd.readAsText(f);
-  }
 });
 
 applyChrome();

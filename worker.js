@@ -6,6 +6,9 @@ const COOKIE = 'sj_admin';
 const SESSION_TTL_MS = 7 * 24 * 3600 * 1000; // 7 days
 const PBKDF2_ITER = 100000;
 const MAX_CONTENT_BYTES = 2_000_000;
+const MAX_IMAGE_B64 = 4_400_000; // ~3.2 MB decoded
+const IMG_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+const CHUNK = 90_000; // chars of base64 per D1 row (statement limit is 100KB)
 
 function json(status, obj, headers) {
   return new Response(JSON.stringify(obj), {
@@ -141,6 +144,39 @@ export default {
       const ok = await authed(req, env);
       const row = ok ? await db.prepare('SELECT updated_at FROM content WHERE k = ?').bind('content').first() : null;
       return json(ok ? 200 : 401, ok ? { ok: true, updated_at: row ? row.updated_at : null } : { error: 'auth' });
+    }
+
+    if (p === '/api/media' && req.method === 'POST') {
+      if (!sameOrigin(req, url)) return json(403, { error: 'origin' });
+      if (!(await authed(req, env))) return json(401, { error: 'auth' });
+      let body;
+      try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
+      const m = String((body && body.data) || '').match(/^data:(image\/(?:jpeg|png|webp|gif|svg\+xml));base64,([A-Za-z0-9+/=]+)$/);
+      if (!m) return json(400, { error: 'bad image' });
+      const ct = m[1];
+      const b64 = m[2];
+      if (b64.length > MAX_IMAGE_B64) return json(413, { error: 'image too large (max ~3MB)' });
+      const ext = ct === 'image/jpeg' ? 'jpg' : ct.split('/')[1].replace('+', '');
+      const id = Date.now().toString(36) + '-' + randomToken().slice(0, 8);
+      const n = Math.ceil(b64.length / CHUNK);
+      const stmts = [db.prepare('INSERT INTO media (id, ct, size, chunks, created_at) VALUES (?,?,?,?,?)').bind(id, ct, b64.length, n, Date.now())];
+      for (let i = 0; i < n; i++) stmts.push(db.prepare('INSERT INTO media_chunk (mid, idx, data) VALUES (?,?,?)').bind(id, i, b64.substr(i * CHUNK, CHUNK)));
+      await db.batch(stmts);
+      return json(200, { url: '/media/' + id + '.' + ext, id });
+    }
+
+    if (p.startsWith('/media/')) {
+      const id = p.split('/')[2].split('.')[0];
+      if (!/^[a-z0-9-]+$/i.test(id)) return new Response('Not found', { status: 404 });
+      const meta = await db.prepare('SELECT ct FROM media WHERE id = ?').bind(id).first();
+      if (!meta) return new Response('Not found', { status: 404 });
+      const rows = await db.prepare('SELECT data FROM media_chunk WHERE mid = ? ORDER BY idx').bind(id).all();
+      const b64 = (rows.results || []).map((r) => r.data).join('');
+      let bin;
+      try { bin = atob(b64); } catch (e) { return new Response('Not found', { status: 404 }); }
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new Response(bytes, { headers: { 'Content-Type': meta.ct, 'Cache-Control': 'public, max-age=31536000, immutable' } });
     }
 
     if (p === '/api/password' && req.method === 'POST') {
