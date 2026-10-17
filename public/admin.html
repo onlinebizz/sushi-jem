@@ -548,7 +548,7 @@ function fld(label, path, val, hint, type){
 }
 function bi(label, basePath, pair, hint){
   pair = pair || ['', ''];
-  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '" placeholder="عربي">' +
+  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '">' +
   '<span class="enwrap"><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '" placeholder="English"></span></div>';
   if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
   return h + '</div>';
@@ -758,7 +758,7 @@ function secTexts(){
 function trow(paths, vAr, vEn, key){
   var p = typeof paths === 'string' && paths.indexOf('|') > -1 ? paths.split('|') : [paths, paths];
   var label = key ? esc(lbl(key)) : '';
-  return '<div class="trow" data-search="' + esc(label + ' ' + (vAr||'') + ' ' + (vEn||'')) + '"><span class="k">' + label + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '" placeholder="عربي"><span class="enwrap"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></span></div>';
+  return '<div class="trow" data-search="' + esc(label + ' ' + (vAr||'') + ' ' + (vEn||'')) + '"><span class="k">' + label + '</span><input data-path="' + p[0] + '" value="' + esc(vAr) + '"><span class="enwrap"><input data-path="' + p[1] + '" value="' + esc(vEn) + '" placeholder="English"></span></div>';
 }
 
 function chipEditor(label, listPath, list, addLabel, withUpload){
