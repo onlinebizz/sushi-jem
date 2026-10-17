@@ -107,6 +107,15 @@ body.show-en .varrow{grid-template-columns:1fr 1fr 90px 32px}
 .iconbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
 .addbtn{border:1.5px dashed var(--acc);color:var(--acc);background:none;border-radius:12px;padding:.5em 1.1em;font-weight:600;font-size:.95rem;margin:6px 0}
 .addbtn:hover{background:var(--soft)}
+.bigadd{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;background:var(--acc);color:#fff;border-radius:14px;padding:.85em 1em;font-weight:700;font-size:1.05rem;margin:14px 0 4px;box-shadow:0 10px 26px var(--shadow)}
+.bigadd:hover{filter:brightness(1.06)}
+.bigadd .i{width:20px;height:20px}
+.morebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+.morebar .grow{flex:1}
+.txtbtn{border:1.5px solid var(--line);background:var(--panel);border-radius:999px;padding:.4em 1.1em;font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px}
+.txtbtn:hover{border-color:var(--acc);color:var(--acc)}
+.txtbtn.danger{color:var(--acc)}
+.txtbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
 .varrow{display:grid;grid-template-columns:1fr 90px 34px;gap:8px;align-items:center;margin-bottom:6px}
 
 /* image picker */
@@ -227,7 +236,7 @@ var T = {
     unsaved:'لديك تغييرات غير محفوظة', loginFail:'كلمة المرور غير صحيحة', locked:'محاولات كثيرة. حاول بعد ',
     sec:' ثانية',
     dash:'الرئيسية', promo:'العروض والتنبيه', menu:'القائمة', texts:'نصوص الموقع', settings:'الإعدادات',
-    addCat:'+ قسم جديد', addGrp:'+ مجموعة', addItem:'+ صنف جديد', addVar:'+ إضافة خيار وسعر',
+    addCat:'+ قسم جديد', addGrp:'+ مجموعة', addItem:'إضافة صنف جديد', addVar:'+ إضافة خيار وسعر',
     offerT:'+ إضافة عرض جديد', branchT:'+ إضافة فرع', nameAr:'عربي', price:'السعر',
     oldPrice:'السعر قبل الخصم (اختياري)', badge:'شارة العرض (مثل: جديد)', desc:'الوصف',
     image:'الصورة', link:'رابط عند الضغط (اختياري)', enabled:'مفعل', title:'العنوان',
@@ -249,7 +258,7 @@ var T = {
     pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة',
     sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
     textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
-    menuHint:'اختر القسم بالأعلى لعرض أصنافه. كل صنف: الاسم والسعر ظاهران مباشرة، واضغط السهم الصغير للوصف والصورة والخيارات.',
+    menuHint:'اختر القسم بالأعلى. أمام كل صنف: الصورة والاسم والسعر فقط. اضغط السهم الصغير للوصف والصورة والخيارات والنقل والحذف.',
     offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط على زر مفعل لإظهار أو إخفاء أي عرض.',
     resetDone:'تم تحميل المحتوى الافتراضي. اضغط حفظ ونشر لتطبيقه.',
     tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر',
@@ -652,7 +661,7 @@ function secMenu(){
   '<span class="grow"></span>' +
   '<button class="iconbtn" data-act="cat-up" data-i="' + curCat + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
   '<button class="iconbtn" data-act="cat-down" data-i="' + curCat + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-  '<button class="iconbtn danger" data-act="cat-del" data-i="' + curCat + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+  '<button class="txtbtn danger" data-act="cat-del" data-i="' + curCat + '"><svg class="i"><use href="#i-x"/></svg>' + (AUL==='ar'?'حذف القسم':'Delete section') + '</button>' +
   '</div>';
   (cat.groups || []).forEach(function(g, gi){
     var multi = (cat.groups || []).length > 1 || (g.t && (g.t[0] || g.t[1]));
@@ -661,7 +670,7 @@ function secMenu(){
       bi(AUL==='ar'?'اسم المجموعة':'Group name', 'menu.' + curCat + '.groups.' + gi + '.t', g.t || ['','']) +
       '<button class="iconbtn" data-act="grp-up" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-up"/></svg></button>' +
       '<button class="iconbtn" data-act="grp-down" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-      '<button class="iconbtn danger" data-act="grp-del" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg></button>' +
+      '<button class="txtbtn danger" data-act="grp-del" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-x"/></svg>' + (AUL==='ar'?'حذف المجموعة':'Delete group') + '</button>' +
       '</div>';
     }
     (g.items || []).forEach(function(it, ii){
@@ -673,12 +682,15 @@ function secMenu(){
       '<input class="nm" data-path="' + p + '.n.0" value="' + esc(it.n ? it.n[0] : '') + '" placeholder="' + (AUL==='ar'?'اسم الصنف':'Item name') + '">' +
       '<span class="enwrap"><input class="nm" data-path="' + p + '.n.1" value="' + esc(it.n ? it.n[1] : '') + '" placeholder="English"></span>' +
       '<input class="pr" type="number" step="any" inputmode="decimal" data-path="' + p + '.v.0.2" value="' + esc((it.v && it.v[0]) ? it.v[0][2] : '') + '" placeholder="' + esc(t('price')) + '">' +
-      '<button class="iconbtn" data-act="item-up" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
-      '<button class="iconbtn" data-act="item-down" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-      '<button class="iconbtn danger" data-act="item-del" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button>' +
       '<button class="iconbtn" data-act="more" data-more="' + mid + '" title="' + (AUL==='ar'?'التفاصيل':'Details') + '"><svg class="i"><use href="#i-chev"/></svg></button>' +
       '</div>';
       h += '<div class="itemmore" id="' + mid + '">' +
+      '<div class="morebar">' +
+      '<button class="txtbtn" data-act="item-up" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-up"/></svg>' + (AUL==='ar'?'نقل لأعلى':'Move up') + '</button>' +
+      '<button class="txtbtn" data-act="item-down" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-down"/></svg>' + (AUL==='ar'?'نقل لأسفل':'Move down') + '</button>' +
+      '<span class="grow"></span>' +
+      '<button class="txtbtn danger" data-act="item-del" data-ci="' + curCat + '" data-gi="' + gi + '" data-i="' + ii + '"><svg class="i"><use href="#i-x"/></svg>' + (AUL==='ar'?'حذف الصنف':'Delete item') + '</button>' +
+      '</div>' +
       bi(t('desc'), p + '.d', it.d || ['','']) +
       imgPick(t('image'), p + '.img', it.img);
       if ((it.v || []).length > 1){
@@ -695,7 +707,7 @@ function secMenu(){
       h += '<button class="addbtn" data-act="var-add" data-ci="' + curCat + '" data-gi="' + gi + '" data-ii="' + ii + '">' + t('addVar') + '</button>' +
       '</div>';
     });
-    h += '<button class="addbtn" data-act="item-add" data-ci="' + curCat + '" data-i="' + gi + '">' + t('addItem') + '</button>';
+    h += '<button class="bigadd" data-act="item-add" data-ci="' + curCat + '" data-i="' + gi + '"><svg class="i"><use href="#i-plus"/></svg>' + t('addItem') + '</button>';
   });
   h += '<button class="addbtn" data-act="grp-add" data-i="' + curCat + '">' + t('addGrp') + '</button>';
   h += '</div>';
