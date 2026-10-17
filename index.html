@@ -123,6 +123,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
 .row .nm{flex:1;line-height:1.35}
 .row .nm small{display:block;color:var(--muted);font-size:.8rem}
+.row .nm .dsc{font-size:.72rem;opacity:.8}
 .row .price{font-size:1.3rem}
 .note{color:var(--muted);font-size:.9rem;margin-top:14px}
 
@@ -675,7 +676,7 @@ var CONFIG = {
   rail: ['dish-1','gallery-2','dish-2','gallery-4','dish-3','gallery-1']
 };
 
-/* ---------- menu data (from the owner's printed menu) ---------- */
+/* ---------- menu data: prices from the owner's printed menu; HungerStation additions keep HungerStation prices ---------- */
 var PIECES = ['5 قطع','5 pcs'];
 var MENU = [
  {id:'sushi', t:['السوشي','Sushi'], groups:[
@@ -683,7 +684,8 @@ var MENU = [
    {id:'r1',n:['نوري شرمب رول','Nori Shrimp Roll'],d:['شرمب، خيار، جزر','Shrimp, cucumber, carrot'],k:'虾',num:1,kcal:120,pcs:1,v:[['','',23]]},
    {id:'r2',n:['تشكن شيدر أورماكي','Chicken Cheddar Uramaki'],d:['دجاج مقلي، خيار، جزر','Fried chicken, cucumber, carrot'],k:'鸡',num:2,kcal:130,pcs:1,v:[['','',20]]},
    {id:'r3',n:['ديب فرايد ماكي','Deep Fried Maki'],d:['أصابع سمك مقلية، خيار، جزر','Fried fish fingers, cucumber, carrot'],k:'鱼',num:3,kcal:150,pcs:1,v:[['','',24]]},
-   {id:'r4',n:['قولدن كراب رول','Golden Crab Roll'],d:['أصابع الكراب، أفوكادو','Crab sticks, avocado'],k:'蟹',num:4,kcal:140,pcs:1,v:[['','',25]]}
+   {id:'r4',n:['قولدن كراب رول','Golden Crab Roll'],d:['أصابع الكراب، أفوكادو','Crab sticks, avocado'],k:'蟹',num:4,kcal:140,pcs:1,v:[['','',25]]},
+   {id:'best',n:['جيم بيست مشكل','Jem Best Mix'],d:['أشهر أربع رولات بمطبخ جيم، خمس قطع.','The four most famous rolls from the Jem kitchen, five pieces.'],k:'誉',v:[['','',25]]}
   ]},
   {t:['البوكس','The box'], items:[
    {id:'box',feat:1,n:['جيم سجنتشر بوكس','Jem Signature Box'],d:['20 قطعة مشكلة، خمس قطع من كل نوع. الأنسب للمشاركة.','20 mixed pieces, five of each roll. Made for sharing.'],img:'gallery-3',v:[['','',85]]}
@@ -695,7 +697,10 @@ var MENU = [
    {id:'cup',n:['كوب السوشي','Sushi Cup'],d:['السوشي في كوب، سهل الحمل ولذيذ.','Sushi in a cup, easy to carry and full of flavor.'],img:'gallery-6',v:[['دجاج','Chicken',20],['شرمب','Shrimp',25]]},
    {id:'burger',n:['برجر السوشي','Sushi Burger'],d:['رز مضغوط وحشوة غنية بتقديم برجر.','Pressed rice and a rich filling, served burger style.'],k:'寿',v:[['دجاج','Chicken',30],['شرمب','Shrimp',35]]},
    {id:'poke',n:['بوكي بول','Poke Bowl'],d:['جزر، خيار، كورن، خس، أفوكادو','Carrot, cucumber, corn, lettuce, avocado'],k:'碗',v:[['دجاج','Chicken',30],['شرمب','Shrimp',35]]},
-   {id:'onigiri',n:['أونيغيري','Onigiri'],d:['مثلثات الرز اليابانية بالنوري.','Japanese rice triangles wrapped in nori.'],k:'米',v:[['تونة','Tuna',5],['دجاج','Chicken',5],['شرمب','Shrimp',8]]}
+   {id:'onigiri',n:['أونيغيري','Onigiri'],d:['مثلثات الرز اليابانية بالنوري.','Japanese rice triangles wrapped in nori.'],k:'米',v:[['تونة','Tuna',5],['دجاج','Chicken',5],['شرمب','Shrimp',8]]},
+   {id:'rollipop',n:['رولي بوب','Rollipop'],d:['لفائف رولي بوب المبتكرة، خفيفة ومناسبة للتذوق السريع.','Innovative rollipop wraps, light and perfect for a quick taste.'],k:'巻',v:[['','',20]]},
+   {id:'burrito',n:['سوشي بوريتو فرايد','Fried Sushi Burrito'],d:['بوريتو سوشي مقلي، مزيج مقرمش ولذيذ من الأرز والمكونات.','A fried sushi burrito, a crispy tasty mix of rice and ingredients.'],k:'巻',v:[['','',50]]},
+   {id:'volcano',n:['فولكانو أونيغيري','Volcano Onigiri'],d:['أونيغيري مقرمش مغطى بالصوص الخاص بسوشي جيم وصوص الترياكي.','Crispy onigiri coated in the Sushi Jem special sauce and teriyaki.'],k:'米',v:[['','',18]]}
   ]}
  ]},
  {id:'hot', t:['رامن ونودلز','Ramen and noodles'], groups:[
@@ -703,33 +708,31 @@ var MENU = [
    {id:'rb',n:['رامن باللحم الطازج','Beef Ramen'],d:['نودلز في مرق لحم غني مع شرائح لحم طازجة وبيض وخضار وأعشاب.','Ramen noodles in a rich beef broth with fresh beef slices, eggs, vegetables and herbs.'],k:'面',v:[['','',25]]},
    {id:'rv',n:['رامن بالخضار','Vegetable Ramen'],d:['نودلز في مرق خفيف مع خضار طازجة.','Noodles in a light broth with fresh vegetables.'],k:'面',v:[['','',20]]},
    {id:'nc',n:['نودلز بالدجاج','Chicken Noodles'],d:['نودلز مقلية مع دجاج وخضار طازجة وصوص خاص.','Stir-fried noodles with chicken, fresh vegetables and our special sauce.'],k:'面',v:[['','',12]]},
-   {id:'nv',n:['نودلز بالخضار','Vegetable Noodles'],d:['نودلز مقلية مع خضار طازجة وصوص خفيف.','Stir-fried noodles with fresh vegetables and a light sauce.'],k:'面',v:[['','',10]]}
+   {id:'nv',n:['نودلز بالخضار','Vegetable Noodles'],d:['نودلز مقلية مع خضار طازجة وصوص خفيف.','Stir-fried noodles with fresh vegetables and a light sauce.'],k:'面',v:[['','',10]]},
+   {id:'katsu',n:['كاتسو الدجاج','Chicken Katsu'],d:['دجاج مقرمش مع أرز ياباني وصوص غني.','Crispy chicken with Japanese rice and a rich sauce.'],k:'鸡',v:[['','',51]]}
   ]}
  ]},
- {id:'sides', t:['مقبلات وصوصات ومشروبات','Sides, sauces and drinks'], groups:[
-  {t:['المقبلات','Appetizers'], list:1, items:[
-   {id:'a1',n:['سلطة الكاني (كراب)','Crab Salad'],v:[['','',30]]},
-   {id:'a2',n:['ادمامي','Edamame'],v:[['','',25]]},
-   {id:'a3',n:['كيمتشي','Kimchi'],v:[['','',10]]}
+ {id:'sides', t:['مقبلات وصوصات ومشروبات','Appetizers, sauces and drinks'], groups:[
+  {t:['المقبلات','Appetizers'], items:[
+   {id:'a1',n:['سلطة الكاني (كراب)','Crab Salad'],d:['سلطة منعشة تجمع بين شرائح الكابوريا والخضروات الطازجة.','A refreshing salad of crab sticks and fresh vegetables.'],v:[['','',30]]},
+   {id:'a2',n:['ادمامي','Edamame'],d:['قرون فول الصويا الخضراء مطهوة على البخار، تقدم ساخنة مع رشة ملح.','Green soybean pods steamed and served hot with a pinch of salt.'],v:[['','',25]]},
+   {id:'a3',n:['كيمتشي','Kimchi'],d:['الأنواع: الملفوف، الخيار، الجزر، الملفوف الحار.','Types: cabbage, cucumber, carrot, spicy cabbage.'],v:[['','',10]]},
+   {id:'gyozac',n:['قيوزا كريمي','Creamy Gyoza'],d:['جيوزا محمرة تُقدّم في صوص كريمي غني مع لمسة سبايسي.','Pan-fried gyoza served in a rich creamy sauce with a spicy touch.'],k:'餃',v:[['','',38]]},
+   {id:'gyozach',n:['قيوزا دجاج','Chicken Gyoza'],d:['عجينة آسيوية محشوة بالدجاج والخضار، محمصة ومقدمة مع صوص حار.','Asian dough stuffed with chicken and vegetables, toasted and served with a spicy sauce.'],k:'餃',v:[['','',30]]}
   ]},
   {t:['الصوصات','Sauces'], list:1, items:[
-   {id:'s1',n:['صوص تيرياكي','Teriyaki sauce'],v:[['','',2]]},
-   {id:'s2',n:['صوص صويا','Soy sauce'],v:[['','',2]]},
-   {id:'s3',n:['صوص مايو','Mayo sauce'],v:[['','',2]]},
-   {id:'s4',n:['توابل مكرملة','Caramelized seasoning'],v:[['','',3]]},
-   {id:'s5',n:['وسابي','Wasabi'],v:[['','',3]]},
-   {id:'s6',n:['جنجر (زنجبيل مخلل)','Ginger'],v:[['','',3]]},
-   {id:'s7',n:['زيت تشيلي صغير','Chili oil, small'],v:[['','',3]]},
-   {id:'s8',n:['زيت تشيلي كبير','Chili oil, large'],v:[['','',15]]},
-   {id:'s9',n:['عيدان السوشي','Chopsticks'],v:[['','',2]]}
+   {id:'s1',n:['صوص الترياكي','Teriyaki sauce'],d:['صوص ترياكي كلاسيكي، حلو ومالح، يضيف نكهة آسيوية مميزة لأي طبق.','Classic teriyaki sauce, sweet and salty, adding a distinctive Asian flavor.'],v:[['','',2]]},
+   {id:'s2',n:['صوص الصويا','Soy sauce'],d:['صوص الصويا الأصيل، مثالي لتغميس الأطباق أو لتعزيز النكهة.','Authentic soy sauce, ideal for dipping or boosting flavor.'],v:[['','',2]]},
+   {id:'s3',n:['صوص المايو','Mayo sauce'],d:['صوص مايونيز كريمي غني يضيف لمسة مميزة لأطباقك المفضلة.','A rich creamy mayo sauce adding a special touch to your favorite dishes.'],v:[['','',2]]},
+   {id:'s5',n:['وسابي','Wasabi'],d:['وسابي حار ومنعش، يقدم لمسة من النكهة اليابانية التقليدية.','Hot and refreshing wasabi, a touch of traditional Japanese flavor.'],v:[['','',2]]},
+   {id:'s6',n:['جنجر الزنجبيل','Ginger'],d:['شرائح الزنجبيل الطازج المخلل، مثالية لتنظيف الحنك بين الأطباق.','Pickled fresh ginger slices, perfect for cleansing the palate between dishes.'],v:[['','',2]]},
+   {id:'s7',n:['شيلي أويل','Chili oil'],d:['زيت الفلفل الحار لإضافة نكهة سبايسي وعمق لأطباقك، متوفر بحجم الكوب أو العلبة.','Hot chili oil adding spice and depth, available in cup or bottle size.'],v:[['','',4]]}
   ]},
   {t:['المشروبات','Drinks'], list:1, items:[
-   {id:'d1',n:['فيدا ساكورا','Vida Sakura'],v:[['','',5]]},
-   {id:'d2',n:['فيدا ليتشي','Vida Lychee'],v:[['','',5]]},
-   {id:'d3',n:['بيبسي','Pepsi'],v:[['','',3]]},
-   {id:'d4',n:['حمضيات','Citrus'],v:[['','',3]]},
-   {id:'d5',n:['كينزا','Kinza'],v:[['','',3]]},
-   {id:'d6',n:['مياه','Water'],v:[['','',1]]}
+   {id:'d6',n:['ماء','Water'],d:['مياه نقية ومنعشة لترطيب جسمك، أساسية لأي وجبة أو استراحة.','Pure and refreshing water, essential with any meal or break.'],v:[['','',1]]},
+   {id:'soda',n:['المشروبات الغازية','Soft drinks'],d:['مجموعة من المشروبات الغازية المنعشة والمشبعة بالفقاعات لتروي عطشك.','A selection of refreshing fizzy drinks to quench your thirst.'],v:[['','',3]]},
+   {id:'jdrink',n:['المشروبات اليابانية','Japanese drinks'],d:['مجموعة مختارة من المشروبات اليابانية الأصيلة لتقديم تجربة ثقافية فريدة.','A selected set of authentic Japanese drinks for a unique experience.'],v:[['','',7.5]]},
+   {id:'bt',n:['ايس تي (بوبل تي)','Iced tea (bubble tea)'],d:['النكهات: الباشن فروت، شمام وكمثرى، المانجو، الخوخ، التفاح، خوخ وفراولة.','Flavors: passion fruit, melon and pear, mango, peach, apple, peach and strawberry.'],v:[['','',20]]}
   ]}
  ]}
 ];
@@ -740,18 +743,22 @@ function V(f){return HSB+'vso-so-backend/HS_SA/HT1DE4/'+f+'?width=800&quality=75
 var IMG={
  r1:G('139423946','6f549ce8-1bdd-4ff1-885f-6040d3b4a7d1.jpg'), r2:G('139423945','bc9e996c-c766-428b-a4cf-e2fa2a0e1760.jpg'),
  r3:G('139423958','a2e0e982-3745-403a-bfbf-ce9eb282ffc3.jpg'), r4:G('139423949','579bc00e-68f4-4390-91a1-721c266adb87.jpg'),
- box:G('139423964','061fe3e5-b0e9-4822-9cc5-3aadcd9651fe.jpg'), cake:G('139423948','c60f2e15-e453-490e-9f07-d058d251c474.jpg'),
- cup:G('139423954','0ce08aae-5bb5-470e-ac7e-c35a7bd98773.jpg'), burger:G('139423961','0a3a957c-5ace-4958-94b4-84864526dc66.jpg'),
+ box:G('139423964','061fe3e5-b0e9-4822-9cc5-3aadcd9651fe.jpg'), cup:G('139423954','0ce08aae-5bb5-470e-ac7e-c35a7bd98773.jpg'),
+ burger:'https://images.unsplash.com/photo-1607301405891-3b679d1396e0?w=1600&q=80&auto=format&fit=crop',
  poke:V('attachment__1789297332626932396.jpeg'), onigiri:V('attachment__1789297332630456126.png'),
- rb:G('139423969','530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg'), rv:G('139423969','530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg'),
- nc:G('139423969','530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg'), nv:G('139423969','530f9ab0-48dd-4865-bc45-c5b0c1cfc5b0.jpg'),
  a1:V('attachment__1789297332620532380.jpg'), a2:V('attachment__1789297332625047133.jpeg'), a3:V('attachment__1789297332628594764.png'),
  s1:V('attachment__1789297332823189965.JPG'), s2:V('attachment__1789297332628795708.jpg'), s3:V('attachment__1789297332619520128.jpg'),
  s5:G('139423973','aeb8b0f2-55f9-40d7-ada5-e18a286edcb7.jpg'), s6:V('attachment__1789297332628316077.jpeg'),
- s7:V('attachment__1789297332629277299.jpg'), s8:V('attachment__1789297332629277299.jpg'),
- d1:G('139423988','df28f4b1-d1ad-4bf6-a271-52b0099aa788.jpg'), d2:G('139423988','df28f4b1-d1ad-4bf6-a271-52b0099aa788.jpg'),
- d3:V('attachment__1789297332576132987'), d4:V('attachment__1789297332576132987'), d5:V('attachment__1789297332576132987'),
- d6:V('attachment__1789297332817643339.jpg')
+ s7:V('attachment__1789297332629277299.jpg'),
+ d6:V('attachment__1789297332817643339.jpg'),
+ cake:'https://images.unsplash.com/photo-1692691462436-1e6ef36d8ee4?w=1600&q=80&auto=format&fit=crop',
+ rb:'https://images.unsplash.com/photo-1617421753170-46511a8d73fc?w=1600&q=80&auto=format&fit=crop', rv:'https://images.unsplash.com/photo-1612927601601-6638404737ce?w=1600&q=80&auto=format&fit=crop',
+ nc:'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=1600&q=80&auto=format&fit=crop', nv:'https://images.unsplash.com/photo-1553621043-f607bfbf6640?w=1600&q=80&auto=format&fit=crop',
+ best:'https://images.unsplash.com/photo-1736885978380-8d7d9f7d7880?w=1600&q=80&auto=format&fit=crop', rollipop:'https://images.unsplash.com/photo-1617196035154-1e7e6e28b0db?w=1600&q=80&auto=format&fit=crop',
+ burrito:'https://images.unsplash.com/photo-1726824861360-ceecef8fdaeb?w=1600&q=80&auto=format&fit=crop', volcano:'https://images.unsplash.com/photo-1696463469919-def9b2830857?w=1600&q=80&auto=format&fit=crop',
+ gyozac:'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=1600&q=80&auto=format&fit=crop', gyozach:'https://images.unsplash.com/photo-1558220831-9ad8f955fb9b?w=1600&q=80&auto=format&fit=crop',
+ katsu:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=1600&q=80&auto=format&fit=crop', jdrink:'https://images.unsplash.com/photo-1604259596747-2377448d916d?w=1600&q=80&auto=format&fit=crop',
+ bt:'https://images.unsplash.com/photo-1624896276654-2eb0c7e8247c?w=1600&q=80&auto=format&fit=crop', soda:'https://images.unsplash.com/photo-1567103472667-6898f3a79cf2?w=1600&q=80&auto=format&fit=crop'
 };
 Object.keys(byIdInit()).forEach(function(k){var it=byIdInit()[k];if(IMG[k]){it.chain=['images/menu/'+k+'.jpg',IMG[k]].concat(it.img?[src(it.img)]:[]);it.img=it.chain[0]}});
 function byIdInit(){var o={};MENU.forEach(function(c){c.groups.forEach(function(g){g.items.forEach(function(it){o[it.id]=it})})});return o}
@@ -832,7 +839,7 @@ function listRow(it){
   var si = 0, key = it.id+'|0', q = cart[key]||0, v = it.v[0];
   var ctl = q ? '<span class="step"><button type="button" data-dec="'+key+'" aria-label="-"><svg class="i"><use href="#i-minus"/></svg></button><b>'+q+'</b><button type="button" data-inc="'+key+'" aria-label="+"><svg class="i"><use href="#i-plus"/></svg></button></span>'
      : '<button class="add" type="button" data-inc="'+key+'" aria-label="'+d('add')+'"><svg class="i"><use href="#i-plus"/></svg><span>'+d('add')+'</span></button>';
-  return '<div class="row">'+(it.img?'<img class="th" src="'+src(it.img)+'" data-fb="'+it.chain.slice(1).join('|')+'" referrerpolicy="no-referrer" alt="" loading="lazy">':'')+'<div class="nm">'+esc(it.n[LI])+'<small>'+esc(it.n[1-LI])+'</small></div><span class="price">'+v[2]+'<small>'+cur()+'</small></span>'+ctl+'</div>';
+  return '<div class="row">'+(it.img?'<img class="th" src="'+src(it.img)+'" data-fb="'+it.chain.slice(1).join('|')+'" referrerpolicy="no-referrer" alt="" loading="lazy">':'')+'<div class="nm">'+esc(it.n[LI])+'<small>'+esc(it.n[1-LI])+'</small>'+(it.d?'<small class="dsc">'+esc(it.d[LI])+'</small>':'')+'</div><span class="price">'+v[2]+'<small>'+cur()+'</small></span>'+ctl+'</div>';
 }
 function renderMenu(){
   var c = MENU.filter(function(x){return x.id===tab})[0];

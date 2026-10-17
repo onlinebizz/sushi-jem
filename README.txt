@@ -12,3 +12,8 @@ gallery-1.jpg to gallery-6.jpg
 For a typed, priced menu, fill the "menu" list in the settings block of index.html (an example of the format is in the comment above it).
 
 Use photos. Photos posted by customers in Google reviews are ok to showcase.
+
+Photos: images/menu/ holds the owner's HungerStation product photos plus illustrative
+stock photography (Unsplash) for the newer additions. Stock photos are illustrative
+and can be swapped for the owner's own shots when available: replace the file with
+the same name, no code change needed.
