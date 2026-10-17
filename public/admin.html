@@ -492,8 +492,8 @@ function fld(label, path, val, hint, type){
 }
 function bi(label, basePath, pair, hint){
   pair = pair || ['', ''];
-  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><b>ع</b><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '">' +
-  '<span class="enwrap"><b>EN</b><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '"></span></div>';
+  var h = '<div class="fld"><label>' + esc(label) + '</label><div class="bi"><input data-path="' + basePath + '.0" value="' + esc(pair[0]) + '" placeholder="عربي">' +
+  '<span class="enwrap"><input data-path="' + basePath + '.1" value="' + esc(pair[1]) + '" placeholder="English"></span></div>';
   if (hint) h += '<span class="hint">' + esc(hint) + '</span>';
   return h + '</div>';
 }
