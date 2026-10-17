@@ -76,6 +76,7 @@ details.sgroup .sbody{padding:2px 18px 16px}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:26px 18px;text-align:center;font-family:var(--f-display);font-size:1.35rem;color:var(--text);transition:transform .15s,border-color .15s}
 .tile .i{width:34px;height:34px;color:var(--acc);margin:0 auto 8px;display:block}
 .tile:hover{transform:translateY(-3px);border-color:var(--acc);color:var(--acc)}
+.tile .sub{display:block;font-family:var(--f-body);font-size:.82rem;color:var(--muted);font-weight:400;margin-top:4px}
 
 /* cards & fields */
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:18px 20px;margin-bottom:14px}
@@ -126,6 +127,9 @@ body.show-en .itemrow .enwrap input{grid-column:2 / -1;grid-row:2;min-width:0}
 .txtbtn:hover{border-color:var(--acc);color:var(--acc)}
 .txtbtn.danger{color:var(--acc)}
 .txtbtn.danger:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
+details.optbox{border:1px dashed var(--line);border-radius:12px;padding:8px 14px;margin:8px 0;background:var(--bg2)}
+details.optbox summary{cursor:pointer;color:var(--muted);font-size:.9rem;font-weight:600;list-style:none}
+details.optbox summary::-webkit-details-marker{display:none}
 .varrow{display:grid;grid-template-columns:1fr 90px 40px;gap:8px;align-items:center;margin-bottom:6px}
 body.show-en .varrow{grid-template-columns:1fr 1fr 90px 40px}
 body.show-en .varrow .enwrap{display:contents}
@@ -292,7 +296,7 @@ var T = {
     sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
     textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
     menuHint:'اختر القسم بالأعلى. أمام كل صنف: الصورة والاسم والسعر فقط. اضغط السهم الصغير للوصف والصورة والخيارات والنقل والحذف.',
-    offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط على زر مفعل لإظهار أو إخفاء أي عرض.',
+    offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط مفعل للإظهار أو الإخفاء. الحقول الاختيارية (السعر القديم، الشارة، الرابط) داخل "خيارات إضافية".',
     resetDone:'تم تحميل المحتوى الافتراضي. اضغط حفظ ونشر لتطبيقه.',
     tipSave:'تذكير: التغييرات لا تظهر على الموقع إلا بعد الضغط على حفظ ونشر',
     quick:'ماذا تريد أن تعدّل؟',
@@ -329,7 +333,7 @@ var T = {
     sessionEnded:'Session expired. Sign in again.',
     textHint:'Search for the text you want to change, then open its group.',
     menuHint:'A section has groups, and each group has items. Reorder with arrows, delete with the red button.',
-    offerHint:'Offers appear in their own section on the site. Use the Enabled button to show or hide any offer.',
+    offerHint:'Offers appear in their own section. Use Enabled to show or hide. Optional fields (old price, badge, link) are inside "More options".',
     resetDone:'Defaults loaded. Press Save & publish to apply.',
     tipSave:'Reminder: changes only go live after Save & publish',
     quick:'What do you want to edit?',
@@ -627,13 +631,19 @@ function renderMain(){
 }
 
 function secDash(){
+  var TILES = [
+    {sec:'promo', icon:'i-offer', ar:['العروض والتنبيه','تعديل العروض وشريط التنبيه الأحمر'], en:['Offers & announcement','Edit offers and the red announcement bar']},
+    {sec:'menu', icon:'i-menu', ar:['القائمة','الأصناف والأسعار والصور'], en:['Menu','Items, prices and photos']},
+    {sec:'texts', icon:'i-text', ar:['نصوص الموقع','كل الكلمات الظاهرة في الموقع'], en:['Site texts','Every word shown on the site']},
+    {sec:'settings', icon:'i-settings', ar:['الإعدادات','الأرقام والروابط وكلمة المرور'], en:['Settings','Numbers, links and password']}
+  ];
   return '<h2 class="sec-title">' + t('dash') + '</h2>' +
   '<p class="sec-sub">' + t('howBody') + '</p>' +
   '<div class="tiles">' +
-  '<button class="tile" data-sec="promo"><svg class="i"><use href="#i-offer"/></svg>' + t('promo') + '</button>' +
-  '<button class="tile" data-sec="menu"><svg class="i"><use href="#i-menu"/></svg>' + t('menu') + '</button>' +
-  '<button class="tile" data-sec="texts"><svg class="i"><use href="#i-text"/></svg>' + t('texts') + '</button>' +
-  '<button class="tile" data-sec="settings"><svg class="i"><use href="#i-settings"/></svg>' + t('settings') + '</button>' +
+  TILES.map(function(x){
+    var d = AUL === 'ar' ? x.ar : x.en;
+    return '<button class="tile" data-sec="' + x.sec + '"><svg class="i"><use href="#' + x.icon + '"/></svg>' + d[0] + '<span class="sub">' + d[1] + '</span></button>';
+  }).join('') +
   '</div>' +
   '<div class="note">' + t('tipSave') + ' &nbsp;·&nbsp; ' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + ' &nbsp;·&nbsp; <a href="/" target="_blank" rel="noopener" style="color:var(--acc);font-weight:600">' + t('viewSite') + ' ↗</a></div>';
 }
@@ -661,12 +671,15 @@ function secPromo(){
     '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
     bi(t('title'), 'offers.' + i + '.t', o.t) +
     bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
-    '<div class="row2">' +
     fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
-    fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
-    '</div>' +
     imgPick(t('image'), 'offers.' + i + '.img', o.img) +
+    '<details class="optbox"><summary>' + (AUL==='ar'?'خيارات إضافية (اختياري)':'More options (optional)') + '</summary>' +
+    '<div class="row2">' +
+    fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
+    bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
+    '</div>' +
     fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…', 'ltr') +
+    '</details>' +
     '</div>';
   });
   h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button></div>';
