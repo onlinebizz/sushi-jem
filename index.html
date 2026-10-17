@@ -128,15 +128,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .note{color:var(--muted);font-size:.9rem;margin-top:14px}
 
 /* place */
-.place{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,48px);align-items:start}
+.place{display:grid;grid-template-columns:1fr 1.7fr auto;gap:clamp(16px,3vw,36px);align-items:start}
 .branch{background:var(--panel);border:1px solid var(--line);border-radius:var(--leaf);padding:18px 20px;margin-bottom:12px}
 .branch h3{font-size:1.4rem;color:var(--acc)}
 .branch p{color:var(--muted);font-size:.95rem}
 .map{border-radius:var(--leaf);overflow:hidden;border:1px solid var(--line);height:300px}
 .map iframe{width:100%;height:100%;border:0;filter:var(--map-filter)}
-.shots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.shots img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--leaf);border:1px solid var(--line)}
-.shots .sign{clip-path:polygon(0 14%,50% 0,100% 14%,100% 100%,0 100%);border:0;border-radius:0}
+.sign{display:block;width:100%;aspect-ratio:2.18/1;object-fit:cover;margin-top:14px;clip-path:polygon(0 14%,50% 0,100% 14%,100% 100%,0 100%)}
+.wall{width:151px;aspect-ratio:591/2196;object-fit:cover;border-radius:999px;border:1px solid var(--line);justify-self:end}
 
 /* footer */
 .foot{background:var(--footbg);color:var(--foottext);padding:34px 0 110px;text-align:center}
@@ -193,6 +192,7 @@ fieldset.fld{border:0;padding:0;margin:0 0 14px}
 @media (max-width:860px){
   .nav-links{display:none}
   .place{grid-template-columns:1fr}
+  .wall{justify-self:center}
   .card.feat{flex-direction:column}
   .card.feat .ph{min-height:0;height:auto;aspect-ratio:16/10;flex:none}
 }
@@ -576,8 +576,9 @@ html.jpop-open{overflow:hidden}
       </div>
       <div>
         <div class="map"><iframe title="Sushi Jem, Al-Namas" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=19.1089791,42.1296272&amp;z=16&amp;output=embed"></iframe></div>
-        <div class="shots"><img class="sign" src="images/sign.jpg" alt="Sushi Jem" loading="lazy"><img src="images/wall.jpg" alt="寿司吉姆" loading="lazy"></div>
+        <img class="sign" src="images/sign.jpg" alt="Sushi Jem" loading="lazy">
       </div>
+      <img class="wall" src="images/wall.jpg" alt="寿司吉姆" loading="lazy">
     </div>
   </div>
 </section>
