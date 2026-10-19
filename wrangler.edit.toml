@@ -1,0 +1,19 @@
+# Isolated TEST deployment of the inline editor. Never point this at production:
+# - separate Worker name (restaurant-edit)
+# - same D1 database but a table prefix (TP = "t_"), so test data never mixes
+#   with the live site's rows
+name = "restaurant-edit"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sushi-jem-content"
+database_id = "404b93ab-ab90-4b89-9038-d768cd6a7696"
+
+[vars]
+TP = "t_"
