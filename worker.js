@@ -23,7 +23,13 @@ function tables(env){
 function json(status, obj, headers) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, headers || {}),
+    headers: Object.assign({
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+    }, headers || {}),
   });
 }
 
@@ -409,6 +415,15 @@ export default {
     }
 
     if (p.startsWith('/api/dev')) return json(404, { error: 'not found' });
+
+    if (p.startsWith('/api/') && req.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Max-Age': '86400'
+      } });
+    }
 
     if (p.startsWith('/api/')) return json(404, { error: 'not found' });
 
