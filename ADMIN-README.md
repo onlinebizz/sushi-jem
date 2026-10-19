@@ -41,3 +41,5 @@ If you ever edit the built-in defaults inside `public/index.html`, run `node bui
 
 - Images: enter a file name like `dish-1` (served as `images/dish-1.jpg`) or a full `https://` URL. Put new photo files in `public/images/` and commit them.
 - The admin password is set directly in the D1 database (no public setup endpoint). Change it anytime from the Security section.
+- The Worker creates any missing tables automatically on first request (`ensureSchema` in `worker.js`, idempotent). `migrations/0001-credits-tables.sql` mirrors the schema for reference or fresh environments.
+- Credit failures are fail-closed: if the credits tables are unreachable, saves return a 503 `credits_unavailable` error and nothing is written (the admin UI shows a clear message instead of a generic network error).

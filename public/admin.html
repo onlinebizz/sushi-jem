@@ -295,6 +295,7 @@ var T = {
     currency:'اسم العملة', del:'حذف', up:'أعلى', down:'أسفل',
     pwChanged:'تم تغيير كلمة المرور. سجّل الدخول من جديد.', pwWrong:'كلمة المرور الحالية غير صحيحة', pwMismatch:'التأكيد لا يطابق',
     sessionEnded:'انتهت الجلسة. سجّل الدخول من جديد.',
+    creditsDown:'تعذّر التحقق من رصيد التغييرات، ولم يتم الحفظ. حاول مرة أخرى، وإذا تكررت تواصل مع المطور.',
     textHint:'ابحث عن النص الذي تريد تعديله، ثم افتح مجموعته.',
     menuHint:'اختر القسم بالأعلى. أمام كل صنف: الصورة والاسم والسعر فقط. اضغط السهم الصغير للوصف والصورة والخيارات والنقل والحذف.',
     offerHint:'العروض تظهر في قسم خاص على الموقع. اضغط مفعل للإظهار أو الإخفاء. الحقول الاختيارية (السعر القديم، الشارة، الرابط) داخل "خيارات إضافية".',
@@ -332,6 +333,7 @@ var T = {
     currency:'Currency label', del:'Delete', up:'Up', down:'Down',
     pwChanged:'Password changed. Sign in again.', pwWrong:'Current password is wrong', pwMismatch:'Confirmation does not match',
     sessionEnded:'Session expired. Sign in again.',
+    creditsDown:'Could not verify your change credits, so nothing was saved. Try again, and contact the developer if it repeats.',
     textHint:'Search for the text you want to change, then open its group.',
     menuHint:'A section has groups, and each group has items. Reorder with arrows, delete with the red button.',
     offerHint:'Offers appear in their own section. Use Enabled to show or hide. Optional fields (old price, badge, link) are inside "More options".',
@@ -906,7 +908,7 @@ function act(a, el){
       }
       break;
     case 'logout':
-      fetch('api/logout', {method:'POST', headers:authH()}).then(function(){ location.reload() });
+      fetch('api/logout', {method:'POST', headers:authH()}).then(function(){ try{ sessionStorage.removeItem('sjAdminToken') }catch(e){}; TOKEN = null; location.reload() });
       break;
     case 'pw-change':
       (function(){
@@ -1063,9 +1065,9 @@ function save(){
     headers: Object.assign({ 'Content-Type': 'application/json' }, authH()),
     body: JSON.stringify(C)
   }).then(function(r){
-    return r.json().then(function(j){ return {ok: r.ok, j: j} });
+    return r.text().then(function(tx){ var j = null; try { j = JSON.parse(tx) } catch(e){}; return {ok: r.ok, j: j} });
   }).then(function(res){
-    if (res.ok){
+    if (res.ok && res.j){
       updated_at = res.j.updated_at;
       clearDirty();
       toast(t('saved'));
@@ -1073,11 +1075,13 @@ function save(){
       else refreshCredits();
     } else if (res.j && res.j.error === 'limit'){
       showCredits(res.j.credits || null, res.j.reason);
+    } else if (res.j && res.j.error === 'credits_unavailable'){
+      toast(t('creditsDown'), true, 6000);
     } else if (res.j && res.j.error === 'auth'){
       toast(t('sessionEnded'), true);
       showLogin();
     } else {
-      toast(res.j.error || 'error', true);
+      toast(res.j && res.j.error ? res.j.error : 'network error', true);
     }
   }).catch(function(){ toast('network error', true) })
   .finally(function(){ $('#saveBtn').textContent = t('save') });
@@ -1090,15 +1094,25 @@ function showCredits(cr, blocked){
   pill.classList.remove('hidden');
   var d = cr.daily || { used: 0, limit: 2, left: 2 };
   var w = cr.weekly || { used: 0, limit: 7, left: 7 };
-  var txt = 'التغييرات اليوم: ' + d.left + ' متبقي';
-  if (cr.bonus > 0) txt += ' · رصيد إضافي: ' + cr.bonus;
-  if (cr.locked) txt = 'الحساب مقفول';
+  var en = AUL === 'en';
+  var txt = en
+    ? 'Changes left today: ' + d.left + ' · this week: ' + w.left
+    : 'تغييرات اليوم: ' + d.left + ' متبقي · هذا الأسبوع: ' + w.left;
+  if (cr.bonus > 0) txt += (en ? ' · bonus: ' : ' · رصيد إضافي: ') + cr.bonus;
+  if (cr.locked) txt = en ? 'Account locked' : 'الحساب مقفول';
   pill.textContent = txt;
   pill.style.color = (cr.locked || (blocked && (d.left <= 0 || w.left <= 0) && cr.bonus <= 0)) ? 'var(--acc)' : 'var(--muted)';
   if (blocked){
-    var why = blocked === 'daily' ? 'انتهت تغييراتك لهذا اليوم' : blocked === 'weekly' ? 'انتهت تغييراتك لهذا الأسبوع' : 'الحساب مقفول حاليًا';
+    var why = blocked === 'daily'
+      ? (en ? 'No changes left today' : 'انتهت تغييراتك لهذا اليوم')
+      : blocked === 'weekly'
+        ? (en ? 'No changes left this week' : 'انتهت تغييراتك لهذا الأسبوع')
+        : (en ? 'The account is currently locked' : 'الحساب مقفول حاليًا');
     var c = cr.contact || { name: '6IX', whatsapp: '0557178070', email: 'personalizedenglishlessons@proton.me' };
-    toast(why + ' — للتواصل مع المطور ' + c.name + ': واتساب ' + c.whatsapp + ' أو بريد ' + c.email, true, 9000);
+    var tail = en
+      ? ' — contact the developer ' + c.name + ': WhatsApp ' + c.whatsapp + ' or email ' + c.email
+      : ' — للتواصل مع المطور ' + c.name + ': واتساب ' + c.whatsapp + ' أو بريد ' + c.email;
+    toast(why + tail, true, 9000);
   }
 }
 function refreshCredits(){

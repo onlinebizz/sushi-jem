@@ -20,6 +20,30 @@ function tables(env){
   };
 }
 
+/* Self-healing schema: idempotent CREATE TABLE IF NOT EXISTS for every table the
+   code uses, run once per isolate through the D1 binding (so it works no matter
+   what scopes the management API token has). Mirrors migrations/0001-credits-tables.sql. */
+const SCHEMA_DDL = [
+  ['content', 'CREATE TABLE IF NOT EXISTS {{t}} (k TEXT PRIMARY KEY, v TEXT NOT NULL, updated_at INTEGER NOT NULL)'],
+  ['admin', 'CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY CHECK (id = 1), pw_hash TEXT NOT NULL, salt TEXT NOT NULL, iter INTEGER NOT NULL, updated_at INTEGER NOT NULL)'],
+  ['sessions', 'CREATE TABLE IF NOT EXISTS {{t}} (token_hash TEXT PRIMARY KEY, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL)'],
+  ['login_fail', 'CREATE TABLE IF NOT EXISTS {{t}} (ip TEXT PRIMARY KEY, count INTEGER NOT NULL DEFAULT 0, locked_until INTEGER NOT NULL DEFAULT 0)'],
+  ['media', 'CREATE TABLE IF NOT EXISTS {{t}} (id TEXT PRIMARY KEY, ct TEXT NOT NULL, size INTEGER NOT NULL, chunks INTEGER NOT NULL, created_at INTEGER NOT NULL)'],
+  ['media_chunk', 'CREATE TABLE IF NOT EXISTS {{t}} (mid TEXT NOT NULL, idx INTEGER NOT NULL, data TEXT NOT NULL, PRIMARY KEY (mid, idx))'],
+  ['credits', 'CREATE TABLE IF NOT EXISTS {{t}} (k TEXT PRIMARY KEY, v TEXT NOT NULL, updated_at INTEGER NOT NULL)'],
+  ['change_log', 'CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, kind TEXT NOT NULL)'],
+  ['dev', 'CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY CHECK (id = 1), pw_hash TEXT NOT NULL, salt TEXT NOT NULL, iter INTEGER NOT NULL, updated_at INTEGER NOT NULL)'],
+  ['dev_sessions', 'CREATE TABLE IF NOT EXISTS {{t}} (token_hash TEXT PRIMARY KEY, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL)']
+];
+let schemaOnce = null;
+function ensureSchema(db, TBL) {
+  if (!schemaOnce) {
+    schemaOnce = db.batch(SCHEMA_DDL.map((row) => db.prepare(row[1].replace('{{t}}', TBL[row[0]]))))
+      .catch((e) => { schemaOnce = null; throw e; });
+  }
+  return schemaOnce;
+}
+
 function json(status, obj, headers) {
   return new Response(JSON.stringify(obj), {
     status,
@@ -156,6 +180,11 @@ async function consumeChange(db, TBL, gate) {
     gate.state.bonus = Math.max(0, gate.state.bonus - 1);
     await putCreditsState(db, TBL, gate.state);
   }
+  return creditsReport(db, TBL);
+}
+
+/* Best-effort read of the current credits state for API responses. */
+async function creditsReport(db, TBL) {
   const usage = await creditUsage(db, TBL, Date.now());
   const st = await getCreditsState(db, TBL);
   return {
@@ -164,6 +193,12 @@ async function consumeChange(db, TBL, gate) {
     weekly: { used: usage.weekly, limit: st.weeklyLimit, left: Math.max(0, st.weeklyLimit - usage.weekly) },
     bonus: st.bonus
   };
+}
+/* gateChange wrapped to fail closed with a clean error instead of a 500
+   when the credits tables are unavailable. */
+async function gateChangeSafe(db, TBL) {
+  try { return { ok: true, gate: await gateChange(db, TBL) }; }
+  catch (e) { return { ok: false }; }
 }
 
 /* ---------- developer auth (separate from the admin) ---------- */
@@ -189,6 +224,23 @@ export default {
     const db = env.DB;
     const TBL = tables(env);
 
+    // make sure every table the code uses exists (idempotent, once per isolate)
+    if (p.startsWith('/api/')) {
+      try { await ensureSchema(db, TBL); } catch (e) { /* routes report structured errors */ }
+    }
+
+    // API preflights must be answered before endpoint dispatch, otherwise
+    // endpoint-level method checks (405) and the /api/dev 404 catch-all break
+    // Bearer-token saves from cross-origin contexts.
+    if (p.startsWith('/api/') && req.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Max-Age': '86400'
+      } });
+    }
+
     if (p === '/api/content') {
       if (req.method === 'GET') {
         const row = await db.prepare('SELECT v, updated_at FROM ' + TBL.content + ' WHERE k = ?').bind('content').first();
@@ -202,7 +254,9 @@ export default {
       if (req.method === 'PUT') {
         if (!(await authed(req, env))) return json(401, { error: 'auth' });
         if (!sameOrigin(req, url) && !bearerSupplied(req)) return json(403, { error: 'origin' });
-        const gate = await gateChange(db, TBL);
+        const g = await gateChangeSafe(db, TBL);
+        if (!g.ok) return json(503, { error: 'credits_unavailable' });
+        const gate = g.gate;
         if (!gate.allowed) return json(429, { error: 'limit', reason: gate.reason, credits: gate.info });
         const body = await req.text();
         if (body.length > MAX_CONTENT_BYTES) return json(413, { error: 'too large' });
@@ -211,12 +265,22 @@ export default {
         if (!content || typeof content !== 'object' || !content.config || !content.menu || !content.strings) {
           return json(400, { error: 'bad content: config, menu and strings are required' });
         }
+        // Atomic: content write + usage log (+ bonus decrement) commit together,
+        // so a save either fully happens or fully fails.
         const now = Date.now();
-        await db
-          .prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
-          .bind('content', JSON.stringify(content), now)
-          .run();
-        const credits = await consumeChange(db, TBL, gate);
+        const stmts = [
+          db.prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
+            .bind('content', JSON.stringify(content), now),
+          db.prepare('INSERT INTO ' + TBL.change_log + ' (ts, kind) VALUES (?,?)').bind(now, 'content')
+        ];
+        if (gate.usesBonus) {
+          gate.state.bonus = Math.max(0, gate.state.bonus - 1);
+          stmts.push(db.prepare('INSERT INTO ' + TBL.credits + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
+            .bind('state', JSON.stringify(gate.state), now));
+        }
+        await db.batch(stmts);
+        let credits = null;
+        try { credits = await creditsReport(db, TBL); } catch (e) { /* reporting only */ }
         return json(200, { ok: true, updated_at: now, credits });
       }
       return json(405, { error: 'method' });
@@ -254,6 +318,10 @@ export default {
     }
 
     if (p === '/api/logout' && req.method === 'POST') {
+      // revoke the Bearer session too, not just the cookie
+      const ah = req.headers.get('Authorization') || '';
+      const am = ah.match(/^Bearer ([a-f0-9]{64})$/);
+      if (am) await db.prepare('DELETE FROM ' + TBL.sessions + ' WHERE token_hash = ?').bind(await sha256(am[1])).run();
       const cookie = req.headers.get('Cookie') || '';
       const m = cookie.match(new RegExp(COOKIE + '=([a-f0-9]{64})'));
       if (m) await db.prepare('DELETE FROM ' + TBL.sessions + ' WHERE token_hash = ?').bind(await sha256(m[1])).run();
@@ -268,7 +336,9 @@ export default {
 
     if (p === '/api/credits' && req.method === 'GET') {
       if (!(await authed(req, env))) return json(401, { error: 'auth' });
-      const gate = await gateChange(db, TBL);
+      const g = await gateChangeSafe(db, TBL);
+      if (!g.ok) return json(503, { error: 'credits_unavailable' });
+      const gate = g.gate;
       const out = { locked: gate.info.locked, daily: gate.info.daily, weekly: gate.info.weekly, bonus: gate.info.bonus, contact: CONTACT };
       if (!gate.allowed) out.blocked = gate.reason;
       return json(200, out);
@@ -330,7 +400,9 @@ export default {
       // same rationale as admin login: password is the proof, works from previews
       let body;
       try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
-      const dev = await db.prepare('SELECT pw_hash, salt, iter FROM ' + TBL.dev + ' WHERE id = 1').first();
+      let dev = null;
+      try { dev = await db.prepare('SELECT pw_hash, salt, iter FROM ' + TBL.dev + ' WHERE id = 1').first(); }
+      catch (e) { return json(503, { error: 'developer account not initialized' }); }
       if (!dev) return json(500, { error: 'developer account not initialized' });
       const hash = await pbkdf2(String(body.password || ''), dev.salt, dev.iter);
       if (!timingSafeEq(hash, dev.pw_hash)) return json(401, { error: 'bad password' });
@@ -415,15 +487,6 @@ export default {
     }
 
     if (p.startsWith('/api/dev')) return json(404, { error: 'not found' });
-
-    if (p.startsWith('/api/') && req.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Max-Age': '86400'
-      } });
-    }
 
     if (p.startsWith('/api/')) return json(404, { error: 'not found' });
 
