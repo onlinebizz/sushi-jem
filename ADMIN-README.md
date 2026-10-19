@@ -17,6 +17,17 @@ Everything on the site, published instantly on save:
 - **Security** — change the admin password (min 8 chars)
 - **Tools** — export/import the whole content as JSON, reset to the site defaults
 
+## Developer panel (/dev)
+
+A separate panel for the developer (Arabic/English toggle in the top bar):
+
+- **Change limits** — daily/weekly save limits, with quick presets (default 2/7, relaxed 5/20, unlimited)
+- **Bonus balance** — grant, set or zero extra changes drawn after the limits run out
+- **Admin lock** — lock/unlock the admin entirely, or reset today's usage
+- **Content history** — the last 20 published versions are kept automatically; preview any version's JSON and roll back to it (restores are free — they don't consume admin credits)
+- **Admin account** — generate a fresh random admin password (all admin sessions are logged out) or force the admin out of all devices
+- **Recent changes** — a live feed of saves and developer restores
+
 ## How it works
 
 - The public site (`public/index.html`) keeps built-in defaults and loads the published content from the API at boot. If nothing was ever published (or the API is unreachable), the site works exactly as before, including offline from a folder.

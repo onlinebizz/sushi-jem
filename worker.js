@@ -16,7 +16,8 @@ function tables(env){
   return {
     content: p + 'content', admin: p + 'admin', sessions: p + 'sessions',
     login_fail: p + 'login_fail', media: p + 'media', media_chunk: p + 'media_chunk',
-    credits: p + 'credits', change_log: p + 'change_log', dev: p + 'dev', dev_sessions: p + 'dev_sessions'
+    credits: p + 'credits', change_log: p + 'change_log', dev: p + 'dev', dev_sessions: p + 'dev_sessions',
+    history: p + 'content_history'
   };
 }
 
@@ -33,7 +34,8 @@ const SCHEMA_DDL = [
   ['credits', 'CREATE TABLE IF NOT EXISTS {{t}} (k TEXT PRIMARY KEY, v TEXT NOT NULL, updated_at INTEGER NOT NULL)'],
   ['change_log', 'CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, kind TEXT NOT NULL)'],
   ['dev', 'CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY CHECK (id = 1), pw_hash TEXT NOT NULL, salt TEXT NOT NULL, iter INTEGER NOT NULL, updated_at INTEGER NOT NULL)'],
-  ['dev_sessions', 'CREATE TABLE IF NOT EXISTS {{t}} (token_hash TEXT PRIMARY KEY, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL)']
+  ['dev_sessions', 'CREATE TABLE IF NOT EXISTS {{t}} (token_hash TEXT PRIMARY KEY, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL)'],
+  ['history', "CREATE TABLE IF NOT EXISTS {{t}} (id INTEGER PRIMARY KEY AUTOINCREMENT, updated_at INTEGER NOT NULL, v TEXT NOT NULL, by TEXT NOT NULL DEFAULT 'admin')"]
 ];
 let schemaOnce = null;
 function ensureSchema(db, TBL) {
@@ -233,6 +235,12 @@ async function releaseCredit(db, TBL, rowid, usedBonus) {
   } catch (e) { /* best effort */ }
 }
 
+/* Keep the published-content history bounded (last HISTORY_KEEP versions). */
+const HISTORY_KEEP = 20;
+function historyTrimStmt(db, TBL) {
+  return db.prepare('DELETE FROM ' + TBL.history + ' WHERE id NOT IN (SELECT id FROM ' + TBL.history + ' ORDER BY id DESC LIMIT ' + HISTORY_KEEP + ')');
+}
+
 /* ---------- developer auth (separate from the admin) ---------- */
 async function authedDev(req, env) {
   const ah = req.headers.get('Authorization') || '';
@@ -308,7 +316,9 @@ export default {
         try {
           await db.batch([
             db.prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
-              .bind('content', JSON.stringify(content), reservation.ts)
+              .bind('content', JSON.stringify(content), reservation.ts),
+            db.prepare('INSERT INTO ' + TBL.history + ' (updated_at, v, by) VALUES (?,?,?)').bind(reservation.ts, JSON.stringify(content), 'admin'),
+            historyTrimStmt(db, TBL)
           ]);
         } catch (e) {
           await releaseCredit(db, TBL, reservation.rowid, gate.usesBonus);
@@ -465,12 +475,16 @@ export default {
       const state = await getCreditsState(db, TBL);
       const usage = await creditUsage(db, TBL, Date.now());
       const recent = await db.prepare('SELECT ts, kind FROM ' + TBL.change_log + ' ORDER BY id DESC LIMIT 30').all();
+      const cur = await db.prepare('SELECT updated_at FROM ' + TBL.content + " WHERE k = 'content'").first();
+      const hist = await db.prepare('SELECT COUNT(*) AS n FROM ' + TBL.history).first();
       return json(200, {
         state, usage: { daily: usage.daily, weekly: usage.weekly },
         daily: { used: usage.daily, limit: state.dailyLimit },
         weekly: { used: usage.weekly, limit: state.weeklyLimit },
         bonus: state.bonus, locked: state.locked,
         recent: (recent.results || []).map((r) => ({ ts: r.ts, kind: r.kind })),
+        content_updated_at: cur ? cur.updated_at : null,
+        history_count: hist ? hist.n : 0,
         contact: CONTACT
       });
     }
@@ -523,6 +537,74 @@ export default {
       const dayStart = riyadhDayStart(Date.now());
       await db.prepare('DELETE FROM ' + TBL.change_log + ' WHERE ts >= ? AND kind = ?').bind(dayStart, 'content').run();
       return json(200, { ok: true });
+    }
+
+    if (p === '/api/dev/history' && req.method === 'GET') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const rows = await db.prepare('SELECT id, updated_at, by FROM ' + TBL.history + ' ORDER BY id DESC LIMIT ' + HISTORY_KEEP).all();
+      const cur = await db.prepare('SELECT updated_at FROM ' + TBL.content + " WHERE k = 'content'").first();
+      return json(200, {
+        versions: (rows.results || []).map((r) => ({ id: r.id, updated_at: r.updated_at, by: r.by })),
+        current_updated_at: cur ? cur.updated_at : null
+      });
+    }
+
+    if (/^\/api\/dev\/history\/\d+$/.test(p) && req.method === 'GET') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const id = parseInt(p.split('/')[4], 10);
+      const row = await db.prepare('SELECT id, updated_at, v, by FROM ' + TBL.history + ' WHERE id = ?').bind(id).first();
+      if (!row) return json(404, { error: 'version not found' });
+      let content;
+      try { content = JSON.parse(row.v); } catch (e) { return json(500, { error: 'stored version is corrupt' }); }
+      return json(200, { id: row.id, updated_at: row.updated_at, by: row.by, content });
+    }
+
+    if (p === '/api/dev/restore' && req.method === 'POST') {
+      // roll the published content back to a stored history version (dev action:
+      // no admin credit is consumed; logged as kind='dev_restore')
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      let body;
+      try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
+      const id = parseInt(body && body.id, 10);
+      if (!Number.isFinite(id)) return json(400, { error: 'id must be a number' });
+      const row = await db.prepare('SELECT v FROM ' + TBL.history + ' WHERE id = ?').bind(id).first();
+      if (!row) return json(404, { error: 'version not found' });
+      let content;
+      try { content = JSON.parse(row.v); } catch (e) { return json(500, { error: 'stored version is corrupt' }); }
+      if (!content || typeof content !== 'object' || !content.config || !content.menu || !content.strings) {
+        return json(500, { error: 'stored version is not valid content' });
+      }
+      const now = Date.now();
+      await db.batch([
+        db.prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
+          .bind('content', row.v, now),
+        db.prepare('INSERT INTO ' + TBL.history + ' (updated_at, v, by) VALUES (?,?,?)').bind(now, row.v, 'dev'),
+        historyTrimStmt(db, TBL),
+        db.prepare('INSERT INTO ' + TBL.change_log + ' (ts, kind) VALUES (?,?)').bind(now, 'dev_restore')
+      ]);
+      return json(200, { ok: true, updated_at: now });
+    }
+
+    if (p === '/api/dev/adminpw' && req.method === 'POST') {
+      // generate a fresh admin password; all admin sessions are logged out
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const pw = randomToken().slice(0, 16);
+      const salt = randomToken().slice(0, 32);
+      const hash = await pbkdf2(pw, salt, PBKDF2_ITER);
+      const res = await db.batch([
+        db.prepare('UPDATE ' + TBL.admin + ' SET pw_hash = ?, salt = ?, iter = ?, updated_at = ? WHERE id = 1')
+          .bind(hash, salt, PBKDF2_ITER, Date.now()),
+        db.prepare('DELETE FROM ' + TBL.sessions)
+      ]);
+      if (!res[0].meta || res[0].meta.changes !== 1) return json(500, { error: 'admin account not initialized' });
+      return json(200, { ok: true, password: pw });
+    }
+
+    if (p === '/api/dev/revoke' && req.method === 'POST') {
+      // force every admin session to log out
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const r = await db.prepare('DELETE FROM ' + TBL.sessions).run();
+      return json(200, { ok: true, revoked: r.meta ? r.meta.changes : 0 });
     }
 
     if (p.startsWith('/api/dev')) return json(404, { error: 'not found' });
