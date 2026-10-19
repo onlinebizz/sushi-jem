@@ -263,7 +263,7 @@ details.tgroup .tbody{padding:0 18px 12px}
 'use strict';
 var $ = function(s){return document.querySelector(s)};
 var AUL = 'ar';
-var C = null, DEFAULTS = null, dirty = false, updated_at = null, curSec = 'dash';
+var C = null, DEFAULTS = null, dirty = false, updated_at = null, curSec = 'menu';
 
 /* ---------- admin chrome i18n ---------- */
 var T = {
@@ -272,7 +272,7 @@ var T = {
     appTitle:'لوحة التحكم', viewSite:'الموقع', save:'حفظ ونشر', saved:'تم النشر', saving:'جارٍ النشر…',
     unsaved:'لديك تغييرات غير محفوظة', loginFail:'كلمة المرور غير صحيحة', locked:'محاولات كثيرة. حاول بعد ',
     sec:' ثانية',
-    dash:'الرئيسية', promo:'العروض والتنبيه', menu:'القائمة', texts:'نصوص الموقع', settings:'الإعدادات',
+    menu:'القائمة', texts:'الكلمات والعروض', settings:'الإعدادات',
     addCat:'+ قسم جديد', addGrp:'+ مجموعة', addItem:'إضافة صنف جديد', addVar:'+ إضافة خيار وسعر',
     offerT:'+ إضافة عرض جديد', branchT:'+ إضافة فرع', nameAr:'عربي', price:'السعر',
     oldPrice:'السعر قبل الخصم (اختياري)', badge:'شارة العرض (مثل: جديد)', desc:'الوصف',
@@ -309,7 +309,7 @@ var T = {
     appTitle:'Admin panel', viewSite:'Site', save:'Save & publish', saved:'Published', saving:'Publishing…',
     unsaved:'You have unsaved changes', loginFail:'Wrong password', locked:'Too many attempts. Try again in ',
     sec:'s',
-    dash:'Home', promo:'Offers & announcement', menu:'Menu', texts:'Site texts', settings:'Settings',
+    menu:'Menu', texts:'Words & offers', settings:'Settings',
     addCat:'+ New section', addGrp:'+ Add group', addItem:'+ New item', addVar:'+ Add option & price',
     offerT:'+ Add new offer', branchT:'+ Add branch', nameAr:'Arabic', price:'Price',
     oldPrice:'Old price (optional)', badge:'Offer badge (e.g. New)', desc:'Description',
@@ -608,10 +608,8 @@ function imgPick(label, path, val){
 
 /* ---------- sections ---------- */
 var SECTIONS = [
-  {id:'dash',     ar:'الرئيسية',        en:'Home', icon:'i-dash'},
-  {id:'promo',    ar:'العروض والتنبيه', en:'Offers & announcement', icon:'i-offer'},
   {id:'menu',     ar:'القائمة',        en:'Menu', icon:'i-menu'},
-  {id:'texts',    ar:'نصوص الموقع',    en:'Site texts', icon:'i-text'},
+  {id:'texts',    ar:'الكلمات والعروض', en:'Words & offers', icon:'i-text'},
   {id:'settings', ar:'الإعدادات',      en:'Settings', icon:'i-settings'}
 ];
 
@@ -623,67 +621,9 @@ function renderSide(){
 
 function renderMain(){
   var el = $('#main');
-  if (curSec === 'dash') el.innerHTML = secDash();
-  else if (curSec === 'promo') el.innerHTML = secPromo();
-  else if (curSec === 'menu') el.innerHTML = secMenu();
+  if (curSec === 'menu') el.innerHTML = secMenu();
   else if (curSec === 'texts') el.innerHTML = secTexts();
   else if (curSec === 'settings') el.innerHTML = secSettings();
-}
-
-function secDash(){
-  var TILES = [
-    {sec:'promo', icon:'i-offer', ar:['العروض والتنبيه','تعديل العروض وشريط التنبيه الأحمر'], en:['Offers & announcement','Edit offers and the red announcement bar']},
-    {sec:'menu', icon:'i-menu', ar:['القائمة','الأصناف والأسعار والصور'], en:['Menu','Items, prices and photos']},
-    {sec:'texts', icon:'i-text', ar:['نصوص الموقع','كل الكلمات الظاهرة في الموقع'], en:['Site texts','Every word shown on the site']},
-    {sec:'settings', icon:'i-settings', ar:['الإعدادات','الأرقام والروابط وكلمة المرور'], en:['Settings','Numbers, links and password']}
-  ];
-  return '<h2 class="sec-title">' + t('dash') + '</h2>' +
-  '<p class="sec-sub">' + t('howBody') + '</p>' +
-  '<div class="tiles">' +
-  TILES.map(function(x){
-    var d = AUL === 'ar' ? x.ar : x.en;
-    return '<button class="tile" data-sec="' + x.sec + '"><svg class="i"><use href="#' + x.icon + '"/></svg>' + d[0] + '<span class="sub">' + d[1] + '</span></button>';
-  }).join('') +
-  '</div>' +
-  '<div class="note">' + t('tipSave') + ' &nbsp;·&nbsp; ' + t('lastPub') + ': ' + esc(fmtDate(updated_at)) + ' &nbsp;·&nbsp; <a href="/" target="_blank" rel="noopener" style="color:var(--acc);font-weight:600">' + t('viewSite') + ' ↗</a></div>';
-}
-
-function secPromo(){
-  var a = C.announcement || (C.announcement = {enabled:false, text:['',''], link:''});
-  var list = C.offers || (C.offers = []);
-  var h = '<h2 class="sec-title">' + t('promo') + '</h2>';
-
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'شريط التنبيه':'Announcement bar') + '</h3>' +
-  '<p class="sec-sub" style="margin-bottom:14px">' + t('annHint') + '</p>' +
-  chk(t('enabled'), 'announcement.enabled', a.enabled) +
-  bi(t('annText'), 'announcement.text', a.text) +
-  fld(t('link'), 'announcement.link', a.link, 'https://…', 'ltr') +
-  '</div>';
-
-  h += '<div class="card"><h3 style="margin-bottom:12px">' + (AUL==='ar'?'العروض':'Offers') + '</h3>' +
-  '<p class="sec-sub" style="margin-bottom:14px">' + t('offerHint') + '</p>';
-  list.forEach(function(o, i){
-    h += '<div class="block">' +
-    '<div class="block-head">' + chk(t('enabled'), 'offers.' + i + '.enabled', o.enabled !== false) +
-    '<span class="grow"></span>' +
-    '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
-    '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
-    '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
-    bi(t('title'), 'offers.' + i + '.t', o.t) +
-    bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
-    fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
-    imgPick(t('image'), 'offers.' + i + '.img', o.img) +
-    '<details class="optbox"><summary>' + (AUL==='ar'?'خيارات إضافية (اختياري)':'More options (optional)') + '</summary>' +
-    '<div class="row2">' +
-    fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
-    bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
-    '</div>' +
-    fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…', 'ltr') +
-    '</details>' +
-    '</div>';
-  });
-  h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button></div>';
-  return h;
 }
 
 var curCat = 0;
@@ -773,8 +713,42 @@ var TEXT_GROUPS = [
 ];
 
 function secTexts(){
-  var h = '<h2 class="sec-title">' + t('texts') + '</h2><p class="sec-sub">' + t('textHint') + '</p>' +
-  '<input class="tsearch" id="tsearch" type="search" placeholder="' + esc(t('searchPh')) + '">';
+  var a = C.announcement || (C.announcement = {enabled:false, text:['',''], link:''});
+  var offers = C.offers || (C.offers = []);
+  var h = '<h2 class="sec-title">' + t('texts') + '</h2><p class="sec-sub">' + t('textHint') + '</p>';
+
+  h += '<details class="tgroup" open><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL==='ar'?'شريط التنبيه':'Announcement bar') + '</summary><div class="tbody">' +
+  '<div class="card" style="margin:10px 0">' +
+  chk(t('enabled'), 'announcement.enabled', a.enabled) +
+  bi(t('annText'), 'announcement.text', a.text) +
+  fld(t('link'), 'announcement.link', a.link, 'https://…', 'ltr') +
+  '</div></div></details>';
+
+  h += '<details class="tgroup"><summary><svg class="i"><use href="#i-chev"/></svg>' + (AUL==='ar'?'العروض':'Offers') + '</summary><div class="tbody">' +
+  '<div class="card" style="margin:10px 0"><p class="sec-sub" style="margin-bottom:14px">' + t('offerHint') + '</p>';
+  offers.forEach(function(o, i){
+    h += '<div class="block">' +
+    '<div class="block-head">' + chk(t('enabled'), 'offers.' + i + '.enabled', o.enabled !== false) +
+    '<span class="grow"></span>' +
+    '<button class="iconbtn" data-act="off-up" data-i="' + i + '" title="' + t('up') + '"><svg class="i"><use href="#i-up"/></svg></button>' +
+    '<button class="iconbtn" data-act="off-down" data-i="' + i + '" title="' + t('down') + '"><svg class="i"><use href="#i-down"/></svg></button>' +
+    '<button class="iconbtn danger" data-act="off-del" data-i="' + i + '" title="' + t('del') + '"><svg class="i"><use href="#i-x"/></svg></button></div>' +
+    bi(t('title'), 'offers.' + i + '.t', o.t) +
+    bi(t('desc'), 'offers.' + i + '.d', o.d || ['','']) +
+    fld(t('price'), 'offers.' + i + '.price', o.price, '', 'num') +
+    imgPick(t('image'), 'offers.' + i + '.img', o.img) +
+    '<details class="optbox"><summary>' + (AUL==='ar'?'خيارات إضافية (اختياري)':'More options (optional)') + '</summary>' +
+    '<div class="row2">' +
+    fld(t('oldPrice'), 'offers.' + i + '.oldPrice', o.oldPrice, '', 'num') +
+    bi(t('badge'), 'offers.' + i + '.badge', o.badge || ['','']) +
+    '</div>' +
+    fld(t('link'), 'offers.' + i + '.link', o.link, 'https://…', 'ltr') +
+    '</details>' +
+    '</div>';
+  });
+  h += '<button class="addbtn" data-act="off-add">' + t('offerT') + '</button></div></div></details>';
+
+  h += '<input class="tsearch" id="tsearch" type="search" placeholder="' + esc(t('searchPh')) + '">';
   var keys = [];
   Object.keys(DEFAULTS.strings.ar).concat(Object.keys(DEFAULTS.strings.en)).forEach(function(k){ if (keys.indexOf(k) < 0) keys.push(k) });
   TEXT_GROUPS.forEach(function(g){
