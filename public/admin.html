@@ -247,6 +247,7 @@ details.tgroup .tbody{padding:0 18px 12px}
     <span class="t" data-t="appTitle">لوحة تحكم سوشي جيم</span>
     <span class="sp"></span>
     <span class="dirty-dot" id="dirtyDot"></span>
+    <span id="creditsPill" class="hidden" style="font-size:.82rem;font-weight:600;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:.25em .8em;white-space:nowrap"></span>
     <button class="btn ghost sm" id="enBtn" type="button" title="إظهار / إخفاء الحقول الإنجليزية">EN</button>
     <a class="btn ghost sm" href="/" target="_blank" rel="noopener" data-t="viewSite">الموقع</a>
     <button class="btn" id="saveBtn" type="button" disabled data-t="save">حفظ ونشر</button>
@@ -546,13 +547,13 @@ function deepMerge(base, src){
   return out;
 }
 function clone(o){ return JSON.parse(JSON.stringify(o)) }
-function toast(msg, isErr){
+function toast(msg, isErr, ms){
   var el = $('#toast');
   el.querySelector('span').textContent = msg;
   el.classList.toggle('err', !!isErr);
   el.classList.add('on');
   clearTimeout(el._h);
-  el._h = setTimeout(function(){ el.classList.remove('on') }, 2400);
+  el._h = setTimeout(function(){ el.classList.remove('on') }, ms || 2400);
 }
 function markDirty(){
   dirty = true;
@@ -879,14 +880,14 @@ function act(a, el){
       }
       break;
     case 'logout':
-      fetch('api/logout', {method:'POST'}).then(function(){ location.reload() });
+      fetch('api/logout', {method:'POST', headers:authH()}).then(function(){ location.reload() });
       break;
     case 'pw-change':
       (function(){
         var cur = $('#main [data-path="pwCur"]').value, nw = $('#main [data-path="pwNew"]').value, nw2 = $('#main [data-path="pwNew2"]').value;
         var e2 = $('#pwErr');
         if (nw !== nw2){ e2.textContent = t('pwMismatch'); return; }
-        fetch('api/password', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({current:cur, next:nw})})
+        fetch('api/password', {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authH()), body:JSON.stringify({current:cur, next:nw})})
           .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
           .then(function(res){
             if (res.ok){ toast(t('pwChanged')); setTimeout(function(){ location.reload() }, 1200); }
@@ -928,7 +929,7 @@ function uploadImage(file, onDone){
   toast(t('uploading'));
   compressImage(file, function(dataUrl){
     if (dataUrl.length > 4_400_000){ toast(t('uploadBig'), true); return; }
-    fetch('api/media', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({data:dataUrl})})
+    fetch('api/media', {method:'POST', headers:Object.assign({'Content-Type':'application/json'}, authH()), body:JSON.stringify({data:dataUrl})})
       .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
       .then(function(res){
         if (res.ok){ toast(t('uploadDone')); onDone(res.j.url) }
@@ -1023,12 +1024,17 @@ function preSave(){
     }
   }catch(e){}
 }
+/* Bearer token (works even where cookies are blocked, e.g. sandboxed previews).
+   The login endpoint returns it; cookie sessions behave exactly as before. */
+var TOKEN = null;
+function authH(){ return TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {} }
+
 function save(){
   $('#saveBtn').textContent = t('saving');
   preSave();
   fetch('api/content', {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: Object.assign({ 'Content-Type': 'application/json' }, authH()),
     body: JSON.stringify(C)
   }).then(function(r){
     return r.json().then(function(j){ return {ok: r.ok, j: j} });
@@ -1037,14 +1043,42 @@ function save(){
       updated_at = res.j.updated_at;
       clearDirty();
       toast(t('saved'));
+      if (res.j.credits) showCredits(res.j.credits);
+      else refreshCredits();
     } else if (res.j && res.j.error === 'auth'){
       toast(t('sessionEnded'), true);
       showLogin();
+    } else if (res.j && res.j.error === 'limit'){
+      showCredits(res.j.credits || null, res.j.reason);
     } else {
       toast(res.j.error || 'error', true);
     }
   }).catch(function(){ toast('network error', true) })
   .finally(function(){ $('#saveBtn').textContent = t('save') });
+}
+
+/* credits: remaining changes today/this week, set by the developer (6IX) */
+function showCredits(cr, blocked){
+  var pill = $('#creditsPill');
+  if (!cr){ pill.classList.add('hidden'); return }
+  pill.classList.remove('hidden');
+  var d = cr.daily || { used: 0, limit: 2, left: 2 };
+  var w = cr.weekly || { used: 0, limit: 7, left: 7 };
+  var txt = 'التغييرات اليوم: ' + d.left + ' متبقي';
+  if (cr.bonus > 0) txt += ' · رصيد إضافي: ' + cr.bonus;
+  if (cr.locked) txt = 'الحساب مقفول';
+  pill.textContent = txt;
+  pill.style.color = (cr.locked || (blocked && (d.left <= 0 || w.left <= 0) && cr.bonus <= 0)) ? 'var(--acc)' : 'var(--muted)';
+  if (blocked){
+    var why = blocked === 'daily' ? 'انتهت تغييراتك لهذا اليوم' : blocked === 'weekly' ? 'انتهت تغييراتك لهذا الأسبوع' : 'الحساب مقفول حاليًا';
+    var c = cr.contact || { name: '6IX', whatsapp: '0557178070', email: 'personalizedenglishlessons@proton.me' };
+    toast(why + ' — للتواصل مع المطور ' + c.name + ': واتساب ' + c.whatsapp + ' أو بريد ' + c.email, true, 9000);
+  }
+}
+function refreshCredits(){
+  fetch('api/credits', {headers:authH()}).then(function(r){ return r.json() }).then(function(j){
+    if (j && !j.error) showCredits(j, j.blocked);
+  }).catch(function(){});
 }
 $('#saveBtn').addEventListener('click', save);
 
@@ -1091,6 +1125,7 @@ function showApp(){
   $('#app').classList.remove('hidden');
   renderSide(); renderMain();
   clearDirty();
+  refreshCredits();
 }
 function loadContent(){
   return fetch('api/content').then(function(r){ return r.json() }).then(function(cc){
@@ -1107,7 +1142,7 @@ $('#loginForm').addEventListener('submit', function(e){
   fetch('api/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:$('#loginPw').value})})
     .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, j:j} }) })
     .then(function(res){
-      if (res.ok) loadContent();
+      if (res.ok){ TOKEN = res.j.token || null; try{ if (TOKEN) sessionStorage.setItem('sjAdminToken', TOKEN) }catch(e){} loadContent(); }
       else if (res.j.retry_after) err.textContent = t('locked') + Math.ceil(res.j.retry_after/1000) + t('sec');
       else err.textContent = t('loginFail');
     })
@@ -1119,9 +1154,12 @@ fetch('content.json').then(function(r){ return r.json() }).then(function(d){
   var savedLang = null;
   try{ savedLang = localStorage.getItem('sjAdminLang') }catch(e){}
   if (savedLang === 'en') setLang('en');
-  fetch('api/session').then(function(r){
+  var cached = null;
+  try{ cached = sessionStorage.getItem('sjAdminToken') }catch(e){}
+  if (cached) TOKEN = cached;
+  fetch('api/session', {headers:authH()}).then(function(r){
     if (r.ok) loadContent();
-    else showLogin();
+    else { TOKEN = null; showLogin(); }
   }).catch(showLogin);
 }).catch(function(){
   $('#login').classList.remove('hidden');

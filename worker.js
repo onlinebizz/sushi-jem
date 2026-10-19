@@ -15,7 +15,8 @@ function tables(env){
   const p = (env && env.TP) ? String(env.TP) : '';
   return {
     content: p + 'content', admin: p + 'admin', sessions: p + 'sessions',
-    login_fail: p + 'login_fail', media: p + 'media', media_chunk: p + 'media_chunk'
+    login_fail: p + 'login_fail', media: p + 'media', media_chunk: p + 'media_chunk',
+    credits: p + 'credits', change_log: p + 'change_log', dev: p + 'dev', dev_sessions: p + 'dev_sessions'
   };
 }
 
@@ -92,6 +93,88 @@ function sessionCookie(token, maxAgeSec) {
   return `${COOKIE}=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${maxAgeSec}`;
 }
 
+/* ---------- credits: keep the admin's daily/weekly changes under control ----------
+   The developer (6IX) sets limits (default 2/day, 7/week) and can grant bonus
+   changes or lock the admin entirely. When the admin runs out they see the
+   developer's contact info. State lives in the credits table as JSON under k='state'. */
+const CONTACT = { name: '6IX', whatsapp: '0557178070', email: 'personalizedenglishlessons@proton.me' };
+const DAY_MS = 24 * 3600 * 1000;
+const DEFAULT_CREDITS = { dailyLimit: 2, weeklyLimit: 7, bonus: 0, locked: false };
+
+async function getCreditsState(db, TBL) {
+  const row = await db.prepare('SELECT v FROM ' + TBL.credits + ' WHERE k = ?').bind('state').first();
+  if (row) {
+    try {
+      const v = JSON.parse(row.v);
+      return Object.assign({}, DEFAULT_CREDITS, v);
+    } catch (e) { /* fall through to default */ }
+  }
+  return Object.assign({}, DEFAULT_CREDITS);
+}
+async function putCreditsState(db, TBL, state) {
+  await db.prepare('INSERT INTO ' + TBL.credits + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
+    .bind('state', JSON.stringify(state), Date.now()).run();
+}
+function riyadhDayStart(now) {
+  // calendar-day boundary at Riyadh midnight (UTC+3, no DST)
+  return Math.floor((now + 3 * 3600 * 1000) / DAY_MS) * DAY_MS - 3 * 3600 * 1000;
+}
+async function creditUsage(db, TBL, now) {
+  const dayStart = riyadhDayStart(now);
+  const weekStart = now - 7 * DAY_MS;
+  const d = await db.prepare('SELECT COUNT(*) AS n FROM ' + TBL.change_log + ' WHERE ts >= ? AND kind = ?').bind(dayStart, 'content').first();
+  const w = await db.prepare('SELECT COUNT(*) AS n FROM ' + TBL.change_log + ' WHERE ts >= ? AND kind = ?').bind(weekStart, 'content').first();
+  return { daily: d ? d.n : 0, weekly: w ? w.n : 0 };
+}
+async function gateChange(db, TBL) {
+  const now = Date.now();
+  const state = await getCreditsState(db, TBL);
+  const usage = await creditUsage(db, TBL, now);
+  const dailyLeft = state.dailyLimit - usage.daily;
+  const weeklyLeft = state.weeklyLimit - usage.weekly;
+  const usesBonus = dailyLeft <= 0 || weeklyLeft <= 0;
+  const info = {
+    locked: state.locked,
+    daily: { used: usage.daily, limit: state.dailyLimit, left: Math.max(0, dailyLeft) },
+    weekly: { used: usage.weekly, limit: state.weeklyLimit, left: Math.max(0, weeklyLeft) },
+    bonus: state.bonus,
+    contact: CONTACT
+  };
+  if (state.locked) return { allowed: false, reason: 'locked', info };
+  if (usesBonus && state.bonus <= 0) return { allowed: false, reason: dailyLeft <= 0 ? 'daily' : 'weekly', info };
+  return { allowed: true, usesBonus, state, info };
+}
+async function consumeChange(db, TBL, gate) {
+  await db.prepare('INSERT INTO ' + TBL.change_log + ' (ts, kind) VALUES (?,?)').bind(Date.now(), 'content').run();
+  if (gate.usesBonus) {
+    gate.state.bonus = Math.max(0, gate.state.bonus - 1);
+    await putCreditsState(db, TBL, gate.state);
+  }
+  const usage = await creditUsage(db, TBL, Date.now());
+  const st = await getCreditsState(db, TBL);
+  return {
+    locked: st.locked,
+    daily: { used: usage.daily, limit: st.dailyLimit, left: Math.max(0, st.dailyLimit - usage.daily) },
+    weekly: { used: usage.weekly, limit: st.weeklyLimit, left: Math.max(0, st.weeklyLimit - usage.weekly) },
+    bonus: st.bonus
+  };
+}
+
+/* ---------- developer auth (separate from the admin) ---------- */
+async function authedDev(req, env) {
+  const ah = req.headers.get('Authorization') || '';
+  const m = ah.match(/^Bearer ([a-f0-9]{64})$/);
+  const cookie = req.headers.get('Cookie') || '';
+  const cm = cookie.match(/sj_dev=([a-f0-9]{64})/);
+  const token = m ? m[1] : (cm ? cm[1] : null);
+  if (!token) return false;
+  const row = await env.DB.prepare('SELECT token_hash FROM ' + tables(env).dev_sessions + ' WHERE token_hash = ? AND expires_at > ?').bind(await sha256('dev:' + token), Date.now()).first();
+  return !!row;
+}
+function devCookie(token, maxAgeSec) {
+  return 'sj_dev=' + token + '; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=' + maxAgeSec;
+}
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
@@ -113,6 +196,8 @@ export default {
       if (req.method === 'PUT') {
         if (!(await authed(req, env))) return json(401, { error: 'auth' });
         if (!sameOrigin(req, url) && !bearerSupplied(req)) return json(403, { error: 'origin' });
+        const gate = await gateChange(db, TBL);
+        if (!gate.allowed) return json(429, { error: 'limit', reason: gate.reason, credits: gate.info });
         const body = await req.text();
         if (body.length > MAX_CONTENT_BYTES) return json(413, { error: 'too large' });
         let content;
@@ -125,7 +210,8 @@ export default {
           .prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
           .bind('content', JSON.stringify(content), now)
           .run();
-        return json(200, { ok: true, updated_at: now });
+        const credits = await consumeChange(db, TBL, gate);
+        return json(200, { ok: true, updated_at: now, credits });
       }
       return json(405, { error: 'method' });
     }
@@ -172,6 +258,14 @@ export default {
       const ok = await authed(req, env);
       const row = ok ? await db.prepare('SELECT updated_at FROM ' + TBL.content + ' WHERE k = ?').bind('content').first() : null;
       return json(ok ? 200 : 401, ok ? { ok: true, updated_at: row ? row.updated_at : null } : { error: 'auth' });
+    }
+
+    if (p === '/api/credits' && req.method === 'GET') {
+      if (!(await authed(req, env))) return json(401, { error: 'auth' });
+      const gate = await gateChange(db, TBL);
+      const out = { locked: gate.info.locked, daily: gate.info.daily, weekly: gate.info.weekly, bonus: gate.info.bonus, contact: CONTACT };
+      if (!gate.allowed) out.blocked = gate.reason;
+      return json(200, out);
     }
 
     if (p === '/api/media' && req.method === 'POST') {
@@ -225,10 +319,105 @@ export default {
       return json(200, { ok: true, relogin: true });
     }
 
+    /* ---------- developer endpoints ---------- */
+    if (p === '/api/dev/login' && req.method === 'POST') {
+      // same rationale as admin login: password is the proof, works from previews
+      let body;
+      try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
+      const dev = await db.prepare('SELECT pw_hash, salt, iter FROM ' + TBL.dev + ' WHERE id = 1').first();
+      if (!dev) return json(500, { error: 'developer account not initialized' });
+      const hash = await pbkdf2(String(body.password || ''), dev.salt, dev.iter);
+      if (!timingSafeEq(hash, dev.pw_hash)) return json(401, { error: 'bad password' });
+      const token = randomToken();
+      const th = await sha256('dev:' + token);
+      const now = Date.now();
+      await db.prepare('DELETE FROM ' + TBL.dev_sessions + ' WHERE expires_at < ?').bind(now).run();
+      await db.prepare('INSERT INTO ' + TBL.dev_sessions + ' (token_hash, created_at, expires_at) VALUES (?,?,?)').bind(th, now, now + SESSION_TTL_MS).run();
+      return json(200, { ok: true, token }, { 'Set-Cookie': devCookie(token, SESSION_TTL_MS / 1000) });
+    }
+
+    if (p === '/api/dev/logout' && req.method === 'POST') {
+      const cookie = req.headers.get('Cookie') || '';
+      const m = cookie.match(/sj_dev=([a-f0-9]{64})/);
+      if (m) await db.prepare('DELETE FROM ' + TBL.dev_sessions + ' WHERE token_hash = ?').bind(await sha256('dev:' + m[1])).run();
+      return json(200, { ok: true }, { 'Set-Cookie': devCookie('', 0) });
+    }
+
+    if (p === '/api/dev/state' && req.method === 'GET') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const state = await getCreditsState(db, TBL);
+      const usage = await creditUsage(db, TBL, Date.now());
+      const recent = await db.prepare('SELECT ts, kind FROM ' + TBL.change_log + ' ORDER BY id DESC LIMIT 30').all();
+      return json(200, {
+        state, usage: { daily: usage.daily, weekly: usage.weekly },
+        daily: { used: usage.daily, limit: state.dailyLimit },
+        weekly: { used: usage.weekly, limit: state.weeklyLimit },
+        bonus: state.bonus, locked: state.locked,
+        recent: (recent.results || []).map((r) => ({ ts: r.ts, kind: r.kind })),
+        contact: CONTACT
+      });
+    }
+
+    if (p === '/api/dev/limits' && req.method === 'POST') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      let body;
+      try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
+      const state = await getCreditsState(db, TBL);
+      if (body.dailyLimit != null) {
+        const d = parseInt(body.dailyLimit, 10);
+        if (!Number.isFinite(d) || d < 0) return json(400, { error: 'dailyLimit must be a number >= 0' });
+        state.dailyLimit = d;
+      }
+      if (body.weeklyLimit != null) {
+        const w = parseInt(body.weeklyLimit, 10);
+        if (!Number.isFinite(w) || w < 0) return json(400, { error: 'weeklyLimit must be a number >= 0' });
+        state.weeklyLimit = w;
+      }
+      await putCreditsState(db, TBL, state);
+      return json(200, { ok: true, state });
+    }
+
+    if (p === '/api/dev/bonus' && req.method === 'POST') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      let body;
+      try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
+      const n = parseInt(body.n, 10);
+      if (!Number.isFinite(n)) return json(400, { error: 'n must be a number' });
+      const state = await getCreditsState(db, TBL);
+      if (body.set) state.bonus = Math.max(0, n);
+      else state.bonus = Math.max(0, state.bonus + n);
+      await putCreditsState(db, TBL, state);
+      return json(200, { ok: true, state });
+    }
+
+    if (p === '/api/dev/lock' && req.method === 'POST') {
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      let body;
+      try { body = await req.json(); } catch (e) { body = {}; }
+      const state = await getCreditsState(db, TBL);
+      state.locked = !!body.locked;
+      await putCreditsState(db, TBL, state);
+      return json(200, { ok: true, state });
+    }
+
+    if (p === '/api/dev/clear' && req.method === 'POST') {
+      // wipe today's usage so the admin gets a fresh daily allowance
+      if (!(await authedDev(req, env))) return json(401, { error: 'auth' });
+      const dayStart = riyadhDayStart(Date.now());
+      await db.prepare('DELETE FROM ' + TBL.change_log + ' WHERE ts >= ? AND kind = ?').bind(dayStart, 'content').run();
+      return json(200, { ok: true });
+    }
+
+    if (p.startsWith('/api/dev')) return json(404, { error: 'not found' });
+
     if (p.startsWith('/api/')) return json(404, { error: 'not found' });
 
     if (p === '/admin' || p === '/admin/') {
       return env.ASSETS.fetch(new Request(new URL('/admin.html', url.origin), req));
+    }
+
+    if (p === '/dev' || p === '/dev/') {
+      return env.ASSETS.fetch(new Request(new URL('/dev.html', url.origin), req));
     }
 
     return env.ASSETS.fetch(req);

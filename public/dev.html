@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#2A1B16">
+<title>لوحة المطور — سوشي جيم</title>
+<link rel="icon" href="images/logo-pagoda.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Lalezar&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#2A1B16;--bg2:#1F1410;--panel:#33221C;--line:#4A332A;--soft:#3E2A22;
+  --acc:#E8B04B;--on-acc:#2A1B16;--text:#F3E9E2;--muted:#B8A79D;--ok:#7BC47F;--bad:#E06C5A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;font-size:1rem;line-height:1.7}
+h1,h2,h3{font-family:'Lalezar','IBM Plex Sans Arabic',sans-serif;font-weight:400;margin:0;line-height:1.25}
+img{max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.hidden{display:none!important}
+
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+#login .card{background:var(--panel);border:1px solid var(--line);border-radius:24px 6px 24px 6px;padding:38px 34px;width:min(400px,100%);text-align:center;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+#login h1{font-size:1.7rem;color:var(--acc)}
+#login p{color:var(--muted);margin:2px 0 18px}
+#login input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:.75em 1em;background:var(--bg);color:var(--text);margin-bottom:6px}
+#login input:focus{outline:none;border-color:var(--acc)}
+.err{color:var(--bad);font-size:.9rem;min-height:1.4em;margin-bottom:4px}
+
+.topbar{position:sticky;top:0;z-index:50;background:rgba(42,27,22,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;height:64px;padding:0 clamp(14px,3vw,28px)}
+.topbar .t{font-family:'Lalezar',sans-serif;font-size:1.3rem;color:var(--acc);white-space:nowrap}
+.topbar .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:.6em 1.3em;font-weight:600;background:var(--acc);color:var(--on-acc)}
+.btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.bad{background:var(--bad);color:#fff}
+.btn.sm{padding:.4em 1em;font-size:.88rem}
+
+.wrap{max-width:860px;margin:0 auto;padding:clamp(18px,3vw,36px)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px 6px 18px 6px;padding:18px;text-align:center}
+.stat .v{font-family:'Lalezar',sans-serif;font-size:2rem;color:var(--acc);line-height:1.1}
+.stat .l{color:var(--muted);font-size:.85rem}
+.stat.locked .v{color:var(--bad)}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px 6px 18px 6px;padding:18px 20px;margin-bottom:14px}
+.card h3{color:var(--acc);margin-bottom:10px}
+.fld{display:grid;gap:6px;margin-bottom:12px}
+.fld>label{font-weight:600;font-size:.92rem}
+.fld input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:.55em .85em;background:var(--bg);color:var(--text)}
+.fld input:focus{outline:none;border-color:var(--acc)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.row .fld{flex:1;min-width:140px;margin-bottom:0}
+.note{color:var(--muted);font-size:.85rem;margin:6px 0 0}
+.contact{background:var(--soft);border:1px dashed var(--line);border-radius:14px;padding:12px 16px;margin-top:10px;font-size:.92rem}
+.contact b{color:var(--acc)}
+.recent{max-height:220px;overflow:auto;font-size:.88rem;color:var(--muted)}
+.recent div{padding:3px 0;border-bottom:1px solid var(--line)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;background:var(--acc);color:var(--on-acc);border-radius:999px;padding:.55em 1.3em;font-weight:600;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+#toast.bad{background:var(--bad);color:#fff}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="card">
+    <h1>لوحة المطور</h1>
+    <p>سوشي جيم — إدارة صلاحيات المشرف</p>
+    <input type="password" id="pw" placeholder="كلمة مرور المطور" autocomplete="current-password">
+    <div class="err" id="err"></div>
+    <button class="btn" id="loginBtn" style="width:100%">دخول</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="topbar">
+    <span class="t">لوحة المطور — سوشي جيم</span>
+    <span class="sp"></span>
+    <button class="btn ghost sm" id="logoutBtn">خروج</button>
+  </div>
+  <div class="wrap">
+
+    <div class="stats">
+      <div class="stat"><div class="v" id="sToday">0</div><div class="l">تغييرات اليوم</div></div>
+      <div class="stat"><div class="v" id="sWeek">0</div><div class="l">تغييرات الأسبوع</div></div>
+      <div class="stat"><div class="v" id="sBonus">0</div><div class="l">رصيد إضافي متاح</div></div>
+      <div class="stat" id="sLockCard"><div class="v" id="sLock">—</div><div class="l">حالة المشرف</div></div>
+    </div>
+
+    <div class="card">
+      <h3>حدود التغييرات</h3>
+      <div class="row">
+        <div class="fld"><label>الحد اليومي</label><input type="number" id="inDaily" min="0" step="1"></div>
+        <div class="fld"><label>الحد الأسبوعي</label><input type="number" id="inWeekly" min="0" step="1"></div>
+        <button class="btn sm" id="saveLimits">حفظ الحدود</button>
+      </div>
+      <p class="note">هذه أقصى عدد مرات حفظ ونشر يستطيع المشرف تنفيذها. التغييرات الإضافية تُخصم من الرصيد الإضافي.</p>
+    </div>
+
+    <div class="card">
+      <h3>رصيد إضافي (Unlock)</h3>
+      <div class="row">
+        <div class="fld"><label>عدد التغييرات الإضافية</label><input type="number" id="inBonus" min="1" step="1" placeholder="مثال: 5"></div>
+        <button class="btn sm" id="grantBonus">منح رصيد</button>
+        <button class="btn ghost sm" id="setBonus">تعيين الرصيد</button>
+      </div>
+      <p class="note">عندما تنتهي حدود المشرف اليومية أو الأسبوعية، تُخصم التغييرات من هذا الرصيد. امنح رصيدًا عندما يتواصل معك المشرف.</p>
+    </div>
+
+    <div class="card">
+      <h3>قفل المشرف</h3>
+      <div class="row">
+        <button class="btn bad sm" id="lockBtn">قفل المشرف الآن</button>
+        <button class="btn sm" id="unlockBtn">فتح القفل</button>
+        <button class="btn ghost sm" id="clearBtn">تصفير تغييرات اليوم</button>
+      </div>
+      <p class="note">القفل يمنع المشرف من حفظ أي تغيير نهائيًا حتى تفتح القفل.</p>
+    </div>
+
+    <div class="card">
+      <h3>بيانات التواصل المعروضة للمشرف</h3>
+      <div class="contact">
+        المطور: <b>6IX</b> · واتساب: <b>0557178070</b> · البريد: <b>personalizedenglishlessons@proton.me</b>
+      </div>
+      <p class="note">عندما تنتهي تغييرات المشرف، تظهر له هذه البيانات للتواصل معك وطلب رصيد إضافي.</p>
+    </div>
+
+    <div class="card">
+      <h3>آخر التغييرات</h3>
+      <div class="recent" id="recent"></div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var $ = function(s){ return document.querySelector(s) };
+var devToken = null; // in-memory token (survives within the page; storage is best-effort)
+function stGet(k){ try { return sessionStorage.getItem(k) } catch (e) { return null } }
+function stSet(k, v){ try { sessionStorage.setItem(k, v) } catch (e) {} }
+function stDel(k){ try { sessionStorage.removeItem(k) } catch (e) {} }
+function toast(msg, bad){
+  var el = $('#toast');
+  el.textContent = msg; el.classList.toggle('bad', !!bad); el.classList.add('on');
+  clearTimeout(el.h); el.h = setTimeout(function(){ el.classList.remove('on') }, 2600);
+}
+function fmtDate(ts){ try { return new Date(ts).toLocaleString('ar-SA', { dateStyle:'short', timeStyle:'short' }) } catch(e){ return new Date(ts).toLocaleString() } }
+
+function api(path, opts){
+  opts = opts || {};
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  return fetch(path, opts).then(function(r){
+    return r.json().then(function(j){ return { ok: r.ok, status: r.status, j: j } });
+  });
+}
+
+/* login */
+$('#loginBtn').addEventListener('click', doLogin);
+$('#pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin() });
+function doLogin(){
+  var pw = $('#pw').value;
+  if (!pw) return;
+  api('api/dev/login', { method: 'POST', body: JSON.stringify({ password: pw }) }).then(function(res){
+    if (res.ok){
+      devToken = res.j.token; stSet('sjDevToken', res.j.token);
+      $('#login').classList.add('hidden');
+      $('#app').classList.remove('hidden');
+      loadState();
+    } else {
+      $('#err').textContent = res.j.error === 'bad password' ? 'كلمة المرور غير صحيحة' : (res.j.error || 'خطأ');
+    }
+  }).catch(function(){ $('#err').textContent = 'خطأ في الاتصال' });
+}
+
+function authHeaders(){
+  var t = devToken || stGet('sjDevToken');
+  return t ? { Authorization: 'Bearer ' + t } : {};
+}
+function call(path, body){
+  return api(path, { method: 'POST', body: JSON.stringify(body || {}), headers: authHeaders() });
+}
+
+function loadState(){
+  api('api/dev/state', { headers: authHeaders() }).then(function(res){
+    if (!res.ok){ if (res.status === 401){ devToken = null; stDel('sjDevToken'); showLoginOnly(); return } return }
+    var j = res.j;
+    $('#sToday').textContent = j.usage.daily + ' / ' + j.state.dailyLimit;
+    $('#sWeek').textContent = j.usage.weekly + ' / ' + j.state.weeklyLimit;
+    $('#sBonus').textContent = j.state.bonus;
+    $('#sLock').textContent = j.state.locked ? 'مقفول' : 'مفتوح';
+    $('#sLockCard').classList.toggle('locked', j.state.locked);
+    $('#inDaily').value = j.state.dailyLimit;
+    $('#inWeekly').value = j.state.weeklyLimit;
+    var rec = (j.recent || []).map(function(r){ return '<div>' + fmtDate(r.ts) + ' · ' + (r.kind === 'content' ? 'حفظ ونشر' : r.kind) + '</div>' }).join('');
+    $('#recent').innerHTML = rec || '<div>لا توجد تغييرات بعد</div>';
+  });
+}
+
+$('#saveLimits').addEventListener('click', function(){
+  var d = parseInt($('#inDaily').value, 10), w = parseInt($('#inWeekly').value, 10);
+  if (!Number.isFinite(d) || !Number.isFinite(w) || d < 0 || w < 0) return toast('أدخل أرقامًا صحيحة', true);
+  call('api/dev/limits', { dailyLimit: d, weeklyLimit: w }).then(function(res){
+    if (res.ok){ toast('تم حفظ الحدود'); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+
+$('#grantBonus').addEventListener('click', function(){
+  var n = parseInt($('#inBonus').value, 10);
+  if (!Number.isFinite(n) || n <= 0) return toast('أدخل عددًا صحيحًا', true);
+  call('api/dev/bonus', { n: n }).then(function(res){
+    if (res.ok){ toast('تم منح ' + n + ' تغييرات إضافية'); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+$('#setBonus').addEventListener('click', function(){
+  var n = parseInt($('#inBonus').value, 10);
+  if (!Number.isFinite(n) || n < 0) return toast('أدخل عددًا صحيحًا', true);
+  call('api/dev/bonus', { n: n, set: true }).then(function(res){
+    if (res.ok){ toast('تم تعيين الرصيد إلى ' + n); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+
+$('#lockBtn').addEventListener('click', function(){
+  call('api/dev/lock', { locked: true }).then(function(res){
+    if (res.ok){ toast('تم قفل المشرف'); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+$('#unlockBtn').addEventListener('click', function(){
+  call('api/dev/lock', { locked: false }).then(function(res){
+    if (res.ok){ toast('تم فتح القفل'); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+$('#clearBtn').addEventListener('click', function(){
+  if (!confirm('تصفير تغييرات اليوم؟ سيستعيد المشرف حده اليومي كاملًا.')) return;
+  call('api/dev/clear', {}).then(function(res){
+    if (res.ok){ toast('تم التصفير'); loadState() } else toast(res.j.error || 'خطأ', true);
+  });
+});
+
+$('#logoutBtn').addEventListener('click', function(){
+  call('api/dev/logout', {}).then(function(){ devToken = null; stDel('sjDevToken'); showLoginOnly() });
+});
+
+function showLoginOnly(){
+  $('#app').classList.add('hidden');
+  $('#login').classList.remove('hidden');
+  $('#pw').value = '';
+  $('#err').textContent = '';
+}
+/* auto-login: try a cached token (sessionStorage) or the session cookie */
+api('api/dev/state', { headers: authHeaders() }).then(function(res){
+  if (res.ok){
+    $('#login').classList.add('hidden');
+    $('#app').classList.remove('hidden');
+    loadState();
+  }
+});
+</script>
+</body>
+</html>
