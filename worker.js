@@ -174,14 +174,7 @@ async function gateChange(db, TBL) {
   if (usesBonus && state.bonus <= 0) return { allowed: false, reason: dailyLeft <= 0 ? 'daily' : 'weekly', info };
   return { allowed: true, usesBonus, state, info };
 }
-async function consumeChange(db, TBL, gate) {
-  await db.prepare('INSERT INTO ' + TBL.change_log + ' (ts, kind) VALUES (?,?)').bind(Date.now(), 'content').run();
-  if (gate.usesBonus) {
-    gate.state.bonus = Math.max(0, gate.state.bonus - 1);
-    await putCreditsState(db, TBL, gate.state);
-  }
-  return creditsReport(db, TBL);
-}
+async function consumeChange(db, TBL, gate) { /* superseded by reserveCredit/releaseCredit */ }
 
 /* Best-effort read of the current credits state for API responses. */
 async function creditsReport(db, TBL) {
@@ -199,6 +192,45 @@ async function creditsReport(db, TBL) {
 async function gateChangeSafe(db, TBL) {
   try { return { ok: true, gate: await gateChange(db, TBL) }; }
   catch (e) { return { ok: false }; }
+}
+/* Atomically reserve one change. The insert itself is conditional, so two
+   simultaneous saves cannot both take the last credit: SQLite serializes the
+   writes and the second INSERT ... SELECT sees the updated count and inserts
+   nothing. Returns { ok, rowid } — rowid identifies the log row for rollback. */
+async function reserveCredit(db, TBL, gate) {
+  const state = gate.state;
+  const now = Date.now();
+  const dayStart = riyadhDayStart(now);
+  const weekStart = now - 7 * DAY_MS;
+  const notLocked = "COALESCE((SELECT json_extract(v, '$.locked') FROM " + TBL.credits + " WHERE k = 'state'), 0) = 0";
+  const dayOk = '(SELECT COUNT(*) FROM ' + TBL.change_log + " WHERE ts >= ? AND kind = 'content') < ?";
+  const weekOk = '(SELECT COUNT(*) FROM ' + TBL.change_log + " WHERE ts >= ? AND kind = 'content') < ?";
+  const bonusAvail = "COALESCE((SELECT json_extract(v, '$.bonus') FROM " + TBL.credits + " WHERE k = 'state'), 0) > 0";
+  let stmts;
+  if (gate.usesBonus) {
+    stmts = [
+      db.prepare('INSERT INTO ' + TBL.change_log + " (ts, kind) SELECT ?, 'content' WHERE " + notLocked + ' AND NOT (' + dayOk + ' AND ' + weekOk + ') AND ' + bonusAvail)
+        .bind(now, dayStart, state.dailyLimit, weekStart, state.weeklyLimit),
+      db.prepare('UPDATE ' + TBL.credits + " SET v = json_set(v, '$.bonus', MAX(0, json_extract(v, '$.bonus') - 1)), updated_at = ? WHERE k = 'state' AND json_extract(v, '$.bonus') > 0")
+        .bind(now)
+    ];
+  } else {
+    stmts = [
+      db.prepare('INSERT INTO ' + TBL.change_log + " (ts, kind) SELECT ?, 'content' WHERE " + notLocked + ' AND ' + dayOk + ' AND ' + weekOk)
+        .bind(now, dayStart, state.dailyLimit, weekStart, state.weeklyLimit)
+    ];
+  }
+  const res = await db.batch(stmts);
+  const ok = res.every((r) => r.meta && r.meta.changes === 1);
+  return ok ? { ok: true, rowid: res[0].meta.last_row_id, ts: now } : { ok: false, rowid: null, ts: now };
+}
+/* Give back a reservation when the content write failed after it. */
+async function releaseCredit(db, TBL, rowid, usedBonus) {
+  try {
+    const stmts = [db.prepare('DELETE FROM ' + TBL.change_log + ' WHERE id = ?').bind(rowid)];
+    if (usedBonus) stmts.push(db.prepare('UPDATE ' + TBL.credits + " SET v = json_set(v, '$.bonus', json_extract(v, '$.bonus') + 1) WHERE k = 'state'"));
+    await db.batch(stmts);
+  } catch (e) { /* best effort */ }
 }
 
 /* ---------- developer auth (separate from the admin) ---------- */
@@ -265,23 +297,26 @@ export default {
         if (!content || typeof content !== 'object' || !content.config || !content.menu || !content.strings) {
           return json(400, { error: 'bad content: config, menu and strings are required' });
         }
-        // Atomic: content write + usage log (+ bonus decrement) commit together,
-        // so a save either fully happens or fully fails.
-        const now = Date.now();
-        const stmts = [
-          db.prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
-            .bind('content', JSON.stringify(content), now),
-          db.prepare('INSERT INTO ' + TBL.change_log + ' (ts, kind) VALUES (?,?)').bind(now, 'content')
-        ];
-        if (gate.usesBonus) {
-          gate.state.bonus = Math.max(0, gate.state.bonus - 1);
-          stmts.push(db.prepare('INSERT INTO ' + TBL.credits + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
-            .bind('state', JSON.stringify(gate.state), now));
+        // Reserve one change atomically (conditional SQL), then write the content.
+        // If the write fails, the reservation is rolled back so no credit is lost.
+        const reservation = await reserveCredit(db, TBL, gate);
+        if (!reservation.ok) {
+          const again = await gateChangeSafe(db, TBL);
+          if (!again.ok) return json(503, { error: 'credits_unavailable' });
+          return json(429, { error: 'limit', reason: again.gate.reason, credits: again.gate.info });
         }
-        await db.batch(stmts);
+        try {
+          await db.batch([
+            db.prepare('INSERT INTO ' + TBL.content + ' (k, v, updated_at) VALUES (?,?,?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, updated_at = excluded.updated_at')
+              .bind('content', JSON.stringify(content), reservation.ts)
+          ]);
+        } catch (e) {
+          await releaseCredit(db, TBL, reservation.rowid, gate.usesBonus);
+          return json(500, { error: 'save failed' });
+        }
         let credits = null;
         try { credits = await creditsReport(db, TBL); } catch (e) { /* reporting only */ }
-        return json(200, { ok: true, updated_at: now, credits });
+        return json(200, { ok: true, updated_at: reservation.ts, credits });
       }
       return json(405, { error: 'method' });
     }
@@ -415,9 +450,13 @@ export default {
     }
 
     if (p === '/api/dev/logout' && req.method === 'POST') {
+      // revoke the Bearer session too, not just the cookie
+      const ah = req.headers.get('Authorization') || '';
+      const am = ah.match(/^Bearer ([a-f0-9]{64})$/);
+      if (am) await db.prepare('DELETE FROM ' + TBL.dev_sessions + ' WHERE token_hash = ?').bind(await sha256('dev:' + am[1])).run();
       const cookie = req.headers.get('Cookie') || '';
-      const m = cookie.match(/sj_dev=([a-f0-9]{64})/);
-      if (m) await db.prepare('DELETE FROM ' + TBL.dev_sessions + ' WHERE token_hash = ?').bind(await sha256('dev:' + m[1])).run();
+      const cm = cookie.match(/sj_dev=([a-f0-9]{64})/);
+      if (cm) await db.prepare('DELETE FROM ' + TBL.dev_sessions + ' WHERE token_hash = ?').bind(await sha256('dev:' + cm[1])).run();
       return json(200, { ok: true }, { 'Set-Cookie': devCookie('', 0) });
     }
 
@@ -491,10 +530,13 @@ export default {
     if (p.startsWith('/api/')) return json(404, { error: 'not found' });
 
     if (p === '/admin' || p === '/admin/') {
+      // /admin/ would break the panel's relative fetches (api/… → /admin/api/…)
+      if (p === '/admin/') return Response.redirect(url.origin + '/admin', 301);
       return env.ASSETS.fetch(new Request(new URL('/admin.html', url.origin), req));
     }
 
     if (p === '/dev' || p === '/dev/') {
+      if (p === '/dev/') return Response.redirect(url.origin + '/dev', 301);
       return env.ASSETS.fetch(new Request(new URL('/dev.html', url.origin), req));
     }
 

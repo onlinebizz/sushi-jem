@@ -1088,7 +1088,9 @@ function save(){
 }
 
 /* credits: remaining changes today/this week, set by the developer (6IX) */
+var lastCredits = null; // { cr, blocked } — kept so the pill can rerender on language switch
 function showCredits(cr, blocked){
+  lastCredits = cr ? { cr: cr, blocked: blocked } : null;
   var pill = $('#creditsPill');
   if (!cr){ pill.classList.add('hidden'); return }
   pill.classList.remove('hidden');
@@ -1140,6 +1142,7 @@ function setLang(l){
     eb.title = l === 'ar' ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic';
   });
   document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent = t(el.dataset.t) });
+  if (lastCredits) showCredits(lastCredits.cr, lastCredits.blocked);
   var lp = $('#loginPw');
   lp.placeholder = l === 'ar' ? 'كلمة المرور' : 'Password';
   lp.setAttribute('aria-label', l === 'ar' ? 'كلمة المرور' : 'Password');
