@@ -63,13 +63,16 @@ async function createSession(db, tokenHash, sessionsTable) {
   await db.prepare('INSERT INTO ' + sessionsTable + ' (token_hash, created_at, expires_at) VALUES (?,?,?)').bind(tokenHash, now, now + SESSION_TTL_MS).run();
 }
 async function authed(req, env) {
-  // Bearer token auth (works even where cookies are blocked, e.g. sandboxed previews)
+  // Bearer token auth (works even where cookies are blocked, e.g. sandboxed previews).
+  // When an Authorization header is supplied it is the ONLY accepted credential:
+  // an invalid token must fail with 401, never fall back to cookies.
   const ah = req.headers.get('Authorization') || '';
-  const am = ah.match(/^Bearer ([a-f0-9]{64})$/);
-  if (am) {
+  if (/^Bearer\s/.test(ah)) {
+    const am = ah.match(/^Bearer ([a-f0-9]{64})$/);
+    if (!am) return false;
     const TBL = tables(env);
     const row = await env.DB.prepare('SELECT token_hash FROM ' + TBL.sessions + ' WHERE token_hash = ? AND expires_at > ?').bind(await sha256(am[1]), Date.now()).first();
-    if (row) return true;
+    return !!row;
   }
   const cookie = req.headers.get('Cookie') || '';
   const m = cookie.match(new RegExp(COOKIE + '=([a-f0-9]{64})'));
@@ -78,9 +81,8 @@ async function authed(req, env) {
   const row = await env.DB.prepare('SELECT token_hash FROM ' + tables(env).sessions + ' WHERE token_hash = ? AND expires_at > ?').bind(th, Date.now()).first();
   return !!row;
 }
-function hasBearer(req){
-  const ah = req.headers.get('Authorization') || '';
-  return /^Bearer [a-f0-9]{64}$/.test(ah);
+function bearerSupplied(req){
+  return /^Bearer\s/.test(req.headers.get('Authorization') || '');
 }
 function sameOrigin(req, url) {
   const o = req.headers.get('Origin');
@@ -109,8 +111,8 @@ export default {
         }
       }
       if (req.method === 'PUT') {
-        if (!sameOrigin(req, url) && !hasBearer(req)) return json(403, { error: 'origin' });
         if (!(await authed(req, env))) return json(401, { error: 'auth' });
+        if (!sameOrigin(req, url) && !bearerSupplied(req)) return json(403, { error: 'origin' });
         const body = await req.text();
         if (body.length > MAX_CONTENT_BYTES) return json(413, { error: 'too large' });
         let content;
@@ -173,8 +175,8 @@ export default {
     }
 
     if (p === '/api/media' && req.method === 'POST') {
-      if (!sameOrigin(req, url) && !hasBearer(req)) return json(403, { error: 'origin' });
       if (!(await authed(req, env))) return json(401, { error: 'auth' });
+      if (!sameOrigin(req, url) && !bearerSupplied(req)) return json(403, { error: 'origin' });
       let body;
       try { body = await req.json(); } catch (e) { return json(400, { error: 'bad json' }); }
       const m = String((body && body.data) || '').match(/^data:(image\/(?:jpeg|png|webp|gif|svg\+xml));base64,([A-Za-z0-9+/=]+)$/);

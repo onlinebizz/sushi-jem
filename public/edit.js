@@ -97,6 +97,7 @@ document.body.appendChild(login);
 fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/jpeg,image/png,image/webp,image/gif'; fileInput.style.display = 'none'; document.body.appendChild(fileInput);
 
 function uiLang(){
+  document.body.style.paddingBottom = active ? '76px' : '';
   $('#sjMode').textContent = t('mode');
   $('#sjSave').innerHTML = esc(t('save')) + '<b id="sjCount" hidden>0</b>';
   $('#sjToggle').textContent = active ? t('pause') : t('resume');
@@ -242,6 +243,7 @@ function resolve(target){
   if (card && card.closest('#menuBody')){
     var f2 = findItem(card.getAttribute('data-card')); if (!f2) return null;
     var it2 = f2.it;
+    if (target.classList.contains('num')) return numB(target, function(v){ it2.num = v; target.textContent = v });
     var ph = target.closest('.ph');
     if (ph){
       var im = ph.querySelector('img');
@@ -249,10 +251,11 @@ function resolve(target){
       var sp = ph.querySelector('span');
       if (sp) return textB(sp, function(v){ it2.k = v; sp.textContent = v });
     }
-    if (target.classList.contains('num')) return numB(target, function(v){ it2.num = v; target.textContent = v });
     var meta = target.closest('.meta');
     if (meta && target.tagName === 'SPAN' && meta.children[1] === target){
-      return numB(target, function(v){ it2.kcal = v; target.textContent = v + (lang() === 'en' ? ' kcal / piece' : ' سعرة للقطعة') });
+      var kcalB = numB(target, function(v){ it2.kcal = v; target.textContent = v + (lang() === 'en' ? ' kcal / piece' : ' سعرة للقطعة') });
+      kcalB.editText = function(){ return it2.kcal == null ? '' : String(it2.kcal) };
+      return kcalB;
     }
     var varBtn = target.closest('.var');
     if (varBtn && varBtn.closest('[data-card]') === card){
@@ -298,7 +301,9 @@ function resolve(target){
   /* rail images */
   var rail = target.closest('#rail');
   if (rail && target.tagName === 'IMG'){
-    var idx = $$('img', rail).indexOf(target);
+    var idx = target.getAttribute('data-rail-idx');
+    if (idx == null) return null;
+    idx = +idx;
     return imgB(target, function(v){
       if (c.config.rail && c.config.rail[idx] != null) c.config.rail[idx] = v;
       else { c.config.rail = c.config.rail || []; c.config.rail.push(v) }
@@ -321,8 +326,11 @@ function resolve(target){
     var k = i18.getAttribute('data-i18n');
     return textB(i18, function(v){
       c.strings = c.strings || {}; c.strings[lang()] = c.strings[lang()] || {};
-      c.strings[lang()][k] = v;
-      if (window.SJ){ (lang() === 'en' ? window.SJ.EN : window.SJ.AR)[k] = v }
+      // escape markup: these strings render through innerHTML on language
+      // switch, so literal <b>... must stay literal text
+      var safe = v.replace(/[&<>]/g, function(ch){ return ch === '&' ? '&' + 'amp;' : ch === '<' ? '&' + 'lt;' : '&' + 'gt;'; });
+      c.strings[lang()][k] = safe;
+      if (window.SJ){ (lang() === 'en' ? window.SJ.EN : window.SJ.AR)[k] = safe }
       i18.textContent = v;
     });
   }
@@ -331,24 +339,38 @@ function resolve(target){
 }
 
 /* ---------- text editing ---------- */
+function firstTn(el){
+  for (var i = 0; i < el.childNodes.length; i++) if (el.childNodes[i].nodeType === 3) return el.childNodes[i];
+  return null;
+}
 function beginEdit(b){
   if (b.type === 'image'){ pickImage(b); return }
   var el = b.el;
-  editing = { b: b, orig: el.textContent, origDir: el.getAttribute('dir') };
+  var tn = firstTn(el);
+  // what the editor shows initially: the underlying value for composite
+  // elements (e.g. a calorie badge that renders "120 kcal"), the text
+  // node itself for plain ones
+  var start = b.editText ? b.editText() : (tn ? tn.nodeValue : el.textContent);
+  editing = { b: b, el: el, tn: tn, orig: start, origDir: el.getAttribute('dir') };
+  if (b.editText && tn) tn.nodeValue = start; // sync display with the raw value
   el.setAttribute('contenteditable', 'plaintext-only');
   el.classList.add('sj-editing');
   el.setAttribute('dir', b.dir());
   el.focus();
   try {
-    var r = document.createRange(); r.selectNodeContents(el);
+    var r = document.createRange();
+    if (tn){ r.setStart(tn, 0); r.setEnd(tn, tn.length) } // only the value node:
+    else r.selectNodeContents(el);                        // child markup survives
     var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
   } catch (e) {}
 }
 
 function commitEdit(cancel){
   if (!editing) return true;
-  var b = editing.b, el = b.el;
-  var v = el.textContent.replace(/\u00a0/g, ' ').trim();
+  var b = editing.b, el = editing.el;
+  // re-find the text node: typing may have replaced the original one
+  var tn = firstTn(el);
+  var v = (tn ? tn.nodeValue : el.textContent).replace(/\u00a0/g, ' ').trim();
 
   if (b.type === 'number' && !cancel){
     v = v.replace(/٫/g, '.').replace(/[٠-٩]/g, function(d){ return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)) }).trim();
@@ -360,7 +382,15 @@ function commitEdit(cancel){
     }
     v = Number(v);
   }
-  if (!cancel && v === editing.orig && b.type === 'text'){ finishEdit(); return true }
+  if (!cancel && v === editing.orig && b.type !== 'number'){ finishEdit(); return true }
+  if (cancel){
+    // restore the exact original display so an abandoned edit leaves no trace.
+    // re-find the text node: typing may have replaced it with new nodes.
+    var tnNow = firstTn(el);
+    var restore = b.editText ? b.editText() : editing.orig;
+    if (tnNow) tnNow.nodeValue = restore;
+    else el.textContent = restore;
+  }
   if (el.getAttribute('dir') === editing.origDir) el.removeAttribute('dir');
   else if (editing.origDir) el.setAttribute('dir', editing.origDir);
   finishEdit();
@@ -423,7 +453,10 @@ document.addEventListener('click', function(e){
     if (resolve(e.target)){ e.preventDefault(); e.stopPropagation(); showLogin() }
     return;
   }
-  if (editing){ commitEdit(false); return }
+  if (editing){
+    if (editing.el.contains(e.target)) return; // repositioning the caret
+    commitEdit(false); return
+  }
   if (isInteractive(e.target)) return; // single click = normal action; dblclick edits labels
   var b = resolve(e.target);
   if (!b) return;
